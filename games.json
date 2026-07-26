@@ -2,21 +2,21 @@
   {
     "id": "brain-spark",
     "title": "Brain Spark: Quiz Blitz",
-    "icon": "https://games.smartok.app/brain-spark/icon.png",
+    "icon": "https://games.smartok.app/brain-spark/icon.png?v=2",
     "url": "https://games.smartok.app/brain-spark/",
     "category": "Education"
   },
   {
     "id": "synapse-logic",
     "title": "Synapse Logic: Speed Blitz",
-    "icon": "https://games.smartok.app/synapse-logic/icon.png",
+    "icon": "https://games.smartok.app/synapse-logic/icon.png?v=2",
     "url": "https://games.smartok.app/synapse-logic/",
     "category": "Logic"
   },
   {
     "id": "lexi-mind",
     "title": "Lexi Mind: Cyber Lexicon",
-    "icon": "https://games.smartok.app/lexi-mind/icon.png",
+    "icon": "https://games.smartok.app/lexi-mind/icon.png?v=2",
     "url": "https://games.smartok.app/lexi-mind/",
     "category": "Word"
   }
