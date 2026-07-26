@@ -70,6 +70,11 @@ body {
     transform: scale(1.1);
 }
 
+#gameScreen .sound-toggle-btn {
+    top: 60px !important;
+    right: 16px !important;
+}
+
 .sound-toggle-btn:active {
     transform: scale(0.95);
 }
@@ -197,16 +202,15 @@ body {
 
 /* Game Screen Styles */
 .game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 20px;
-    gap: 10px;
-    padding-left: 50px !important;
-    margin-top: 22px !important;
+    margin-top: 60px !important;
     margin-bottom: 15px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    width: 100% !important;
+    max-width: 420px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
 }
 
 .back-arrow-btn {
