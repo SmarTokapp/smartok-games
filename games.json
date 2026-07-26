@@ -19,5 +19,12 @@
     "icon": "https://games.smartok.app/lexi-mind/icon.png?v=2",
     "url": "https://games.smartok.app/lexi-mind/",
     "category": "Word"
+  },
+  {
+    "id": "cosmo-mind",
+    "title": "Cosmo Mind: Quantum Quest",
+    "icon": "https://games.smartok.app/cosmo-mind/icon.png?v=1",
+    "url": "https://games.smartok.app/cosmo-mind/",
+    "category": "Science"
   }
 ]

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cosmo Mind: Quantum Quest</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen active">
+            <button id="muteBtn" class="sound-toggle-btn">🔊</button>
+            <div class="logo">
+                <div class="cosmo-icon">🌌</div>
+                <h1 class="game-title">Cosmo Mind</h1>
+                <p class="game-subtitle">Quantum Quest</p>
+            </div>
+            <div class="category-selection">
+                <h2 class="section-title">Choose Category</h2>
+                <div class="category-grid">
+                    <button class="category-btn" data-category="cosmos">
+                        <span class="category-icon">🌌</span>
+                        <span class="category-name">Cosmos & Stars</span>
+                    </button>
+                    <button class="category-btn" data-category="quantum">
+                        <span class="category-icon">⚛️</span>
+                        <span class="category-name">Quantum & Physics</span>
+                    </button>
+                    <button class="category-btn" data-category="earth">
+                        <span class="category-icon">🌍</span>
+                        <span class="category-name">Planet Earth</span>
+                    </button>
+                    <button class="category-btn" data-category="space">
+                        <span class="category-icon">🚀</span>
+                        <span class="category-name">Space Odyssey</span>
+                    </button>
+                </div>
+            </div>
+            <div class="high-score-display">
+                <span class="high-score-label">High Score:</span>
+                <span id="highScoreValue" class="high-score-value">0</span>
+            </div>
+            <p class="credits-text">Music: "Equatorial Complex" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0</p>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <button id="muteBtnGame" class="sound-toggle-btn">🔊</button>
+            <div class="game-header">
+                <button id="exitGameBtn" class="back-arrow-btn">←</button>
+                <div class="score-display">
+                    <span class="score-label">Score:</span>
+                    <span id="scoreValue" class="score-value">0</span>
+                </div>
+                <div class="lives-display" id="livesContainer">
+                    <!-- Lives will be injected here -->
+                </div>
+                <div class="streak-display">
+                    <span class="streak-icon">🔥</span>
+                    <span id="streakValue" class="streak-value">0</span>
+                    <span class="streak-label">streak</span>
+                </div>
+            </div>
+            
+            <div class="timer-container">
+                <div class="timer-bar">
+                    <div id="timerProgress" class="timer-progress"></div>
+                </div>
+                <span id="timerValue" class="timer-value">15</span>
+            </div>
+
+            <div class="question-container">
+                <div class="category-badge" id="currentCategory">Cosmos</div>
+                <h2 id="questionText" class="question-text">Loading question...</h2>
+            </div>
+
+            <div class="answers-container" id="answersContainer">
+                <!-- Answers will be injected here -->
+            </div>
+
+            <div class="feedback-overlay" id="feedbackOverlay">
+                <div class="feedback-content">
+                    <span id="feedbackIcon" class="feedback-icon"></span>
+                    <span id="feedbackText" class="feedback-text"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="screen">
+            <div class="game-over-content">
+                <div class="game-over-icon">🌌</div>
+                <h2 class="game-over-title">Game Over!</h2>
+                <div class="star-rating" id="starRating">
+                    <!-- Stars will be injected here -->
+                </div>
+                <div class="final-score">
+                    <span class="final-score-label">Final Score:</span>
+                    <span id="finalScoreValue" class="final-score-value">0</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Questions</span>
+                        <span id="questionsAnswered" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Correct</span>
+                        <span id="correctAnswers" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Best Streak</span>
+                        <span id="bestStreak" class="stat-value">0</span>
+                    </div>
+                </div>
+                <div class="new-high-score" id="newHighScore" style="display: none;">
+                    <span class="trophy-icon">🏆</span>
+                    <span class="new-high-score-text">New High Score!</span>
+                </div>
+                <button id="replayCategoryBtn" class="play-again-btn">Replay Category</button>
+                <button id="mainMenuBtn" class="home-btn">Main Menu</button>
+                <p class="credits-text">Music: "Equatorial Complex" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
