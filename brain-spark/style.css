@@ -30,6 +30,11 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
+    padding-top: 65px;
+}
+
+#startScreen {
+    padding-top: 65px;
 }
 
 .screen.active {

@@ -502,7 +502,9 @@ function applyTranslations() {
 // Update Mute Button
 function updateMuteButton() {
   const muteBtn = document.getElementById('muteBtn');
-  muteBtn.textContent = gameState.isMuted ? '🔇' : '🔊';
+  const muteBtnGame = document.getElementById('muteBtnGame');
+  if (muteBtn) muteBtn.textContent = gameState.isMuted ? '🔇' : '🔊';
+  if (muteBtnGame) muteBtnGame.textContent = gameState.isMuted ? '🔇' : '🔊';
 }
 
 // Toggle Mute
@@ -752,6 +754,10 @@ function init() {
   
   // Mute button
   document.getElementById('muteBtn').onclick = toggleMute;
+  const muteBtnGame = document.getElementById('muteBtnGame');
+  if (muteBtnGame) {
+    muteBtnGame.onclick = toggleMute;
+  }
   
   // Exit button
   document.getElementById('exitBtn').onclick = exitGame;

@@ -369,6 +369,13 @@ function init() {
         toggleAudio();
     });
     
+    const audioToggleBtnGame = document.getElementById('audioToggleBtnGame');
+    if (audioToggleBtnGame) {
+        audioToggleBtnGame.addEventListener('click', () => {
+            toggleAudio();
+        });
+    }
+    
     // Update audio toggle button icon based on initial state
     updateAudioToggleIcon();
 }
@@ -388,6 +395,10 @@ function toggleAudio() {
 
 function updateAudioToggleIcon() {
     elements.audioToggleBtn.textContent = isMuted ? '🔇' : '🔊';
+    const audioToggleBtnGame = document.getElementById('audioToggleBtnGame');
+    if (audioToggleBtnGame) {
+        audioToggleBtnGame.textContent = isMuted ? '🔇' : '🔊';
+    }
 }
 
 function getOverallHighScore() {
