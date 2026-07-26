@@ -763,7 +763,10 @@ function startGame(category) {
     if (!backgroundMusic) {
       initBackgroundMusic();
     }
-    backgroundMusic.play().catch(e => console.log('Audio play failed:', e));
+    if (audioContext && audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    backgroundMusic.play().catch(e => console.log('Autoplay blocked until interaction:', e));
   }
 }
 
@@ -825,10 +828,11 @@ function init() {
   });
   
   document.getElementById('menuBtn').addEventListener('click', exitToStartScreen);
-  
-  // Initialize audio on first touch for mobile
-  document.addEventListener('touchstart', initAudio, { once: true });
 }
 
 // Start the game when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
+
+// Global audio unlock listeners for WebView
+document.addEventListener('touchstart', initAudio, { once: true });
+document.addEventListener('click', initAudio, { once: true });
