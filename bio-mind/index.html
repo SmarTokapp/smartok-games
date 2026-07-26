@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Bio Mind: Nature & Evolution</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Start Screen -->
+  <div id="startScreen" class="screen">
+    <button class="sound-toggle-btn" id="startSoundToggle" style="position: absolute !important; top: 95px !important; right: 16px !important; z-index: 9999 !important;">🔊</button>
+    <div class="logo-container">
+      <h1 class="game-title">BIO MIND</h1>
+      <p class="game-subtitle">NATURE & EVOLUTION</p>
+    </div>
+    <div class="category-grid">
+      <button class="category-btn" data-category="wildKingdom">
+        <span class="category-icon">🦁</span>
+        <span class="category-name">Wild Kingdom</span>
+      </button>
+      <button class="category-btn" data-category="dnaGenetics">
+        <span class="category-icon">🧬</span>
+        <span class="category-name">DNA & Genetics</span>
+      </button>
+      <button class="category-btn" data-category="humanBody">
+        <span class="category-icon">🫀</span>
+        <span class="category-name">Human Body</span>
+      </button>
+      <button class="category-btn" data-category="ecosystems">
+        <span class="category-icon">🌴</span>
+        <span class="category-name">Ecosystems & Planet</span>
+      </button>
+    </div>
+    <div class="high-score-display">
+      <span class="high-score-label">High Score</span>
+      <span id="overallHighScore" class="high-score-value">0</span>
+    </div>
+    <p class="credits-text">Music: "Devonshire Waltz Moderato" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0</p>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="gameScreen" class="screen hidden">
+    <button class="sound-toggle-btn" id="gameSoundToggle" style="position: absolute !important; top: 15px !important; right: 16px !important; z-index: 9999 !important;">🔊</button>
+    <div class="game-header">
+      <div class="lives-container">
+        <span id="lives" class="lives">❤️❤️❤️</span>
+      </div>
+      <div class="score-container">
+        <span class="score-label">Score</span>
+        <span id="score" class="score-value">0</span>
+      </div>
+      <div class="streak-container">
+        <span class="streak-icon">🔥</span>
+        <span id="streak" class="streak-value">0</span>
+      </div>
+    </div>
+    
+    <div class="timer-container">
+      <div id="timerBar" class="timer-bar"></div>
+    </div>
+
+    <div id="questionContainer" class="question-container">
+      <div id="questionText" class="question-text"></div>
+      <div id="answerOptions" class="answer-options"></div>
+    </div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameOverScreen" class="screen hidden">
+    <h2 class="game-over-title">Game Over</h2>
+    <div class="stars-container">
+      <span id="star1" class="star">⭐</span>
+      <span id="star2" class="star">⭐</span>
+      <span id="star3" class="star">⭐</span>
+    </div>
+    <div class="final-score">
+      <span class="final-score-label">Final Score</span>
+      <span id="finalScoreValue" class="final-score-value">0</span>
+    </div>
+    <div class="accuracy-display">
+      <span class="accuracy-label">Accuracy</span>
+      <span id="accuracyValue" class="accuracy-value">0%</span>
+    </div>
+    <div class="high-score-display">
+      <span class="high-score-label">Category High Score</span>
+      <span id="categoryHighScore" class="high-score-value">0</span>
+    </div>
+    <div class="game-over-buttons">
+      <button id="replayBtn" class="game-over-btn">Replay Category</button>
+      <button id="menuBtn" class="game-over-btn">Main Menu</button>
+    </div>
+    <p class="credits-text">Music: "Devonshire Waltz Moderato" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
