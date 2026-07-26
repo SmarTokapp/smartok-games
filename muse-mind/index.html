@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Muse Mind: Culture & Arts</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen active">
+            <button class="sound-toggle-btn" id="startSoundToggle">🔊</button>
+            
+            <div class="logo">
+                <div class="game-icon">🎨</div>
+                <h1 class="game-title">Muse Mind</h1>
+                <p class="game-subtitle">Culture & Arts</p>
+            </div>
+
+            <div class="category-grid">
+                <div class="category-btn" data-category="masterpieces">
+                    <div class="category-icon">🎨</div>
+                    <div class="category-name">Masterpieces</div>
+                </div>
+                <div class="category-btn" data-category="music">
+                    <div class="category-icon">🎵</div>
+                    <div class="category-name">Music & Symphony</div>
+                </div>
+                <div class="category-btn" data-category="literature">
+                    <div class="category-icon">📚</div>
+                    <div class="category-name">Classic Literature</div>
+                </div>
+                <div class="category-btn" data-category="heritage">
+                    <div class="category-icon">🎭</div>
+                    <div class="category-name">World Heritage</div>
+                </div>
+            </div>
+
+            <div class="music-credit">
+                Music: "Chill" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <button class="sound-toggle-btn" id="gameSoundToggle">🔊</button>
+            
+            <div class="game-header">
+                <div class="header-left">
+                    <div class="lives-container">
+                        <span class="heart">❤️</span>
+                        <span class="lives-count" id="livesCount">3</span>
+                    </div>
+                </div>
+                <div class="header-center">
+                    <div class="score-display">
+                        <span class="score-label">Score</span>
+                        <span class="score-value" id="scoreValue">0</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="streak-display">
+                        <span class="streak-icon">🔥</span>
+                        <span class="streak-count" id="streakCount">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-text" id="questionText"></div>
+                <div class="answers-grid" id="answersGrid"></div>
+            </div>
+
+            <div class="feedback-overlay" id="feedbackOverlay">
+                <div class="feedback-text" id="feedbackText"></div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="screen">
+            <div class="game-over-content">
+                <div class="game-over-icon">🎨</div>
+                <h2 class="game-over-title">Masterpiece Complete!</h2>
+                
+                <div class="star-rating" id="starRating"></div>
+                
+                <div class="final-score">
+                    <span class="final-score-label">Final Score</span>
+                    <span class="final-score-value" id="finalScore">0</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Correct</span>
+                        <span class="stat-value" id="correctCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Best Streak</span>
+                        <span class="stat-value" id="bestStreak">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Accuracy</span>
+                        <span class="stat-value" id="accuracy">0%</span>
+                    </div>
+                </div>
+
+                <button class="btn replay-btn" id="replayBtn">Play Again</button>
+                <button class="btn menu-btn" id="menuBtn">Main Menu</button>
+
+                <div class="music-credit">
+                    Music: "Chill" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
