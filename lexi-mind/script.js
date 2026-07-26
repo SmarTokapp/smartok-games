@@ -738,8 +738,22 @@ function init() {
   
   // Load mute state
   gameState.isMuted = localStorage.getItem('lexiMind_muted') === 'true';
+  if (!gameState.isMuted) {
+    gameState.isMuted = false;
+  }
   bgm.muted = gameState.isMuted;
   updateMuteButton();
+  
+  // Automatically unlock and play background music on first frame / interaction
+  const unlockAudio = () => {
+    if (bgm && bgm.paused && !gameState.isMuted) {
+      bgm.play().catch(e => console.log('Autoplay deferred:', e));
+    }
+    document.removeEventListener('touchstart', unlockAudio);
+    document.removeEventListener('click', unlockAudio);
+  };
+  document.addEventListener('touchstart', unlockAudio, { once: true });
+  document.addEventListener('click', unlockAudio, { once: true });
   
   // Load high scores
   loadHighScores();

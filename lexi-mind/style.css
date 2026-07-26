@@ -163,6 +163,9 @@ body {
   width: 100%;
   max-width: 400px;
   margin-bottom: 20px;
+  padding-left: 50px !important;
+  margin-top: 22px !important;
+  margin-bottom: 15px !important;
 }
 
 .exit-btn {
