@@ -204,6 +204,9 @@ body {
     max-width: 400px;
     margin-bottom: 20px;
     gap: 10px;
+    padding-left: 50px !important;
+    margin-top: 22px !important;
+    margin-bottom: 15px !important;
 }
 
 .back-arrow-btn {
@@ -431,6 +434,12 @@ body {
 }
 
 /* Game Over Screen Styles */
+#gameOverScreen {
+    padding-top: 85px !important;
+    padding-bottom: 30px !important;
+    overflow-y: auto !important;
+}
+
 .game-over-content {
     text-align: center;
     max-width: 400px;
@@ -438,8 +447,8 @@ body {
 }
 
 .game-over-icon {
-    font-size: 80px;
-    margin-bottom: 20px;
+    font-size: 50px !important;
+    margin-bottom: 8px !important;
     animation: bounce 1s ease infinite;
 }
 
@@ -449,18 +458,18 @@ body {
 }
 
 .game-over-title {
-    font-size: 36px;
+    font-size: 26px !important;
     font-weight: bold;
     color: #ff00ff;
     text-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
-    margin-bottom: 20px;
+    margin-bottom: 8px !important;
 }
 
 .star-rating {
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 25px;
+    margin-bottom: 12px !important;
 }
 
 .star {
@@ -473,7 +482,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 12px !important;
 }
 
 .final-score-label {
@@ -492,8 +501,8 @@ body {
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-bottom: 30px;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
 }
 
 .stat-item {

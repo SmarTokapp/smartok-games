@@ -84,6 +84,8 @@ bgm.volume = 0.2;
 let isMuted = localStorage.getItem('brainSpark_muted') === 'true';
 if (isMuted) {
     bgm.muted = true;
+} else {
+    isMuted = false;
 }
 
 // Autoplay bypass - play music on first user interaction
@@ -96,6 +98,17 @@ function enableAudio() {
         }
     }
 }
+
+// Automatically unlock and play background music on first frame / interaction
+const unlockAudio = () => {
+  if (bgm && bgm.paused && !isMuted) {
+    bgm.play().catch(e => console.log('Autoplay deferred:', e));
+  }
+  document.removeEventListener('touchstart', unlockAudio);
+  document.removeEventListener('click', unlockAudio);
+};
+document.addEventListener('touchstart', unlockAudio, { once: true });
+document.addEventListener('click', unlockAudio, { once: true });
 
 // Add global interaction listener
 document.addEventListener('click', enableAudio, { once: true });
