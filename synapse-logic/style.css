@@ -138,9 +138,12 @@ body {
   box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
 }
 
-#gameScreen .mute-btn, .mute-btn-game {
-  top: 60px !important;
-  right: 16px !important;
+#gameScreen #muteBtnGame,
+#gameScreen .sound-toggle-btn {
+  position: absolute !important;
+  top: 65px !important;
+  right: 14px !important;
+  z-index: 100 !important;
 }
 
 .credits-text {
@@ -156,10 +159,10 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  margin-top: 60px !important;
-  margin-bottom: 15px !important;
+  margin-top: 65px !important;
+  margin-bottom: 10px !important;
   padding-left: 15px !important;
-  padding-right: 15px !important;
+  padding-right: 55px !important;
   width: 100% !important;
   max-width: 420px !important;
   display: flex !important;
@@ -168,6 +171,12 @@ body {
   background: rgba(0, 0, 0, 0.8);
   border-bottom: 1px solid rgba(0, 243, 255, 0.3);
   z-index: 100;
+}
+
+#gameScreen .back-arrow-btn,
+#gameScreen .back-btn,
+#gameScreen .exit-btn {
+    display: none !important;
 }
 
 .exit-btn {
@@ -237,10 +246,10 @@ body {
 }
 
 .timer-bar-container {
-  position: absolute;
-  top: 70px;
-  left: 0;
-  right: 0;
+  width: 90% !important;
+  max-width: 400px !important;
+  margin: 10px auto 15px auto !important;
+  position: relative !important;
   height: 6px;
   background: rgba(255, 255, 255, 0.1);
   z-index: 99;
