@@ -5,5 +5,12 @@
     "icon": "https://games.smartok.app/brain-spark/icon.png",
     "url": "https://games.smartok.app/brain-spark/",
     "category": "Education"
+  },
+  {
+    "id": "synapse-logic",
+    "title": "Synapse Logic: Speed Blitz",
+    "icon": "https://games.smartok.app/synapse-logic/icon.png",
+    "url": "https://games.smartok.app/synapse-logic/",
+    "category": "Logic"
   }
 ]

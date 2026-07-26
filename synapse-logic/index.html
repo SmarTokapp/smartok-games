@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Synapse Logic: Speed Blitz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Start Screen -->
+  <div id="startScreen" class="screen">
+    <div class="logo-container">
+      <h1 class="game-title">SYNAPSE LOGIC</h1>
+      <p class="game-subtitle">SPEED BLITZ</p>
+    </div>
+    <div class="category-grid">
+      <button class="category-btn" data-category="fastMath">
+        <span class="category-icon">🧮</span>
+        <span class="category-name" data-i18n="fastMath">Fast Math</span>
+      </button>
+      <button class="category-btn" data-category="sequenceLogic">
+        <span class="category-icon">🔢</span>
+        <span class="category-name" data-i18n="sequenceLogic">Sequence Logic</span>
+      </button>
+      <button class="category-btn" data-category="equationBalance">
+        <span class="category-icon">⚖️</span>
+        <span class="category-name" data-i18n="equationBalance">Equation Balance</span>
+      </button>
+      <button class="category-btn" data-category="memoryMatrix">
+        <span class="category-icon">🧠</span>
+        <span class="category-name" data-i18n="memoryMatrix">Memory Matrix</span>
+      </button>
+    </div>
+    <div class="high-score-display">
+      <span class="high-score-label" data-i18n="highScore">High Score</span>
+      <span id="overallHighScore" class="high-score-value">0</span>
+    </div>
+    <button id="muteBtn" class="mute-btn">🔊</button>
+    <p class="credits-text">Music: Eastern Thought by Kevin MacLeod (Uppbeat)</p>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="gameScreen" class="screen hidden">
+    <div class="game-header">
+      <button id="exitBtn" class="exit-btn">←</button>
+      <div class="lives-container">
+        <span id="lives" class="lives">❤️❤️❤️</span>
+      </div>
+      <div class="score-container">
+        <span class="score-label" data-i18n="score">Score</span>
+        <span id="score" class="score-value">0</span>
+      </div>
+      <div class="streak-container">
+        <span class="streak-icon">🔥</span>
+        <span id="streak" class="streak-value">0</span>
+      </div>
+    </div>
+    
+    <div class="timer-bar-container">
+      <div id="timerBar" class="timer-bar"></div>
+    </div>
+
+    <div id="questionContainer" class="question-container">
+      <div id="questionText" class="question-text"></div>
+      <div id="answerOptions" class="answer-options"></div>
+    </div>
+
+    <button id="muteBtnGame" class="mute-btn-game">🔊</button>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameOverScreen" class="screen hidden">
+    <h2 class="game-over-title" data-i18n="gameOver">Game Over</h2>
+    <div class="stars-container">
+      <span id="star1" class="star">⭐</span>
+      <span id="star2" class="star">⭐</span>
+      <span id="star3" class="star">⭐</span>
+    </div>
+    <div class="final-score">
+      <span class="final-score-label" data-i18n="finalScore">Final Score</span>
+      <span id="finalScoreValue" class="final-score-value">0</span>
+    </div>
+    <div class="accuracy-display">
+      <span class="accuracy-label" data-i18n="accuracy">Accuracy</span>
+      <span id="accuracyValue" class="accuracy-value">0%</span>
+    </div>
+    <div class="high-score-display">
+      <span class="high-score-label" data-i18n="categoryHighScore">Category High Score</span>
+      <span id="categoryHighScore" class="high-score-value">0</span>
+    </div>
+    <div class="game-over-buttons">
+      <button id="replayBtn" class="game-over-btn" data-i18n="replayCategory">Replay Category</button>
+      <button id="menuBtn" class="game-over-btn" data-i18n="mainMenu">Main Menu</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
