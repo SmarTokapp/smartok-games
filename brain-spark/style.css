@@ -30,11 +30,13 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    padding-top: 100px !important;
+    padding-top: 85px !important;
+    padding-bottom: 20px !important;
 }
 
 #startScreen {
-    padding-top: 100px !important;
+    padding-top: 85px !important;
+    padding-bottom: 20px !important;
 }
 
 .screen.active {
@@ -75,14 +77,15 @@ body {
 /* Start Screen Styles */
 .logo {
     text-align: center;
-    margin-bottom: 40px;
-    margin-top: 85px !important;
+    margin-bottom: 8px !important;
+    margin-top: 0 !important;
 }
 
 .brain-icon {
-    font-size: 80px;
-    margin-bottom: 10px;
+    font-size: 50px !important;
+    margin-bottom: 5px !important;
     animation: pulse 2s ease-in-out infinite;
+    max-height: 50px !important;
 }
 
 @keyframes pulse {
@@ -91,52 +94,58 @@ body {
 }
 
 .game-title {
-    font-size: 36px;
+    font-size: 22px !important;
     font-weight: bold;
     color: #00f3ff;
     text-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
-    margin-bottom: 5px;
+    margin: 4px 0 !important;
 }
 
 .game-subtitle {
-    font-size: 18px;
+    font-size: 14px !important;
     color: #ff00ff;
     text-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
-    letter-spacing: 3px;
+    letter-spacing: 2px !important;
+    margin-bottom: 15px !important;
 }
 
 .category-selection {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px !important;
 }
 
 .section-title {
-    font-size: 20px;
+    font-size: 16px !important;
     color: #ffffff;
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 15px !important;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .category-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 30px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    width: 90% !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+    margin-bottom: 20px !important;
 }
 
 .category-btn {
     background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(255, 0, 255, 0.1));
     border: 2px solid rgba(0, 243, 255, 0.3);
     border-radius: 15px;
-    padding: 20px;
+    padding: 12px 8px !important;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px !important;
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    height: auto !important;
+    max-height: 100px !important;
 }
 
 .category-btn:hover {
@@ -150,11 +159,11 @@ body {
 }
 
 .category-icon {
-    font-size: 40px;
+    font-size: 28px !important;
 }
 
 .category-name {
-    font-size: 14px;
+    font-size: 13px !important;
     font-weight: 600;
     color: #ffffff;
     text-align: center;
@@ -163,10 +172,11 @@ body {
 .high-score-display {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 18px;
+    gap: 8px !important;
+    font-size: 14px !important;
     color: #ffd700;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    margin-top: 10px !important;
 }
 
 .high-score-label {
@@ -175,13 +185,13 @@ body {
 
 .high-score-value {
     font-weight: bold;
-    font-size: 24px;
+    font-size: 18px !important;
 }
 
 .credits-text {
     color: #555;
-    font-size: 10px;
-    margin-top: 15px;
+    font-size: 9px !important;
+    margin-top: 8px !important;
     text-align: center;
 }
 
@@ -576,15 +586,15 @@ body {
 /* Responsive Design */
 @media (max-width: 480px) {
     .game-title {
-        font-size: 28px;
+        font-size: 22px !important;
     }
     
     .game-subtitle {
-        font-size: 14px;
+        font-size: 14px !important;
     }
     
     .category-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr) !important;
     }
     
     .question-text {
