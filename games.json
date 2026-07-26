@@ -12,5 +12,12 @@
     "icon": "https://games.smartok.app/synapse-logic/icon.png",
     "url": "https://games.smartok.app/synapse-logic/",
     "category": "Logic"
+  },
+  {
+    "id": "lexi-mind",
+    "title": "Lexi Mind: Cyber Lexicon",
+    "icon": "https://games.smartok.app/lexi-mind/icon.png",
+    "url": "https://games.smartok.app/lexi-mind/",
+    "category": "Word"
   }
 ]
