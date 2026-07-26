@@ -30,11 +30,11 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    padding-top: 95px !important;
+    padding-top: 100px !important;
 }
 
 #startScreen {
-    padding-top: 95px !important;
+    padding-top: 100px !important;
 }
 
 .screen.active {
@@ -43,8 +43,8 @@ body {
 
 .sound-toggle-btn {
     position: absolute;
-    top: 90px;
-    right: 20px;
+    top: 95px !important;
+    right: 16px !important;
     width: 44px;
     height: 44px;
     border-radius: 50%;
@@ -76,6 +76,7 @@ body {
 .logo {
     text-align: center;
     margin-bottom: 40px;
+    margin-top: 85px !important;
 }
 
 .brain-icon {
