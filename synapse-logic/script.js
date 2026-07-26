@@ -12,17 +12,13 @@ const gameState = {
   timeLeft: 10,
   totalQuestions: 0,
   correctAnswers: 0,
-  isMuted: false,
   language: 'en'
 };
 
-// Audio Context
+// Audio Engine
 let audioContext = null;
-
-// Background Music
-const bgm = new Audio('bgm.mp3');
-bgm.loop = true;
-bgm.volume = 0.2;
+let backgroundMusic = null;
+let isMuted = false;
 
 // Translations
 const translations = {
@@ -391,49 +387,100 @@ const questions = {
 function initAudio() {
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
   }
 }
 
-// Play Sound Effect
-function playSound(type) {
-  if (gameState.isMuted || !audioContext) return;
-  
+// Play Click Sound
+function playClickSound() {
+  if (isMuted || !audioContext) return;
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
-  
   oscillator.connect(gainNode);
   gainNode.connect(audioContext.destination);
+  oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+  gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.05);
+}
+
+// Play Correct Sound
+function playCorrectSound() {
+  if (isMuted || !audioContext) return;
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+  oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.2);
+}
+
+// Play Wrong Sound
+function playWrongSound() {
+  if (isMuted || !audioContext) return;
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+  oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.3);
+}
+
+// Play Game Over Sound
+function playGameOverSound() {
+  if (isMuted || !audioContext) return;
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+  oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.2);
+  oscillator.frequency.setValueAtTime(100, audioContext.currentTime + 0.4);
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.6);
+}
+
+// Initialize Background Music
+function initBackgroundMusic() {
+  if (!backgroundMusic) {
+    backgroundMusic = new Audio('https://incompetech.com/music/royalty-free/mp3-royaltyfree/Eastern%20Thought.mp3');
+    backgroundMusic.loop = true;
+    backgroundMusic.volume = 0.2;
+  }
+}
+
+// Toggle Music
+function toggleMusic() {
+  isMuted = !isMuted;
+  localStorage.setItem('synapseLogic_muted', isMuted);
   
-  switch(type) {
-    case 'correct':
-      oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
-      oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialDecayTo = 0.01;
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.2);
-      break;
-    case 'wrong':
-      oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-      oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.3);
-      break;
-    case 'click':
-      oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.05);
-      break;
-    case 'gameOver':
-      oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
-      oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.2);
-      oscillator.frequency.setValueAtTime(100, audioContext.currentTime + 0.4);
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.6);
-      break;
+  const startSoundToggle = document.getElementById('startSoundToggle');
+  const gameSoundToggle = document.getElementById('gameSoundToggle');
+  
+  if (startSoundToggle) {
+    startSoundToggle.textContent = isMuted ? '🔇' : '🔊';
+  }
+  if (gameSoundToggle) {
+    gameSoundToggle.textContent = isMuted ? '🔇' : '🔊';
+  }
+  
+  if (backgroundMusic) {
+    if (isMuted) {
+      backgroundMusic.pause();
+    } else {
+      initAudio();
+      backgroundMusic.play().catch(err => console.log('BGM play failed:', err));
+    }
   }
 }
 
@@ -485,19 +532,15 @@ function applyTranslations() {
 
 // Update Mute Button
 function updateMuteButton() {
-  const muteBtns = document.querySelectorAll('.mute-btn, .mute-btn-game');
-  muteBtns.forEach(btn => {
-    btn.textContent = gameState.isMuted ? '🔇' : '🔊';
-  });
-}
-
-// Toggle Mute
-function toggleMute() {
-  gameState.isMuted = !gameState.isMuted;
-  bgm.muted = gameState.isMuted;
-  localStorage.setItem('synapseLogic_muted', gameState.isMuted);
-  updateMuteButton();
-  playSound('click');
+  const startSoundToggle = document.getElementById('startSoundToggle');
+  const gameSoundToggle = document.getElementById('gameSoundToggle');
+  
+  if (startSoundToggle) {
+    startSoundToggle.textContent = isMuted ? '🔇' : '🔊';
+  }
+  if (gameSoundToggle) {
+    gameSoundToggle.textContent = isMuted ? '🔇' : '🔊';
+  }
 }
 
 // Load High Score
@@ -577,7 +620,7 @@ function startTimer() {
 
 // Handle Timeout
 function handleTimeout() {
-  playSound('wrong');
+  playWrongSound();
   gameState.lives--;
   gameState.streak = 0;
   updateLives();
@@ -619,7 +662,7 @@ function handleAnswer(selectedIndex, btn) {
   const isCorrect = selectedIndex === gameState.currentQuestion.correct;
   
   if (isCorrect) {
-    playSound('correct');
+    playCorrectSound();
     btn.classList.add('correct');
     gameState.streak++;
     gameState.correctAnswers++;
@@ -638,7 +681,7 @@ function handleAnswer(selectedIndex, btn) {
       loadQuestion();
     }, 500);
   } else {
-    playSound('wrong');
+    playWrongSound();
     btn.classList.add('wrong');
     gameState.lives--;
     gameState.streak = 0;
@@ -659,7 +702,7 @@ function handleAnswer(selectedIndex, btn) {
 
 // End Game
 function endGame() {
-  playSound('gameOver');
+  playGameOverSound();
   clearInterval(gameState.timer);
   
   const accuracy = gameState.totalQuestions > 0 
@@ -695,7 +738,7 @@ function endGame() {
 
 // Start Game
 function startGame(category) {
-  playSound('click');
+  playClickSound();
   gameState.currentCategory = category;
   gameState.score = 0;
   gameState.lives = 3;
@@ -718,7 +761,7 @@ function startGame(category) {
 
 // Exit to Start Screen
 function exitToStartScreen() {
-  playSound('click');
+  playClickSound();
   clearInterval(gameState.timer);
   
   document.getElementById('gameScreen').classList.add('hidden');
@@ -735,9 +778,11 @@ function init() {
   applyTranslations();
   
   // Load mute state
-  gameState.isMuted = localStorage.getItem('synapseLogic_muted') === 'true';
-  bgm.muted = gameState.isMuted;
+  isMuted = localStorage.getItem('synapseLogic_muted') === 'true';
   updateMuteButton();
+  
+  // Initialize background music
+  initBackgroundMusic();
   
   // Load overall high score
   document.getElementById('overallHighScore').textContent = loadHighScore();
@@ -750,12 +795,21 @@ function init() {
     });
   });
   
-  // Exit button listener
-  document.getElementById('exitBtn').addEventListener('click', exitToStartScreen);
+  // Sound toggle button listeners
+  const startSoundToggle = document.getElementById('startSoundToggle');
+  if (startSoundToggle) {
+    startSoundToggle.addEventListener('click', () => {
+      initAudio();
+      toggleMusic();
+    });
+  }
   
-  // Mute button listeners
-  document.getElementById('muteBtn').addEventListener('click', toggleMute);
-  document.getElementById('muteBtnGame').addEventListener('click', toggleMute);
+  const gameSoundToggle = document.getElementById('gameSoundToggle');
+  if (gameSoundToggle) {
+    gameSoundToggle.addEventListener('click', () => {
+      toggleMusic();
+    });
+  }
   
   // Game over button listeners
   document.getElementById('replayBtn').addEventListener('click', () => {
@@ -764,17 +818,8 @@ function init() {
   
   document.getElementById('menuBtn').addEventListener('click', exitToStartScreen);
   
-  // Initialize audio on first interaction
-  document.body.addEventListener('click', () => {
-    initAudio();
-    bgm.play().catch(err => console.log('BGM play failed:', err));
-  }, { once: true });
-  
-  // Also handle touchstart for mobile
-  document.body.addEventListener('touchstart', () => {
-    initAudio();
-    bgm.play().catch(err => console.log('BGM play failed:', err));
-  }, { once: true });
+  // Initialize audio on first touch for mobile
+  document.addEventListener('touchstart', initAudio, { once: true });
 }
 
 // Start the game when DOM is loaded

@@ -138,11 +138,10 @@ body {
   box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
 }
 
-#gameScreen #muteBtnGame,
 #gameScreen .sound-toggle-btn {
   position: absolute !important;
-  top: 65px !important;
-  right: 14px !important;
+  top: 60px !important;
+  right: 16px !important;
   z-index: 100 !important;
 }
 
@@ -246,13 +245,13 @@ body {
 }
 
 .timer-bar-container {
-  width: 90% !important;
-  max-width: 400px !important;
-  margin: 10px auto 15px auto !important;
-  position: relative !important;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  z-index: 99;
+    position: relative !important;
+    width: 90% !important;
+    max-width: 400px !important;
+    margin: 10px auto 20px auto !important; /* Forces it down below the header */
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 99;
 }
 
 .timer-bar {
