@@ -757,6 +757,14 @@ function startGame(category) {
   document.getElementById('gameScreen').classList.remove('hidden');
   
   loadQuestion();
+  
+  // Start background music if not muted
+  if (!isMuted) {
+    if (!backgroundMusic) {
+      initBackgroundMusic();
+    }
+    backgroundMusic.play().catch(e => console.log('Audio play failed:', e));
+  }
 }
 
 // Exit to Start Screen
