@@ -103,5 +103,12 @@
     "icon": "https://games.smartok.app/chroma-shield/icon.png?v=2",
     "url": "https://games.smartok.app/chroma-shield/",
     "category": "Action"
+  },
+  {
+    "id": "quantum-stack",
+    "title": "Quantum Stack",
+    "icon": "https://games.smartok.app/quantum-stack/icon.jpg?v=1",
+    "url": "https://games.smartok.app/quantum-stack/",
+    "category": "Arcade"
   }
 ]
