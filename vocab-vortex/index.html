@@ -601,6 +601,9 @@
 
     // Load next word
     function loadNextWord() {
+      // Clear existing timer to prevent freezing
+      clearInterval(timerInterval);
+      
       if (wordIndex >= shuffledVocabulary.length) {
         // Reshuffle when all words exhausted
         shuffledVocabulary = shuffleArray(vocabulary);
