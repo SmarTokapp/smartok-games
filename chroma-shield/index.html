@@ -28,6 +28,8 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow: hidden;
     }
 
     /* Top Bar */
@@ -123,6 +125,14 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
+    }
+
+    /* Game Screen */
+    #gameScreen {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .shield {
@@ -323,9 +333,8 @@
         <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">🔊</button>
       </div>
 
-      <div class="game-area" id="gameArea" onclick="toggleShield()">
-        <div class="shield shield-cyan" id="shield"></div>
-      </div>
+      <div class="game-area" id="gameArea" onclick="toggleShield()"></div>
+      <div class="shield shield-cyan" id="shield"></div>
     </div>
 
     <!-- Game Over Screen -->
