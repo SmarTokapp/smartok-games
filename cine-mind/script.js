@@ -221,7 +221,7 @@ function playGameOverSound() {
 // Initialize Background Music
 function initBackgroundMusic() {
   if (!backgroundMusic) {
-    backgroundMusic = new Audio('https://incompetech.com/music/royalty-free/mp3-royaltyfree/RetroFuture%20Clean.mp3');
+    backgroundMusic = new Audio('https://incompetech.com/music/royalty-free/mp3-royaltyfree/Adding%20the%20Sun.mp3');
     backgroundMusic.loop = true;
     backgroundMusic.volume = 0.2;
   }
