@@ -1,0 +1,588 @@
+// Music: "The Sky of our Ancestors" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0
+
+// Game State
+const gameState = {
+  currentCategory: null,
+  score: 0,
+  lives: 3,
+  streak: 0,
+  availableQuestions: [],
+  currentQuestion: null,
+  timer: null,
+  timeLeft: 10,
+  totalQuestions: 0,
+  correctAnswers: 0,
+  language: 'en'
+};
+
+// Audio Engine
+let audioContext = null;
+let backgroundMusic = null;
+let isMuted = false;
+
+// Question Database (30 questions per category = 120 total)
+const questions = {
+  worldFacts: [
+    { question: "The Great Wall of China is visible from space with the naked eye.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Australia is both a country and a continent.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Sahara Desert is the largest desert in the world.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Antarctica is the coldest continent on Earth.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Nile River is the longest river in the world.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Mount Everest is the tallest mountain above sea level.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Pacific Ocean is the largest ocean on Earth.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Greenland is the world's largest island.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Amazon Rainforest produces 20% of the world's oxygen.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Dead Sea is the lowest point on Earth's land surface.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Vatican City is the smallest country in the world.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Russia has the most time zones of any country.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The equator passes through Brazil.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Japan consists of over 6,000 islands.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Grand Canyon is in Colorado.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Eiffel Tower was built for the 1889 World's Fair.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Statue of Liberty was a gift from France.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Colosseum is in Rome, Italy.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Taj Mahal was built as a tomb.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Machu Picchu is in Peru.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Great Barrier Reef is off the coast of Australia.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Aurora Borealis is also known as the Northern Lights.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Bermuda Triangle is officially recognized as a dangerous area.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Amazon River flows through Brazil.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Himalayas are the youngest mountain range.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Mariana Trench is the deepest part of the ocean.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Arctic Ocean is the smallest ocean.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Panama Canal connects the Atlantic and Pacific Oceans.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Suez Canal connects the Mediterranean Sea and the Red Sea.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The International Date Line is a straight line.", answers: ["TRUE", "FALSE"], correct: 1 }
+  ],
+  scienceMyths: [
+    { question: "Humans use only 10% of their brains.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Water boils at 100 degrees Celsius at sea level.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The sun is a star.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Light travels faster than sound.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Earth is flat.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Gravity is the same everywhere on Earth.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The moon has its own light source.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Diamonds are made from compressed coal.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Lightning never strikes the same place twice.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Great Wall of China is visible from the Moon.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Goldfish have a 3-second memory.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Bulls hate the color red.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Hair and fingernails continue to grow after death.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "We have five senses.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Shaving hair makes it grow back thicker.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Cracking your knuckles causes arthritis.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Eating carrots improves night vision.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Coffee stunts your growth.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The sun is yellow.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Seasons are caused by Earth's distance from the sun.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "There is no gravity in space.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "A penny dropped from the Empire State Building can kill you.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Toilets flush in opposite directions in different hemispheres.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Alcohol warms you up.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Vikings wore horned helmets.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Napoleon was short.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Einstein failed math.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Sugar makes kids hyperactive.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "You lose most body heat through your head.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Dogs sweat by panting.", answers: ["TRUE", "FALSE"], correct: 1 }
+  ],
+  humanBody: [
+    { question: "The human heart has four chambers.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Adults have 206 bones.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human brain weighs about 3 pounds.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans have 23 pairs of chromosomes.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The liver is the largest internal organ.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Blood is blue inside the body.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Humans have five senses.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The tongue is the strongest muscle in the body.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Fingernails grow faster than toenails.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans are born with all their eggs.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human eye can distinguish about 10 million colors.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body is made mostly of water.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Babies have more bones than adults.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human nose can distinguish over 1 trillion scents.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human stomach can digest metal.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans share about 50% of their DNA with bananas.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body produces about 1 liter of saliva daily.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human heart beats about 100,000 times per day.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans blink about 15-20 times per minute.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human skin is the largest organ.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans have unique fingerprints.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body has about 600 muscles.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Blood takes about 20 seconds to circulate the body.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human brain uses 20% of the body's energy.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans grow fastest during puberty.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body has about 5 liters of blood.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans can survive without food longer than without water.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body temperature is 98.6°F.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans have about 10,000 taste buds.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human skeleton renews itself every 10 years.", answers: ["TRUE", "FALSE"], correct: 0 }
+  ],
+  historyLore: [
+    { question: "Cleopatra was Egyptian.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The pyramids were built by slaves.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Titanic sank on its maiden voyage.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "World War II ended in 1945.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Berlin Wall fell in 1989.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Declaration of Independence was signed in 1776.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Wright brothers invented the airplane.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Christopher Columbus discovered America.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Roman Empire fell in 476 AD.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Renaissance began in Italy.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The French Revolution started in 1789.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Civil War was fought over slavery.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Magna Carta was signed in 1215.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Black Death killed about 75 million people.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Industrial Revolution began in Britain.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Great Depression started in 1929.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Vietnam War ended in 1975.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Cold War was between the US and USSR.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Space Race began in the 1950s.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The internet was invented in the 1960s.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The first moon landing was in 1969.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The fall of the Roman Empire was caused by barbarian invasions.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Trojan Horse is a historical fact.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Hanging Gardens of Babylon existed.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Library of Alexandria was destroyed by fire.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Mayans predicted the world would end in 2012.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Knights Templar were real.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Salem witch trials happened in Massachusetts.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Boston Tea Party was in 1773.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Louisiana Purchase doubled the size of the US.", answers: ["TRUE", "FALSE"], correct: 0 }
+  ]
+};
+
+// Initialize Audio Context
+function initAudio() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+  }
+}
+
+// Play Click Sound
+function playClickSound() {
+  if (isMuted || !audioContext) return;
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+  gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.05);
+}
+
+// Play Correct Sound
+function playCorrectSound() {
+  if (isMuted || !audioContext) return;
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+  oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.2);
+}
+
+// Play Wrong Sound
+function playWrongSound() {
+  if (isMuted || !audioContext) return;
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+  oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.3);
+}
+
+// Play Game Over Sound
+function playGameOverSound() {
+  if (isMuted || !audioContext) return;
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+  oscillator.frequency.setValueAtTime(200, audioContext.currentTime + 0.2);
+  oscillator.frequency.setValueAtTime(100, audioContext.currentTime + 0.4);
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.6);
+}
+
+// Initialize Background Music
+function initBackgroundMusic() {
+  if (!backgroundMusic) {
+    backgroundMusic = new Audio('https://incompetech.com/music/royalty-free/mp3-royaltyfree/The%20Sky%20of%20our%20Ancestors.mp3');
+    backgroundMusic.loop = true;
+    backgroundMusic.volume = 0.2;
+  }
+}
+
+// Toggle Music
+function toggleMusic() {
+  isMuted = !isMuted;
+  localStorage.setItem('novaMind_muted', isMuted);
+  
+  const startSoundToggle = document.getElementById('startSoundToggle');
+  const gameSoundToggle = document.getElementById('gameSoundToggle');
+  
+  if (startSoundToggle) {
+    startSoundToggle.textContent = isMuted ? '🔇' : '🔊';
+  }
+  if (gameSoundToggle) {
+    gameSoundToggle.textContent = isMuted ? '🔇' : '🔊';
+  }
+  
+  if (backgroundMusic) {
+    if (isMuted) {
+      backgroundMusic.pause();
+    } else {
+      initAudio();
+      backgroundMusic.play().catch(err => console.log('BGM play failed:', err));
+    }
+  }
+}
+
+// Fisher-Yates Shuffle Algorithm
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// Initialize Available Questions
+function initializeAvailableQuestions(category) {
+  const categoryQuestions = questions[category];
+  gameState.availableQuestions = shuffleArray(categoryQuestions);
+}
+
+// Get Next Question
+function getNextQuestion() {
+  if (gameState.availableQuestions.length === 0) {
+    initializeAvailableQuestions(gameState.currentCategory);
+  }
+  return gameState.availableQuestions.pop();
+}
+
+// Update Mute Button
+function updateMuteButton() {
+  const startSoundToggle = document.getElementById('startSoundToggle');
+  const gameSoundToggle = document.getElementById('gameSoundToggle');
+  
+  if (startSoundToggle) {
+    startSoundToggle.textContent = isMuted ? '🔇' : '🔊';
+  }
+  if (gameSoundToggle) {
+    gameSoundToggle.textContent = isMuted ? '🔇' : '🔊';
+  }
+}
+
+// Load High Score
+function loadHighScore(category = null) {
+  if (category) {
+    return parseInt(localStorage.getItem(`novaMind_highScore_${category}`)) || 0;
+  }
+  return parseInt(localStorage.getItem('novaMind_highScore_overall')) || 0;
+}
+
+// Save High Score
+function saveHighScore(score, category = null) {
+  if (category) {
+    const currentHigh = loadHighScore(category);
+    if (score > currentHigh) {
+      localStorage.setItem(`novaMind_highScore_${category}`, score);
+    }
+  }
+  const currentOverall = loadHighScore();
+  if (score > currentOverall) {
+    localStorage.setItem('novaMind_highScore_overall', score);
+  }
+}
+
+// Update Lives Display
+function updateLives() {
+  const livesEl = document.getElementById('lives');
+  livesEl.textContent = '❤️'.repeat(gameState.lives);
+}
+
+// Update Score Display
+function updateScore() {
+  const scoreEl = document.getElementById('currentScore');
+  scoreEl.textContent = gameState.score;
+}
+
+// Update Streak Display
+function updateStreak() {
+  const streakEl = document.getElementById('streak');
+  streakEl.textContent = `🔥 ${gameState.streak}x`;
+}
+
+// Update Timer Display
+function updateTimerDisplay() {
+  const timerEl = document.getElementById('timer');
+  timerEl.textContent = Math.ceil(gameState.timeLeft);
+  
+  if (gameState.timeLeft <= 3) {
+    timerEl.parentElement.classList.add('warning');
+  } else {
+    timerEl.parentElement.classList.remove('warning');
+  }
+}
+
+// Start Timer
+function startTimer() {
+  gameState.timeLeft = 10;
+  updateTimerDisplay();
+  
+  if (gameState.timer) {
+    clearInterval(gameState.timer);
+  }
+  
+  gameState.timer = setInterval(() => {
+    gameState.timeLeft -= 0.1;
+    updateTimerDisplay();
+    
+    if (gameState.timeLeft <= 0) {
+      clearInterval(gameState.timer);
+      handleTimeout();
+    }
+  }, 100);
+}
+
+// Handle Timeout
+function handleTimeout() {
+  playWrongSound();
+  gameState.lives--;
+  gameState.streak = 0;
+  updateLives();
+  updateStreak();
+  
+  if (gameState.lives <= 0) {
+    endGame();
+  } else {
+    loadQuestion();
+  }
+}
+
+// Load Question
+function loadQuestion() {
+  gameState.currentQuestion = getNextQuestion();
+  gameState.totalQuestions++;
+  
+  const questionText = document.getElementById('questionText');
+  const answerOptions = document.getElementById('answerOptions');
+  
+  questionText.textContent = gameState.currentQuestion.question;
+  answerOptions.innerHTML = '';
+  
+  // Create True button
+  const trueBtn = document.createElement('button');
+  trueBtn.className = 'answer-btn btn-true';
+  trueBtn.textContent = 'TRUE';
+  trueBtn.onclick = () => handleAnswer(0, trueBtn);
+  answerOptions.appendChild(trueBtn);
+  
+  // Create False button
+  const falseBtn = document.createElement('button');
+  falseBtn.className = 'answer-btn btn-false';
+  falseBtn.textContent = 'FALSE';
+  falseBtn.onclick = () => handleAnswer(1, falseBtn);
+  answerOptions.appendChild(falseBtn);
+  
+  startTimer();
+}
+
+// Handle Answer
+function handleAnswer(selectedIndex, btn) {
+  clearInterval(gameState.timer);
+  
+  const isCorrect = selectedIndex === gameState.currentQuestion.correct;
+  
+  if (isCorrect) {
+    playCorrectSound();
+    btn.classList.add('correct');
+    gameState.streak++;
+    gameState.correctAnswers++;
+    
+    // Calculate score with streak multiplier
+    const baseScore = 100;
+    const timeBonus = Math.floor(gameState.timeLeft * 10);
+    const streakMultiplier = Math.min(gameState.streak, 5);
+    const totalScore = (baseScore + timeBonus) * streakMultiplier;
+    gameState.score += totalScore;
+    
+    updateScore();
+    updateStreak();
+    
+    setTimeout(() => {
+      loadQuestion();
+    }, 500);
+  } else {
+    playWrongSound();
+    btn.classList.add('wrong');
+    gameState.lives--;
+    gameState.streak = 0;
+    updateLives();
+    updateStreak();
+    
+    if (gameState.lives <= 0) {
+      setTimeout(() => {
+        endGame();
+      }, 500);
+    } else {
+      setTimeout(() => {
+        loadQuestion();
+      }, 500);
+    }
+  }
+}
+
+// End Game
+function endGame() {
+  playGameOverSound();
+  clearInterval(gameState.timer);
+  
+  const accuracy = gameState.totalQuestions > 0 
+    ? Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100) 
+    : 0;
+  
+  // Calculate stars
+  let stars = 0;
+  if (accuracy >= 90) stars = 3;
+  else if (accuracy >= 70) stars = 2;
+  else if (accuracy >= 50) stars = 1;
+  
+  // Update game over screen
+  document.getElementById('finalScore').textContent = gameState.score;
+  document.getElementById('accuracy').textContent = `${accuracy}%`;
+  document.getElementById('categoryHighScore').textContent = loadHighScore(gameState.currentCategory);
+  
+  // Update stars
+  document.querySelectorAll('.star-rating span').forEach((star, index) => {
+    star.classList.remove('active');
+    if (index < stars) {
+      star.classList.add('active');
+    }
+  });
+  
+  // Save high score
+  saveHighScore(gameState.score, gameState.currentCategory);
+  
+  // Show game over screen
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('gameOverScreen').classList.remove('hidden');
+}
+
+// Start Game
+function startGame(category) {
+  playClickSound();
+  gameState.currentCategory = category;
+  gameState.score = 0;
+  gameState.lives = 3;
+  gameState.streak = 0;
+  gameState.totalQuestions = 0;
+  gameState.correctAnswers = 0;
+  
+  initializeAvailableQuestions(category);
+  
+  updateLives();
+  updateScore();
+  updateStreak();
+  
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('gameOverScreen').classList.add('hidden');
+  document.getElementById('gameScreen').classList.remove('hidden');
+  
+  loadQuestion();
+  
+  // Start background music if not muted
+  if (!isMuted) {
+    if (!backgroundMusic) {
+      initBackgroundMusic();
+    }
+    if (audioContext && audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    backgroundMusic.play().catch(e => console.log('Autoplay blocked until interaction:', e));
+  }
+}
+
+// Exit to Start Screen
+function exitToStartScreen() {
+  playClickSound();
+  clearInterval(gameState.timer);
+  
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('gameOverScreen').classList.add('hidden');
+  document.getElementById('startScreen').classList.remove('hidden');
+  
+  // Update overall high score display
+  document.getElementById('overallHighScore').textContent = loadHighScore();
+}
+
+// Initialize Game
+function init() {
+  // Load mute state
+  isMuted = localStorage.getItem('novaMind_muted') === 'true';
+  updateMuteButton();
+  
+  // Initialize background music
+  initBackgroundMusic();
+  
+  // Load overall high score
+  document.getElementById('overallHighScore').textContent = loadHighScore();
+  
+  // Category button listeners
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const category = btn.getAttribute('data-category');
+      startGame(category);
+    });
+  });
+  
+  // Sound toggle button listeners
+  const startSoundToggle = document.getElementById('startSoundToggle');
+  if (startSoundToggle) {
+    startSoundToggle.addEventListener('click', () => {
+      initAudio();
+      toggleMusic();
+    });
+  }
+  
+  const gameSoundToggle = document.getElementById('gameSoundToggle');
+  if (gameSoundToggle) {
+    gameSoundToggle.addEventListener('click', () => {
+      toggleMusic();
+    });
+  }
+  
+  // Exit button listener
+  document.getElementById('exitBtn').addEventListener('click', exitToStartScreen);
+  
+  // Game over button listeners
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    startGame(gameState.currentCategory);
+  });
+  
+  document.getElementById('mainMenuBtn').addEventListener('click', exitToStartScreen);
+}
+
+// Start the game when DOM is loaded
+document.addEventListener('DOMContentLoaded', init);
+
+// Global audio unlock listeners for WebView
+document.addEventListener('touchstart', initAudio, { once: true });
+document.addEventListener('click', initAudio, { once: true });
