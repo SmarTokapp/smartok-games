@@ -68,5 +68,12 @@
     "icon": "https://games.smartok.app/mythos-mind/icon.png?v=1",
     "url": "https://games.smartok.app/mythos-mind/",
     "category": "History"
+  },
+  {
+    "id": "cine-mind",
+    "title": "Cine Mind: Silver Screen",
+    "icon": "https://games.smartok.app/cine-mind/icon.png?v=1",
+    "url": "https://games.smartok.app/cine-mind/",
+    "category": "Entertainment"
   }
 ]

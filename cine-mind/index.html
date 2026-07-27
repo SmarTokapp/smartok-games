@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cine Mind: Silver Screen</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="startScreen" class="screen">
+    <button class="sound-toggle-btn" id="startSoundToggle" style="position: absolute !important; top: 30px !important; right: 16px !important; z-index: 9999 !important; width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 2px solid #e50914; color: white; font-size: 22px; display: flex; align-items: center; justify-content: center;">🔊</button>
+    <h1 class="game-title">CINE MIND</h1>
+    <h2 class="game-subtitle">SILVER SCREEN</h2>
+    <div class="category-grid">
+      <button class="category-btn" data-category="hollywoodClassics">
+        <span class="category-icon">🎬</span>
+        <span class="category-name">Hollywood Classics</span>
+      </button>
+      <button class="category-btn" data-category="directors">
+        <span class="category-icon">🎥</span>
+        <span class="category-name">Directors & Visionaries</span>
+      </button>
+      <button class="category-btn" data-category="awardWinners">
+        <span class="category-icon">🏆</span>
+        <span class="category-name">Award Winners</span>
+      </button>
+      <button class="category-btn" data-category="popCulture">
+        <span class="category-icon">🍿</span>
+        <span class="category-name">Pop Culture Cinema</span>
+      </button>
+    </div>
+    <div class="high-score-display">
+      High Score: <span id="overallHighScore">0</span>
+    </div>
+    <p class="credits-text">Music: "RetroFuture Clean" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0</p>
+  </div>
+
+  <div id="gameScreen" class="screen hidden">
+    <button class="sound-toggle-btn" id="gameSoundToggle" style="position: absolute !important; top: 15px !important; right: 16px !important; z-index: 9999 !important; width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 2px solid #e50914; color: white; font-size: 22px; display: flex; align-items: center; justify-content: center;">🔊</button>
+    <div class="game-header">
+      <button id="exitBtn" class="exit-btn">←</button>
+      <div class="lives-display">
+        <span id="lives">❤️❤️❤️</span>
+      </div>
+      <div class="timer-display">
+        <span id="timer">15</span>s
+      </div>
+    </div>
+    <div class="streak-display">
+      <span id="streak">🔥 0x</span>
+    </div>
+    <div class="question-container">
+      <div id="questionText" class="question-text"></div>
+      <div id="answerOptions" class="answer-options"></div>
+    </div>
+    <div class="score-display">
+      Score: <span id="currentScore">0</span>
+    </div>
+  </div>
+
+  <div id="gameOverScreen" class="screen hidden">
+    <h2 class="game-over-title">Game Over</h2>
+    <div class="star-rating">
+      <span id="star1">⭐</span>
+      <span id="star2">⭐</span>
+      <span id="star3">⭐</span>
+    </div>
+    <div class="final-score">
+      Final Score: <span id="finalScore">0</span>
+    </div>
+    <div class="accuracy-display">
+      Accuracy: <span id="accuracy">0%</span>
+    </div>
+    <div class="category-high-score">
+      Category High Score: <span id="categoryHighScore">0</span>
+    </div>
+    <div class="game-over-buttons">
+      <button id="replayBtn" class="game-over-btn">Replay Category</button>
+      <button id="mainMenuBtn" class="game-over-btn">Main Menu</button>
+    </div>
+    <p class="credits-text">Music: "RetroFuture Clean" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
