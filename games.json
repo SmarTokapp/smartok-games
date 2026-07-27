@@ -82,5 +82,19 @@
     "icon": "https://games.smartok.app/nova-mind/icon.png?v=1",
     "url": "https://games.smartok.app/nova-mind/",
     "category": "Trivia"
+  },
+  {
+    "id": "vocab-vortex",
+    "title": "Vocab Vortex",
+    "icon": "https://games.smartok.app/vocab-vortex/icon.png",
+    "url": "https://games.smartok.app/vocab-vortex/",
+    "category": "Language"
+  },
+  {
+    "id": "echo-nexus",
+    "title": "Echo Nexus",
+    "icon": "https://games.smartok.app/echo-nexus/icon.jpg",
+    "url": "https://games.smartok.app/echo-nexus/",
+    "category": "Memory"
   }
 ]

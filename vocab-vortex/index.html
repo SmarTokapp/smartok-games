@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Vocab Vortex - Word Unscramble</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
+      min-height: 100vh;
+      color: #fff;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    .game-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      padding-top: max(20px, env(safe-area-inset-top));
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      padding-top: max(15px, env(safe-area-inset-top));
+      background: rgba(139, 0, 139, 0.2);
+      border: 2px solid #8b008b;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(139, 0, 139, 0.5);
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #ff00ff, #8b008b);
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hearts {
+      display: flex;
+      gap: 5px;
+      font-size: 24px;
+    }
+
+    .heart {
+      color: #ff0066;
+      text-shadow: 0 0 10px #ff0066;
+    }
+
+    .heart.lost {
+      color: #333;
+      text-shadow: none;
+    }
+
+    .timer, .score {
+      font-size: 18px;
+      font-weight: bold;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+    }
+
+    /* Game Area */
+    .game-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hint {
+      font-size: 18px;
+      text-align: center;
+      color: #ff00ff;
+      text-shadow: 0 0 10px #ff00ff;
+      margin-bottom: 30px;
+      padding: 15px;
+      background: rgba(139, 0, 139, 0.1);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 0, 255, 0.3);
+    }
+
+    .word-slots {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .slot {
+      width: 50px;
+      height: 50px;
+      border: 3px solid #00ffff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      background: rgba(0, 255, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      transition: all 0.3s;
+    }
+
+    .slot.filled {
+      background: linear-gradient(135deg, #ff00ff, #8b008b);
+      border-color: #ff00ff;
+      box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+    }
+
+    .slot.shake {
+      animation: shake 0.5s;
+      border-color: #ff0000;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .letter-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 400px;
+    }
+
+    .letter-btn {
+      width: 55px;
+      height: 55px;
+      font-size: 22px;
+      font-weight: bold;
+      border: 2px solid #ff00ff;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1a0a2e, #2a1a4e);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+    }
+
+    .letter-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(255, 0, 255, 0.6);
+    }
+
+    .letter-btn:active {
+      transform: scale(0.95);
+    }
+
+    .letter-btn.used {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .clear-btn {
+      margin-top: 30px;
+      padding: 12px 40px;
+      font-size: 18px;
+      font-weight: bold;
+      border: 2px solid #ff6600;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #ff6600, #ff3300);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
+    }
+
+    .clear-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 102, 0, 0.7);
+    }
+
+    /* Start Screen */
+    .start-screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    .game-title {
+      font-size: 36px;
+      font-weight: bold;
+      color: #ff00ff;
+      text-shadow: 0 0 20px #ff00ff;
+      margin-bottom: 20px;
+    }
+
+    .game-subtitle {
+      font-size: 18px;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+      margin-bottom: 40px;
+    }
+
+    .start-btn {
+      padding: 15px 50px;
+      font-size: 22px;
+      font-weight: bold;
+      border: 3px solid #ff00ff;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #ff00ff, #8b008b);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
+      margin-bottom: 30px;
+    }
+
+    .start-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 40px rgba(255, 0, 255, 0.8);
+    }
+
+    .attribution {
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      max-width: 300px;
+    }
+
+    .attribution a {
+      color: #00ffff;
+      text-decoration: none;
+    }
+
+    /* Game Over Screen */
+    .game-over-screen {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    .game-over-title {
+      font-size: 42px;
+      font-weight: bold;
+      color: #ff0000;
+      text-shadow: 0 0 30px #ff0000;
+      margin-bottom: 20px;
+    }
+
+    .final-score {
+      font-size: 28px;
+      color: #00ffff;
+      text-shadow: 0 0 15px #00ffff;
+      margin-bottom: 40px;
+    }
+
+    .play-again-btn {
+      padding: 15px 50px;
+      font-size: 22px;
+      font-weight: bold;
+      border: 3px solid #00ffff;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #00ffff, #0088ff);
+      color: #000;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    }
+
+    .play-again-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.8);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Success Animation */
+    .success-animation {
+      animation: successPulse 0.5s;
+    }
+
+    @keyframes successPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <!-- Start Screen -->
+    <div id="startScreen" class="start-screen">
+      <h1 class="game-title">VOCAB VORTEX</h1>
+      <p class="game-subtitle">Unscramble the words before time runs out!</p>
+      <button class="start-btn" onclick="startGame()">START GAME</button>
+      <div class="attribution">
+        "Spy Glass" Kevin MacLeod (incompetech.com)<br>
+        Licensed under Creative Commons: By Attribution 4.0 License<br>
+        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">http://creativecommons.org/licenses/by/4.0/</a>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="hidden">
+      <div class="top-bar">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <div class="stats">
+          <div class="hearts" id="hearts">
+            <span class="heart">❤</span>
+            <span class="heart">❤</span>
+            <span class="heart">❤</span>
+          </div>
+          <div class="timer" id="timer">15s</div>
+          <div class="score" id="score">0</div>
+        </div>
+      </div>
+
+      <div class="game-area">
+        <div class="hint" id="hint"></div>
+        <div class="word-slots" id="wordSlots"></div>
+        <div class="letter-buttons" id="letterButtons"></div>
+        <button class="clear-btn" onclick="clearSlots()">CLEAR</button>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen" class="game-over-screen">
+      <h1 class="game-over-title">GAME OVER</h1>
+      <p class="final-score">Final Score: <span id="finalScore">0</span></p>
+      <button class="play-again-btn" onclick="startGame()">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script>
+    // Vocabulary Data - 30+ words with hints
+    const vocabulary = [
+      { word: "PLANET", hint: "A celestial body moving in an orbit." },
+      { word: "OCEAN", hint: "A large body of saltwater." },
+      { word: "FOREST", hint: "A large area covered chiefly with trees." },
+      { word: "DESERT", hint: "A dry, barren area of land." },
+      { word: "MOUNTAIN", hint: "A large natural elevation of the earth." },
+      { word: "RIVER", hint: "A large natural stream of water." },
+      { word: "GALAXY", hint: "A system of millions or billions of stars." },
+      { word: "VOLCANO", hint: "A mountain or hill with a crater." },
+      { word: "JUNGLE", hint: "An area of land overgrown with dense forest." },
+      { word: "CANYON", hint: "A deep gorge, typically with a river." },
+      { word: "ISLAND", hint: "A piece of land surrounded by water." },
+      { word: "VALLEY", hint: "A low area between hills or mountains." },
+      { word: "GLACIER", hint: "A slowly moving mass of ice." },
+      { word: "REEF", hint: "A ridge of rock in the sea." },
+      { word: "MEADOW", hint: "A piece of grassland." },
+      { word: "CLOUD", hint: "A visible mass of water vapor." },
+      { word: "STORM", hint: "A violent disturbance of the atmosphere." },
+      { word: "THUNDER", hint: "A loud rumbling after lightning." },
+      { word: "RAINBOW", hint: "An arch of colors in the sky." },
+      { word: "HORIZON", hint: "The line at which earth and sky meet." },
+      { word: "ECLIPSE", hint: "An obscuring of light from one celestial body." },
+      { word: "COMET", hint: "A celestial object with a tail." },
+      { word: "NEBULA", hint: "A giant cloud of dust and gas in space." },
+      { word: "ASTEROID", hint: "A small rocky body orbiting the sun." },
+      { word: "METEOR", hint: "A small body of matter from outer space." },
+      { word: "CONSTELLATION", hint: "A group of stars forming a pattern." },
+      { word: "UNIVERSE", hint: "All existing space and matter." },
+      { word: "GRAVITY", hint: "The force that attracts a body toward earth." },
+      { word: "MAGNET", hint: "A piece of iron that attracts other metals." },
+      { word: "ENERGY", hint: "The strength and vitality required for activity." },
+      { word: "ATOM", hint: "The basic unit of a chemical element." },
+      { word: "MOLECULE", hint: "A group of atoms bonded together." },
+      { word: "ELECTRON", hint: "A stable subatomic particle with negative charge." },
+      { word: "PROTON", hint: "A stable subatomic particle with positive charge." },
+      
+      // Technology & Digital
+      { word: "ALGORITHM", hint: "A process or set of rules in calculations." },
+      { word: "DATABASE", hint: "A structured set of data held in a computer." },
+      { word: "NETWORK", hint: "A group of interconnected people or things." },
+      { word: "SERVER", hint: "A computer that provides data to other computers." },
+      { word: "BROWSER", hint: "A program with a graphical user interface for navigating the web." },
+      { word: "FIREWALL", hint: "A network security system." },
+      { word: "ENCRYPTION", hint: "The process of converting information into a code." },
+      { word: "SATELLITE", hint: "An artificial body placed in orbit." },
+      { word: "TELESCOPE", hint: "An optical instrument for making distant objects appear magnified." },
+      { word: "MICROSCOPE", hint: "An instrument used for viewing very small objects." },
+      
+      // Physics & Science
+      { word: "VACUUM", hint: "A space entirely devoid of matter." },
+      { word: "VELOCITY", hint: "The speed of something in a given direction." },
+      { word: "FRICTION", hint: "The resistance when a surface moves over another." },
+      { word: "INERTIA", hint: "A tendency to do nothing or to remain unchanged." },
+      { word: "SPECTRUM", hint: "A band of colors, as seen in a rainbow." },
+      { word: "FREQUENCY", hint: "The rate at which something occurs over a particular period." },
+      { word: "RESONANCE", hint: "The quality in a sound of being deep, full, and reverberating." },
+      { word: "KINETIC", hint: "Relating to or resulting from motion." },
+      { word: "DYNAMIC", hint: "Characterized by constant change, activity, or progress." },
+      { word: "RADIATION", hint: "The emission of energy as electromagnetic waves." },
+      
+      // Biology & Nature
+      { word: "PREDATOR", hint: "An animal that naturally preys on others." },
+      { word: "HABITAT", hint: "The natural home or environment of an animal or plant." },
+      { word: "GENETICS", hint: "The study of heredity and the variation of inherited characteristics." },
+      { word: "SPECIES", hint: "A group of living organisms consisting of similar individuals." },
+      { word: "SKELETON", hint: "An internal or external framework of bone." },
+      { word: "NEURON", hint: "A specialized cell transmitting nerve impulses." },
+      { word: "ENZYME", hint: "A substance produced by a living organism acting as a catalyst." },
+      { word: "PIGMENT", hint: "The natural coloring matter of animal or plant tissue." },
+      { word: "MINERAL", hint: "A solid naturally occurring inorganic substance." },
+      { word: "CRYSTAL", hint: "A piece of a homogeneous solid substance having a naturally geometrically regular form." },
+      { word: "FOSSIL", hint: "The remains or impression of a prehistoric organism." },
+      
+      // Geography & Space Expansion
+      { word: "PENINSULA", hint: "A piece of land almost surrounded by water." },
+      { word: "CONTINENT", hint: "Any of the world's main continuous expanses of land." },
+      { word: "HEMISPHERE", hint: "A half of the earth." },
+      { word: "EQUATOR", hint: "An imaginary line drawn around the earth equally distant from both poles." },
+      { word: "PULSAR", hint: "A celestial object, thought to be a rapidly rotating neutron star." },
+      { word: "QUASAR", hint: "A massive and extremely remote celestial object." },
+      { word: "SUPERNOVA", hint: "A star that suddenly increases greatly in brightness because of a catastrophic explosion." },
+      
+      // Advanced & Abstract
+      { word: "PARADOX", hint: "A seemingly absurd or self-contradictory statement." },
+      { word: "SYMPHONY", hint: "An elaborate musical composition for full orchestra." },
+      { word: "HARMONY", hint: "The combination of simultaneously sounded musical notes." },
+      { word: "ILLUSION", hint: "A thing that is or is likely to be wrongly perceived." },
+      { word: "ENIGMA", hint: "A person or thing that is mysterious, puzzling, or difficult to understand." },
+      { word: "LABYRINTH", hint: "A complicated irregular network of passages or paths." },
+      { word: "CHRONICLE", hint: "A factual written account of important or historical events." },
+      { word: "PYRAMID", hint: "A monumental structure with a square or triangular base." },
+      { word: "ARTIFACT", hint: "An object made by a human being, typically of cultural interest." },
+      { word: "HERITAGE", hint: "Property that is or may be inherited; an inheritance." },
+      { word: "MUSEUM", hint: "A building in which objects of historical, scientific, artistic, or cultural interest are stored." },
+      
+      // Potpourri
+      { word: "JOURNEY", hint: "An act of traveling from one place to another." },
+      { word: "TRIUMPH", hint: "A great victory or achievement." },
+      { word: "WISDOM", hint: "The quality of having experience, knowledge, and good judgment." },
+      { word: "COURAGE", hint: "The ability to do something that frightens one." },
+      { word: "VICTORY", hint: "An act of defeating an enemy or opponent in a battle." },
+      { word: "FREEDOM", hint: "The power or right to act, speak, or think as one wants." },
+      { word: "JUSTICE", hint: "Just behavior or treatment." },
+      { word: "EQUALITY", hint: "The state of being equal, especially in status, rights, and opportunities." },
+      { word: "LIBERTY", hint: "The state of being free within society from oppressive restrictions." },
+      { word: "EMPATHY", hint: "The ability to understand and share the feelings of another." },
+      { word: "COMPASSION", hint: "Sympathetic pity and concern for the sufferings or misfortunes of others." },
+      { word: "INTEGRITY", hint: "The quality of being honest and having strong moral principles." },
+      { word: "RESILIENCE", hint: "The capacity to recover quickly from difficulties." },
+      { word: "VITALITY", hint: "The state of being strong and active; energy." },
+      { word: "SERENITY", hint: "The state of being calm, peaceful, and untroubled." },
+      { word: "ADVENTURE", hint: "An unusual and exciting experience or activity." }
+    ];
+
+    // Game State
+    let currentWord = "";
+    let currentHint = "";
+    let scrambledLetters = [];
+    let userAnswer = [];
+    let lives = 3;
+    let score = 0;
+    let timeLeft = 15;
+    let timerInterval = null;
+    let shuffledVocabulary = [];
+    let wordIndex = 0;
+
+    // Audio Context
+    let audioContext = null;
+
+    // Base64 Audio Sounds
+    const tapSound = "data:audio/wav;base64,UklGRl9vT1BXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU"; // Short tap
+    const successSound = "data:audio/wav;base64,UklGRl9vT1BXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ"; // Success chime
+    const errorSound = "data:audio/wav;base64,UklGRl9vT1BXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU"; // Error buzz
+    const gameOverSound = "data:audio/wav;base64,UklGRl9vT1BXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ"; // Game over tone
+
+    // Background Music
+    let bgMusic = null;
+    let musicEnabled = false;
+
+    function initAudio() {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playSound(type) {
+      if (!audioContext) initAudio();
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      switch(type) {
+        case 'tap':
+          oscillator.frequency.value = 800;
+          gainNode.gain.value = 0.1;
+          oscillator.start();
+          oscillator.stop(audioContext.currentTime + 0.05);
+          break;
+        case 'success':
+          oscillator.frequency.value = 1200;
+          gainNode.gain.value = 0.15;
+          oscillator.start();
+          oscillator.stop(audioContext.currentTime + 0.15);
+          break;
+        case 'error':
+          oscillator.frequency.value = 200;
+          gainNode.gain.value = 0.15;
+          oscillator.start();
+          oscillator.stop(audioContext.currentTime + 0.2);
+          break;
+        case 'gameOver':
+          oscillator.frequency.value = 150;
+          gainNode.gain.value = 0.2;
+          oscillator.start();
+          oscillator.stop(audioContext.currentTime + 0.5);
+          break;
+      }
+    }
+
+    function playBackgroundMusic() {
+      if (musicEnabled) return;
+      bgMusic = new Audio('bgm.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.3;
+      bgMusic.play().catch(e => console.log('Audio play failed:', e));
+      musicEnabled = true;
+    }
+
+    function stopBackgroundMusic() {
+      if (bgMusic) {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+        musicEnabled = false;
+      }
+    }
+
+    // Shuffle array using Fisher-Yates algorithm
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    // Scramble letters of a word
+    function scrambleWord(word) {
+      const letters = word.split('');
+      let scrambled = [...letters];
+      
+      // Ensure scrambled version is different from original
+      let attempts = 0;
+      while (JSON.stringify(scrambled) === JSON.stringify(letters) && attempts < 10) {
+        scrambled = shuffleArray(letters);
+        attempts++;
+      }
+      
+      return scrambled;
+    }
+
+    // Load next word
+    function loadNextWord() {
+      if (wordIndex >= shuffledVocabulary.length) {
+        // Reshuffle when all words exhausted
+        shuffledVocabulary = shuffleArray(vocabulary);
+        wordIndex = 0;
+      }
+      
+      const wordData = shuffledVocabulary[wordIndex];
+      currentWord = wordData.word;
+      currentHint = wordData.hint;
+      scrambledLetters = scrambleWord(currentWord);
+      userAnswer = [];
+      wordIndex++;
+      
+      // Reset timer
+      timeLeft = 15;
+      updateTimer();
+      
+      // Update UI
+      document.getElementById('hint').textContent = currentHint;
+      renderWordSlots();
+      renderLetterButtons();
+    }
+
+    // Render word slots
+    function renderWordSlots() {
+      const slotsContainer = document.getElementById('wordSlots');
+      slotsContainer.innerHTML = '';
+      
+      for (let i = 0; i < currentWord.length; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        if (userAnswer[i]) {
+          slot.textContent = userAnswer[i];
+          slot.classList.add('filled');
+        }
+        slotsContainer.appendChild(slot);
+      }
+    }
+
+    // Render letter buttons
+    function renderLetterButtons() {
+      const buttonsContainer = document.getElementById('letterButtons');
+      buttonsContainer.innerHTML = '';
+      
+      scrambledLetters.forEach((letter, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'letter-btn';
+        btn.textContent = letter;
+        
+        // Check if this letter instance has been used
+        const usedCount = userAnswer.filter(l => l === letter).length;
+        const totalCount = scrambledLetters.filter(l => l === letter).length;
+        
+        if (usedCount >= totalCount) {
+          btn.classList.add('used');
+        }
+        
+        btn.onclick = () => selectLetter(letter, index);
+        buttonsContainer.appendChild(btn);
+      });
+    }
+
+    // Select a letter
+    function selectLetter(letter, index) {
+      if (userAnswer.length >= currentWord.length) return;
+      
+      playSound('tap');
+      userAnswer.push(letter);
+      renderWordSlots();
+      renderLetterButtons();
+      
+      // Check if word is complete
+      if (userAnswer.length === currentWord.length) {
+        evaluateAnswer();
+      }
+    }
+
+    // Clear slots
+    function clearSlots() {
+      userAnswer = [];
+      renderWordSlots();
+      renderLetterButtons();
+    }
+
+    // Evaluate answer
+    function evaluateAnswer() {
+      const answer = userAnswer.join('');
+      
+      if (answer === currentWord) {
+        // Correct
+        playSound('success');
+        score += 10;
+        document.getElementById('score').textContent = score;
+        
+        // Add success animation
+        const slots = document.querySelectorAll('.slot');
+        slots.forEach(slot => slot.classList.add('success-animation'));
+        
+        setTimeout(() => {
+          loadNextWord();
+        }, 500);
+      } else {
+        // Incorrect
+        playSound('error');
+        loseLife();
+        
+        // Shake animation
+        const slots = document.querySelectorAll('.slot');
+        slots.forEach(slot => slot.classList.add('shake'));
+        
+        setTimeout(() => {
+          slots.forEach(slot => slot.classList.remove('shake'));
+          clearSlots();
+        }, 500);
+      }
+    }
+
+    // Lose a life
+    function loseLife() {
+      lives--;
+      updateHearts();
+      
+      if (lives <= 0) {
+        gameOver();
+      }
+    }
+
+    // Update hearts display
+    function updateHearts() {
+      const heartsContainer = document.getElementById('hearts');
+      const hearts = heartsContainer.querySelectorAll('.heart');
+      
+      hearts.forEach((heart, index) => {
+        if (index >= lives) {
+          heart.classList.add('lost');
+        } else {
+          heart.classList.remove('lost');
+        }
+      });
+    }
+
+    // Update timer display
+    function updateTimer() {
+      document.getElementById('timer').textContent = timeLeft + 's';
+      
+      if (timeLeft <= 5) {
+        document.getElementById('timer').style.color = '#ff0000';
+      } else {
+        document.getElementById('timer').style.color = '#00ffff';
+      }
+    }
+
+    // Timer countdown
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          playSound('error');
+          loseLife();
+          clearSlots();
+          
+          if (lives > 0) {
+            loadNextWord();
+          }
+        }
+      }, 1000);
+    }
+
+    // Game over
+    function gameOver() {
+      clearInterval(timerInterval);
+      stopBackgroundMusic();
+      playSound('gameOver');
+      
+      document.getElementById('gameScreen').classList.add('hidden');
+      document.getElementById('gameOverScreen').style.display = 'flex';
+      document.getElementById('finalScore').textContent = score;
+    }
+
+    // Start game
+    function startGame() {
+      // Reset state
+      lives = 3;
+      score = 0;
+      wordIndex = 0;
+      shuffledVocabulary = shuffleArray(vocabulary);
+      
+      // Update UI
+      document.getElementById('score').textContent = score;
+      updateHearts();
+      
+      // Show game screen
+      document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('gameOverScreen').style.display = 'none';
+      document.getElementById('gameScreen').classList.remove('hidden');
+      
+      // Start music
+      playBackgroundMusic();
+      
+      // Load first word
+      loadNextWord();
+      
+      // Start timer
+      startTimer();
+    }
+
+    // Go back to start screen
+    function goBack() {
+      clearInterval(timerInterval);
+      stopBackgroundMusic();
+      
+      document.getElementById('gameScreen').classList.add('hidden');
+      document.getElementById('startScreen').classList.remove('hidden');
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Pre-initialize audio context on first user interaction
+      document.body.addEventListener('click', () => {
+        if (!audioContext) initAudio();
+      }, { once: true });
+    });
+  </script>
+</body>
+</html>
