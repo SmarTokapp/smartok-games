@@ -96,5 +96,12 @@
     "icon": "https://games.smartok.app/echo-nexus/icon.jpg",
     "url": "https://games.smartok.app/echo-nexus/",
     "category": "Memory"
+  },
+  {
+    "id": "chroma-shield",
+    "title": "Chroma Shield",
+    "icon": "https://games.smartok.app/chroma-shield/icon.jpg",
+    "url": "https://games.smartok.app/chroma-shield/",
+    "category": "Action"
   }
 ]
