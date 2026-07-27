@@ -94,6 +94,27 @@
       text-shadow: 0 0 10px #00ffff;
     }
 
+    .audio-btn {
+      background: linear-gradient(135deg, #00ffff, #0088ff);
+      border: none;
+      color: #000;
+      font-size: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .audio-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+    }
+
     .status {
       font-size: 16px;
       font-weight: bold;
@@ -329,6 +350,7 @@
           <div class="score" id="score">0</div>
           <div class="status" id="status">Watch...</div>
         </div>
+        <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">🔊</button>
       </div>
 
       <div class="game-area">
@@ -357,6 +379,7 @@
     let score = 0;
     let isPlayerTurn = false;
     let isPlayingSequence = false;
+    let isMuted = false;
 
     // Audio Context
     let audioContext = null;
@@ -372,8 +395,23 @@
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
 
+    function toggleAudio() {
+      isMuted = !isMuted;
+      const audioBtn = document.getElementById('audioBtn');
+      audioBtn.textContent = isMuted ? '🔇' : '🔊';
+      
+      if (bgMusic) {
+        if (isMuted) {
+          bgMusic.pause();
+        } else if (musicEnabled) {
+          bgMusic.play();
+        }
+      }
+    }
+
     function playNodeTone(nodeIndex) {
       if (!audioContext) initAudio();
+      if (isMuted) return;
       
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
@@ -392,6 +430,7 @@
 
     function playSuccessSound() {
       if (!audioContext) initAudio();
+      if (isMuted) return;
       
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
@@ -410,6 +449,7 @@
 
     function playErrorSound() {
       if (!audioContext) initAudio();
+      if (isMuted) return;
       
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
@@ -428,6 +468,7 @@
 
     function playGameOverSound() {
       if (!audioContext) initAudio();
+      if (isMuted) return;
       
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
