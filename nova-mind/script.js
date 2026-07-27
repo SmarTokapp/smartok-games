@@ -6,7 +6,6 @@ const gameState = {
   score: 0,
   lives: 3,
   streak: 0,
-  availableQuestions: [],
   currentQuestion: null,
   timer: null,
   timeLeft: 10,
@@ -20,7 +19,15 @@ let audioContext = null;
 let backgroundMusic = null;
 let isMuted = false;
 
-// Question Database (30 questions per category = 120 total)
+// Shuffle Bag System - Track available question indices for each category
+let availableQuestions = {
+  "worldFacts": [],
+  "scienceMyths": [],
+  "humanBody": [],
+  "historyLore": []
+};
+
+// Question Database (60 questions per category = 240 total)
 const questions = {
   worldFacts: [
     { question: "The Great Wall of China is visible from space with the naked eye.", answers: ["TRUE", "FALSE"], correct: 1 },
@@ -52,7 +59,40 @@ const questions = {
     { question: "The Arctic Ocean is the smallest ocean.", answers: ["TRUE", "FALSE"], correct: 0 },
     { question: "The Panama Canal connects the Atlantic and Pacific Oceans.", answers: ["TRUE", "FALSE"], correct: 0 },
     { question: "The Suez Canal connects the Mediterranean Sea and the Red Sea.", answers: ["TRUE", "FALSE"], correct: 0 },
-    { question: "The International Date Line is a straight line.", answers: ["TRUE", "FALSE"], correct: 1 }
+    { question: "The International Date Line is a straight line.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Antarctic Desert is the largest desert in the world.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Amazon River is the second longest river in the world.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Canada has the most lakes in the world.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Atacama Desert is the driest non-polar desert.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Lake Baikal is the world's deepest lake.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Caspian Sea is the largest inland body of water.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Mount Kilimanjaro is the highest mountain in Africa.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Andes is the longest mountain range.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Ganges River is considered sacred in Hinduism.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Mississippi River flows through 10 US states.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Angel Falls is the highest waterfall in the world.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Danube River flows through more countries than any other river.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Sahara is the largest hot desert in the world.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Nile flows north into the Mediterranean Sea.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Mount Fuji is an active volcano.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Great Barrier Reef is visible from space.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Philippines consists of over 7,000 islands.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The English Channel separates England from France.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Ural Mountains separate Europe from Asia.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Ring of Fire is a major area of volcanic activity.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Yellowstone Caldera is a supervolcano.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Matterhorn is on the border of Switzerland and Italy.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Victoria Falls is on the Zambezi River.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Maldives is the lowest country in the world.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Red Sea is between Africa and Asia.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Black Sea is connected to the Mediterranean.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Bering Strait separates Alaska from Russia.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Strait of Gibraltar connects the Atlantic to the Mediterranean.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Cape of Good Hope is at the southern tip of Africa.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Isthmus of Panama connects North and South America.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Gulf of Mexico is part of the Atlantic Ocean.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Bay of Bengal is the largest bay in the world.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Hudson Bay is in Canada.", answers: ["TRUE", "FALSE"], correct: 0 }
   ],
   scienceMyths: [
     { question: "Humans use only 10% of their brains.", answers: ["TRUE", "FALSE"], correct: 1 },
@@ -73,7 +113,7 @@ const questions = {
     { question: "Cracking your knuckles causes arthritis.", answers: ["TRUE", "FALSE"], correct: 1 },
     { question: "Eating carrots improves night vision.", answers: ["TRUE", "FALSE"], correct: 1 },
     { question: "Coffee stunts your growth.", answers: ["TRUE", "FALSE"], correct: 1 },
-    { question: "The sun is yellow.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The sun is Yellow.", answers: ["TRUE", "FALSE"], correct: 1 },
     { question: "Seasons are caused by Earth's distance from the sun.", answers: ["TRUE", "FALSE"], correct: 1 },
     { question: "There is no gravity in space.", answers: ["TRUE", "FALSE"], correct: 1 },
     { question: "A penny dropped from the Empire State Building can kill you.", answers: ["TRUE", "FALSE"], correct: 1 },
@@ -84,7 +124,39 @@ const questions = {
     { question: "Einstein failed math.", answers: ["TRUE", "FALSE"], correct: 1 },
     { question: "Sugar makes kids hyperactive.", answers: ["TRUE", "FALSE"], correct: 1 },
     { question: "You lose most body heat through your head.", answers: ["TRUE", "FALSE"], correct: 1 },
-    { question: "Dogs sweat by panting.", answers: ["TRUE", "FALSE"], correct: 1 }
+    { question: "Dogs sweat by panting.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Coriolis effect determines toilet flush direction.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Water conducts electricity.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The moon has a dark side.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Earth is closer to the sun in summer.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Oxygen is flammable.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Sahara is the world's largest desert.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Chameleons change color to match their surroundings.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Touching a toad gives you warts.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Penguins tip over watching airplanes.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Bats are blind.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Ostriches bury their heads in sand.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Lemmings commit mass suicide.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Humans evolved from monkeys.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The tongue map is real.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Swallowed gum stays in your stomach for 7 years.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "MSG causes headaches.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Microwaves cook from the inside out.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Different alcohols cause different hangovers.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "You should wait an hour after eating before swimming.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Carrots improve vision.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The five-second rule is valid.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Cracking joints causes arthritis.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Reading in dim light damages eyes.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Coffee is dehydrating.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Detox diets remove toxins.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Starvation mode slows metabolism significantly.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Muscle turns to fat when you stop exercising.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Spot reduction is possible.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "You need 8 glasses of water daily.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Night air makes you sick.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Vitamin C prevents colds.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Feed a cold, starve a fever.", answers: ["TRUE", "FALSE"], correct: 1 }
   ],
   humanBody: [
     { question: "The human heart has four chambers.", answers: ["TRUE", "FALSE"], correct: 0 },
@@ -116,7 +188,43 @@ const questions = {
     { question: "Humans can survive without food longer than without water.", answers: ["TRUE", "FALSE"], correct: 0 },
     { question: "The human body temperature is 98.6°F.", answers: ["TRUE", "FALSE"], correct: 0 },
     { question: "Humans have about 10,000 taste buds.", answers: ["TRUE", "FALSE"], correct: 0 },
-    { question: "The human skeleton renews itself every 10 years.", answers: ["TRUE", "FALSE"], correct: 0 }
+    { question: "The human skeleton renews itself every 10 years.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The left lung is smaller than the right lung.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body contains enough carbon to make 900 pencils.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The small intestine is about 20 feet long.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans shed about 50 pounds of skin in a lifetime.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human brain contains 86 billion neurons.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Blood is red in both arteries and veins.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The strongest bone in the human body is the femur.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans have 32 teeth as adults.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The cornea is the only part of the body with no blood supply.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body produces about 1.5 liters of urine daily.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The thighbone is stronger than concrete.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans breathe about 20,000 times per day.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body has 12 pairs of ribs.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The stomach lining regenerates every 3 days.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans share 60% of their DNA with fruit flies.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human heart pumps about 2,000 gallons of blood daily.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The liver can regenerate itself completely.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Humans have about 100,000 hairs on their head.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body has 206 bones at birth.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The appendix has no function.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The brain feels pain.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "Hair grows from the root, not the tip.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body has 5 senses.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The average human lifespan is 100 years.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The tongue print is unique like fingerprints.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body has 78 organs.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The bladder can hold about 16 ounces of urine.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body produces about 1 quart of sweat daily.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human eye can see about 10 million colors.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body has 33 vertebrae.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The skin accounts for 15% of body weight.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body has 2 kidneys.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The pancreas produces insulin.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The human body has 12 cranial nerves.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The spleen filters blood.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The gallbladder stores bile.", answers: ["TRUE", "FALSE"], correct: 0 }
   ],
   historyLore: [
     { question: "Cleopatra was Egyptian.", answers: ["TRUE", "FALSE"], correct: 1 },
@@ -148,7 +256,45 @@ const questions = {
     { question: "The Knights Templar were real.", answers: ["TRUE", "FALSE"], correct: 0 },
     { question: "The Salem witch trials happened in Massachusetts.", answers: ["TRUE", "FALSE"], correct: 0 },
     { question: "The Boston Tea Party was in 1773.", answers: ["TRUE", "FALSE"], correct: 0 },
-    { question: "The Louisiana Purchase doubled the size of the US.", answers: ["TRUE", "FALSE"], correct: 0 }
+    { question: "The Louisiana Purchase doubled the size of the US.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Julius Caesar was assassinated in 44 BC.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The American Civil War ended in 1865.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The French Revolution ended the monarchy.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Spanish Armada was defeated in 1588.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Battle of Waterloo was in 1815.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Russian Revolution was in 1917.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Berlin Wall was built in 1961.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The first World War began in 1914.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Pearl Harbor attack was in 1941.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The D-Day invasion was in 1944.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Hiroshima bombing was in 1945.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Cuban Missile Crisis was in 1962.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The fall of Constantinople was in 1453.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Mongol Empire was the largest contiguous empire.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "Alexander the Great conquered Egypt.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The ancient Olympics began in Greece.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Great Fire of London was in 1666.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The French Revolution led to Napoleon's rise.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Declaration of Independence was signed on July 4.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Gettysburg Address was in 1863.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Emancipation Proclamation freed all slaves.", answers: ["TRUE", "FALSE"], correct: 1 },
+    { question: "The Battle of Hastings was in 1066.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Magna Carta established the principle of limited government.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Spanish Inquisition began in 1478.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Gutenberg Bible was printed in 1455.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Renaissance was a rebirth of classical learning.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Enlightenment emphasized reason and science.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Industrial Revolution began with textile manufacturing.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Bolshevik Revolution led to the Soviet Union.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Treaty of Versailles ended World War I.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The League of Nations was formed after WWI.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The United Nations was founded in 1945.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Iron Curtain divided Europe during the Cold War.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Berlin Wall divided East and West Berlin.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Apollo 11 mission landed on the moon.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Space Shuttle program began in 1981.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The Chernobyl disaster was in 1986.", answers: ["TRUE", "FALSE"], correct: 0 },
+    { question: "The fall of the Soviet Union was in 1991.", answers: ["TRUE", "FALSE"], correct: 0 }
   ]
 };
 
@@ -263,18 +409,25 @@ function shuffleArray(array) {
   return shuffled;
 }
 
-// Initialize Available Questions
-function initializeAvailableQuestions(category) {
-  const categoryQuestions = questions[category];
-  gameState.availableQuestions = shuffleArray(categoryQuestions);
+// Shuffle Bag System - Refill and shuffle category indices
+function refillAndShuffleCategory(category) {
+  const totalQuestions = questions[category].length;
+  const indices = Array.from({ length: totalQuestions }, (_, i) => i);
+  availableQuestions[category] = shuffleArray(indices);
 }
 
-// Get Next Question
+// Get Next Question using Shuffle Bag
 function getNextQuestion() {
-  if (gameState.availableQuestions.length === 0) {
-    initializeAvailableQuestions(gameState.currentCategory);
+  const category = gameState.currentCategory;
+  
+  // Refill if empty
+  if (availableQuestions[category].length === 0) {
+    refillAndShuffleCategory(category);
   }
-  return gameState.availableQuestions.pop();
+  
+  // Pop the next index
+  const nextIndex = availableQuestions[category].pop();
+  return questions[category][nextIndex];
 }
 
 // Update Mute Button
@@ -496,7 +649,8 @@ function startGame(category) {
   gameState.totalQuestions = 0;
   gameState.correctAnswers = 0;
   
-  initializeAvailableQuestions(category);
+  // Initialize shuffle bag for this category
+  refillAndShuffleCategory(category);
   
   updateLives();
   updateScore();
