@@ -94,6 +94,27 @@
       text-shadow: 0 0 10px #00ffff;
     }
 
+    .audio-btn {
+      background: linear-gradient(135deg, #00ffff, #0088ff);
+      border: none;
+      color: #000;
+      font-size: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .audio-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+    }
+
     /* Game Area */
     .game-area {
       flex: 1;
@@ -109,7 +130,10 @@
       height: 120px;
       border-radius: 50%;
       transition: all 0.2s;
-      position: relative;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       z-index: 10;
     }
 
@@ -130,9 +154,9 @@
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.2); }
+      100% { transform: translate(-50%, -50%) scale(1); }
     }
 
     .projectile {
@@ -296,6 +320,7 @@
           </div>
           <div class="score" id="score">0</div>
         </div>
+        <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">🔊</button>
       </div>
 
       <div class="game-area" id="gameArea" onclick="toggleShield()">
@@ -307,6 +332,7 @@
     <div id="gameOverScreen" class="game-over-screen">
       <h1 class="game-over-title">GAME OVER</h1>
       <p class="final-score">Final Score: <span id="finalScore">0</span></p>
+      <p class="final-score">Best: <span id="highScore">0</span></p>
       <button class="play-again-btn" onclick="startGame()">PLAY AGAIN</button>
     </div>
   </div>
@@ -320,6 +346,7 @@
     let gameLoop = null;
     let spawnInterval = null;
     let isGameRunning = false;
+    let isMuted = false;
 
     // Audio Context
     let audioContext = null;
@@ -332,8 +359,23 @@
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
 
+    function toggleAudio() {
+      isMuted = !isMuted;
+      const audioBtn = document.getElementById('audioBtn');
+      audioBtn.textContent = isMuted ? '🔇' : '🔊';
+      
+      if (bgMusic) {
+        if (isMuted) {
+          bgMusic.pause();
+        } else if (musicEnabled) {
+          bgMusic.play();
+        }
+      }
+    }
+
     function playToggleSound() {
       if (!audioContext) initAudio();
+      if (isMuted) return;
       
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
@@ -352,6 +394,7 @@
 
     function playSuccessSound() {
       if (!audioContext) initAudio();
+      if (isMuted) return;
       
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
@@ -370,6 +413,7 @@
 
     function playErrorSound() {
       if (!audioContext) initAudio();
+      if (isMuted) return;
       
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
@@ -388,6 +432,7 @@
 
     function playGameOverSound() {
       if (!audioContext) initAudio();
+      if (isMuted) return;
       
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
@@ -605,9 +650,16 @@
       projectiles.forEach(proj => proj.element.remove());
       projectiles = [];
       
+      // Handle high score
+      const highScore = localStorage.getItem('chroma_shield_high_score') || 0;
+      if (score > highScore) {
+        localStorage.setItem('chroma_shield_high_score', score);
+      }
+      
       document.getElementById('gameScreen').classList.add('hidden');
       document.getElementById('gameOverScreen').style.display = 'flex';
       document.getElementById('finalScore').textContent = score;
+      document.getElementById('highScore').textContent = Math.max(score, highScore);
     }
 
     function startGame() {
