@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lumina Trivia</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #090a16 0%, #1a1f35 50%, #090a16 100%);
+      color: #00f2fe;
+      min-height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Start Screen */
+    #start-screen {
+      background: linear-gradient(135deg, #090a16 0%, #1a1f35 50%, #090a16 100%);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .game-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #00f2fe;
+      text-shadow: 0 0 20px #00f2fe, 0 0 40px #4facfe;
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+    }
+
+    .game-subtitle {
+      font-size: 1.2rem;
+      color: #f6d365;
+      margin-bottom: 40px;
+      text-shadow: 0 0 10px #f6d365;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      border: none;
+      padding: 15px 50px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #090a16;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 30px;
+    }
+
+    .start-btn:hover, .start-btn:active {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.8);
+    }
+
+    .attribution {
+      font-size: 0.7rem;
+      color: rgba(0, 242, 254, 0.6);
+      margin-top: 20px;
+      line-height: 1.5;
+      max-width: 300px;
+    }
+
+    .attribution a {
+      color: #f6d365;
+      text-decoration: none;
+    }
+
+    /* Game Screen */
+    #game-screen {
+      padding: 0;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(9, 10, 22, 0.95);
+      padding: max(35px, env(safe-area-inset-top)) 20px 15px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #00f2fe;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+      z-index: 100;
+    }
+
+    .back-btn {
+      background: #090a16;
+      color: #00f2fe;
+      border: 2px solid #00f2fe;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      pointer-events: auto;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+    }
+
+    .hearts {
+      display: flex;
+      gap: 5px;
+      font-size: 1.5rem;
+    }
+
+    .heart {
+      color: #ff006e;
+      text-shadow: 0 0 10px #ff006e;
+    }
+
+    .heart.lost {
+      color: #333;
+      text-shadow: none;
+    }
+
+    .score-display {
+      font-size: 1.2rem;
+      color: #00f2fe;
+      text-shadow: 0 0 10px #00f2fe;
+      font-weight: bold;
+    }
+
+    .streak-display {
+      font-size: 1rem;
+      color: #f6d365;
+      text-shadow: 0 0 10px #f6d365;
+      margin-left: 10px;
+    }
+
+    .audio-btn {
+      background: none;
+      border: 2px solid #00f2fe;
+      color: #00f2fe;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .audio-btn:hover {
+      background: #00f2fe;
+      color: #090a16;
+    }
+
+    .game-area {
+      margin-top: 100px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .level-indicator {
+      font-size: 1.5rem;
+      color: #f6d365;
+      text-shadow: 0 0 15px #f6d365;
+      margin-bottom: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .question-card {
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.1) 0%, rgba(79, 172, 254, 0.1) 100%);
+      border: 2px solid #00f2fe;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.2);
+      width: 100%;
+    }
+
+    .category-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: #090a16;
+      padding: 5px 15px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .question-text {
+      font-size: 1.2rem;
+      color: #00f2fe;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .timer-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(0, 242, 254, 0.2);
+      border-radius: 2px;
+      margin-top: 15px;
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00f2fe, #f6d365);
+      width: 100%;
+      transition: width 0.1s linear;
+    }
+
+    .choices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      width: 100%;
+    }
+
+    .choice-card {
+      background: linear-gradient(135deg, #1a1f35 0%, #2a2f45 100%);
+      border: 2px solid #4facfe;
+      border-radius: 15px;
+      padding: 20px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(79, 172, 254, 0.3);
+      touch-action: none;
+      font-size: 1rem;
+      color: #00f2fe;
+      text-align: center;
+    }
+
+    .choice-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+      border-color: #f6d365;
+    }
+
+    .choice-card.correct {
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      border-color: #f6d365;
+      box-shadow: 0 0 30px rgba(246, 211, 101, 0.8);
+      animation: pulse 0.5s ease;
+      color: #090a16;
+    }
+
+    .choice-card.wrong {
+      background: linear-gradient(135deg, #ff006e 0%, #c9184a 100%);
+      border-color: #ff006e;
+      box-shadow: 0 0 30px rgba(255, 0, 110, 0.8);
+      animation: shake 0.5s ease;
+    }
+
+    .choice-card.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .flash-red {
+      animation: flashRed 0.3s ease;
+    }
+
+    @keyframes flashRed {
+      0%, 100% { background: #090a16; }
+      50% { background: rgba(255, 0, 110, 0.3); }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 242, 254, 0.9);
+      color: #090a16;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-weight: bold;
+      font-size: 1rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    /* Level Complete Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(9, 10, 22, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-title {
+      font-size: 2.5rem;
+      color: #00f2fe;
+      text-shadow: 0 0 20px #00f2fe, 0 0 40px #4facfe;
+      margin-bottom: 20px;
+      animation: glow 2s infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 20px #00f2fe, 0 0 40px #4facfe; }
+      50% { text-shadow: 0 0 30px #00f2fe, 0 0 60px #4facfe, 0 0 80px #f6d365; }
+    }
+
+    .overlay-score {
+      font-size: 1.5rem;
+      color: #f6d365;
+      margin-bottom: 10px;
+    }
+
+    .overlay-streak {
+      font-size: 1.2rem;
+      color: #4facfe;
+      margin-bottom: 30px;
+    }
+
+    .overlay-btn {
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #090a16;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+    }
+
+    /* Game Over Screen */
+    #gameover-screen {
+      background: linear-gradient(135deg, #090a16 0%, #1a1f35 100%);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .gameover-title {
+      font-size: 2.5rem;
+      color: #ff006e;
+      text-shadow: 0 0 20px #ff006e;
+      margin-bottom: 20px;
+    }
+
+    .final-score {
+      font-size: 1.5rem;
+      color: #00f2fe;
+      margin-bottom: 10px;
+    }
+
+    .final-streak {
+      font-size: 1.2rem;
+      color: #f6d365;
+      margin-bottom: 30px;
+    }
+
+    .restart-btn {
+      background: linear-gradient(135deg, #f6d365 0%, #00f2fe 100%);
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #090a16;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(246, 211, 101, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .menu-btn {
+      background: transparent;
+      border: 2px solid #00f2fe;
+      color: #00f2fe;
+      padding: 12px 35px;
+      font-size: 1.1rem;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Start Screen -->
+  <div id="start-screen" class="screen">
+    <h1 class="game-title">LUMINA TRIVIA</h1>
+    <p class="game-subtitle">The Ultimate Brain Challenge</p>
+    <button class="start-btn" id="start-btn">START GAME</button>
+    <div class="attribution">
+      "Covert Affair" Kevin MacLeod (incompetech.com)<br>
+      Licensed under Creative Commons: By Attribution 4.0 License<br>
+      <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">http://creativecommons.org/licenses/by/4.0/</a>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen hidden">
+    <div class="top-bar">
+      <button class="back-btn" id="back-btn" onclick="goBack()">←</button>
+      <div class="hearts" id="hearts">
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+      </div>
+      <div class="score-display">Score: <span id="score">0</span></div>
+      <div class="streak-display">Streak: <span id="streak">0</span></div>
+      <button class="audio-btn" id="audio-btn">🔊</button>
+    </div>
+    <div class="game-area">
+      <div class="level-indicator">Level <span id="level">1</span></div>
+      <div class="question-card">
+        <span class="category-badge" id="category-badge">General Knowledge</span>
+        <p class="question-text" id="question-text">Loading question...</p>
+        <div class="timer-bar">
+          <div class="timer-fill" id="timer-fill"></div>
+        </div>
+      </div>
+      <div class="choices-grid" id="choices-grid"></div>
+    </div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameover-screen" class="screen hidden">
+    <h1 class="gameover-title">GAME OVER</h1>
+    <p class="final-score">Final Score: <span id="final-score">0</span></p>
+    <p class="final-streak">Best Streak: <span id="final-streak">0</span></p>
+    <p class="final-score">Level Reached: <span id="final-level">1</span></p>
+    <button class="restart-btn" id="restart-btn">PLAY AGAIN</button>
+    <button class="menu-btn" id="menu-btn">MAIN MENU</button>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Level Complete Overlay -->
+  <div class="overlay" id="level-overlay">
+    <h2 class="overlay-title">LEVEL CLEARED!</h2>
+    <p class="overlay-score">+150 Bonus Points</p>
+    <p class="overlay-streak">Streak Multiplier Applied</p>
+    <p class="overlay-score">Lives Restored</p>
+    <button class="overlay-btn" id="next-level-btn">Next Level</button>
+  </div>
+
+  <script>
+    // Game State
+    let hearts = 5;
+    let score = 0;
+    let level = 1;
+    let streak = 0;
+    let bestStreak = 0;
+    let audioEnabled = true;
+    let audioContext = null;
+    let backgroundMusic = null;
+    let currentQuestion = null;
+    let questionsAnswered = 0;
+    let questionsPerLevel = 5;
+    let isProcessing = false;
+    let timerInterval = null;
+    let timeLeft = 15;
+    let questionStartTime = 0;
+
+    // Trivia Question Database (50+ questions across 5 levels)
+    const triviaQuestions = {
+      1: [ // Level 1: General Knowledge & Nature
+        { category: "Nature", question: "Which planet is known as the Red Planet?", choices: ["Venus", "Mars", "Jupiter", "Saturn"], correct: 1 },
+        { category: "Nature", question: "What is the hardest natural substance on Earth?", choices: ["Gold", "Iron", "Diamond", "Platinum"], correct: 2 },
+        { category: "Geography", question: "What is the largest ocean on Earth?", choices: ["Atlantic", "Indian", "Arctic", "Pacific"], correct: 3 },
+        { category: "Nature", question: "How many continents are there on Earth?", choices: ["5", "6", "7", "8"], correct: 2 },
+        { category: "Nature", question: "What gas do plants absorb from the atmosphere?", choices: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correct: 2 },
+        { category: "Geography", question: "Which is the longest river in the world?", choices: ["Amazon", "Nile", "Yangtze", "Mississippi"], correct: 1 },
+        { category: "Nature", question: "What is the largest mammal on Earth?", choices: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"], correct: 1 },
+        { category: "Nature", question: "How many legs does a spider have?", choices: ["6", "8", "10", "12"], correct: 1 },
+        { category: "Geography", question: "Which country has the largest population?", choices: ["USA", "India", "China", "Russia"], correct: 2 },
+        { category: "Nature", question: "What is the fastest land animal?", choices: ["Lion", "Cheetah", "Gazelle", "Horse"], correct: 1 }
+      ],
+      2: [ // Level 2: Inventions & Technology
+        { category: "Technology", question: "Who is considered the father of Computer Science?", choices: ["Bill Gates", "Alan Turing", "Steve Jobs", "Tim Berners-Lee"], correct: 1 },
+        { category: "Technology", question: "What does 'HTTP' stand for?", choices: ["HyperText Transfer Protocol", "High Tech Transfer Protocol", "HyperText Technical Program", "Home Tool Transfer Protocol"], correct: 0 },
+        { category: "Technology", question: "Who invented the World Wide Web?", choices: ["Bill Gates", "Steve Jobs", "Tim Berners-Lee", "Mark Zuckerberg"], correct: 2 },
+        { category: "Technology", question: "What year was the first iPhone released?", choices: ["2005", "2006", "2007", "2008"], correct: 2 },
+        { category: "Technology", question: "What does 'CPU' stand for?", choices: ["Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Core Processing Unit"], correct: 0 },
+        { category: "Technology", question: "Who invented the telephone?", choices: ["Thomas Edison", "Alexander Graham Bell", "Nikola Tesla", "Guglielmo Marconi"], correct: 1 },
+        { category: "Technology", question: "What does 'URL' stand for?", choices: ["Universal Resource Locator", "Uniform Resource Locator", "Universal Reference Link", "Uniform Reference Locator"], correct: 1 },
+        { category: "Technology", question: "What company developed the first commercial computer?", choices: ["IBM", "Apple", "Microsoft", "Intel"], correct: 0 },
+        { category: "Technology", question: "What does 'GPS' stand for?", choices: ["Global Positioning System", "Global Positioning Satellite", "Geographic Positioning System", "Geographic Positioning Satellite"], correct: 0 },
+        { category: "Technology", question: "Who invented the light bulb?", choices: ["Nikola Tesla", "Thomas Edison", "Alexander Graham Bell", "Michael Faraday"], correct: 1 }
+      ],
+      3: [ // Level 3: World History & Civilizations
+        { category: "History", question: "Which ancient wonder was located in Alexandria?", choices: ["Hanging Gardens", "Lighthouse of Alexandria", "Colossus of Rhodes", "Mausoleum"], correct: 1 },
+        { category: "History", question: "In what year did the Apollo 11 moon landing occur?", choices: ["1967", "1968", "1969", "1970"], correct: 2 },
+        { category: "History", question: "Who was the first President of the United States?", choices: ["Thomas Jefferson", "John Adams", "George Washington", "Benjamin Franklin"], correct: 2 },
+        { category: "History", question: "Which empire built the Colosseum?", choices: ["Greek", "Roman", "Egyptian", "Persian"], correct: 1 },
+        { category: "History", question: "What year did World War II end?", choices: ["1943", "1944", "1945", "1946"], correct: 2 },
+        { category: "History", question: "Who discovered America in 1492?", choices: ["Vasco da Gama", "Christopher Columbus", "Ferdinand Magellan", "Amerigo Vespucci"], correct: 1 },
+        { category: "History", question: "Which civilization built the pyramids?", choices: ["Roman", "Greek", "Egyptian", "Mayan"], correct: 2 },
+        { category: "History", question: "What year did the Berlin Wall fall?", choices: ["1987", "1988", "1989", "1990"], correct: 2 },
+        { category: "History", question: "Who wrote the Declaration of Independence?", choices: ["George Washington", "Benjamin Franklin", "Thomas Jefferson", "John Adams"], correct: 2 },
+        { category: "History", question: "Which war was fought between the North and South in the US?", choices: ["Revolutionary War", "Civil War", "World War I", "War of 1812"], correct: 1 }
+      ],
+      4: [ // Level 4: Art, Literature & Culture
+        { category: "Art", question: "Who painted the ceiling of the Sistine Chapel?", choices: ["Leonardo da Vinci", "Michelangelo", "Raphael", "Donatello"], correct: 1 },
+        { category: "Literature", question: "Who wrote 'Romeo and Juliet'?", choices: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"], correct: 1 },
+        { category: "Art", question: "Who painted the Mona Lisa?", choices: ["Leonardo da Vinci", "Michelangelo", "Raphael", "Sandro Botticelli"], correct: 0 },
+        { category: "Literature", question: "Who wrote 'Pride and Prejudice'?", choices: ["Emily Brontë", "Charlotte Brontë", "Jane Austen", "Virginia Woolf"], correct: 2 },
+        { category: "Art", question: "Which artist is known for cutting off his ear?", choices: ["Pablo Picasso", "Vincent van Gogh", "Claude Monet", "Salvador Dalí"], correct: 1 },
+        { category: "Literature", question: "Who wrote 'The Great Gatsby'?", choices: ["Ernest Hemingway", "F. Scott Fitzgerald", "John Steinbeck", "William Faulkner"], correct: 1 },
+        { category: "Art", question: "What artistic movement did Pablo Picasso pioneer?", choices: ["Impressionism", "Cubism", "Surrealism", "Realism"], correct: 1 },
+        { category: "Literature", question: "Who wrote '1984'?", choices: ["Aldous Huxley", "George Orwell", "Ray Bradbury", "H.G. Wells"], correct: 1 },
+        { category: "Art", question: "Who sculpted 'David'?", choices: ["Leonardo da Vinci", "Michelangelo", "Donatello", "Raphael"], correct: 1 },
+        { category: "Literature", question: "Who wrote 'To Kill a Mockingbird'?", choices: ["Harper Lee", "Toni Morrison", "Maya Angelou", "Alice Walker"], correct: 0 }
+      ],
+      5: [ // Level 5: Advanced Science & Quantum Physics
+        { category: "Physics", question: "What particle has a positive electric charge?", choices: ["Electron", "Neutron", "Proton", "Photon"], correct: 2 },
+        { category: "Physics", question: "What is the speed of light in a vacuum approximately?", choices: ["300,000 km/s", "150,000 km/s", "600,000 km/s", "1,000,000 km/s"], correct: 0 },
+        { category: "Chemistry", question: "What is the atomic number of Carbon?", choices: ["4", "6", "8", "12"], correct: 1 },
+        { category: "Physics", question: "What is the formula for Einstein's mass-energy equivalence?", choices: ["F = ma", "E = mc²", "PV = nRT", "a² + b² = c²"], correct: 1 },
+        { category: "Chemistry", question: "What is the most abundant element in the universe?", choices: ["Oxygen", "Carbon", "Hydrogen", "Helium"], correct: 2 },
+        { category: "Physics", question: "What force keeps planets in orbit?", choices: ["Magnetic force", "Gravitational force", "Electric force", "Nuclear force"], correct: 1 },
+        { category: "Chemistry", question: "What is the chemical symbol for Gold?", choices: ["Go", "Gd", "Au", "Ag"], correct: 2 },
+        { category: "Physics", question: "What is the smallest unit of matter?", choices: ["Molecule", "Atom", "Electron", "Quark"], correct: 3 },
+        { category: "Chemistry", question: "What gas makes up most of Earth's atmosphere?", choices: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], correct: 2 },
+        { category: "Physics", question: "What phenomenon explains the wave-particle duality?", choices: ["Relativity", "Quantum Mechanics", "Thermodynamics", "Electromagnetism"], correct: 1 }
+      ]
+    };
+
+    // DOM Elements
+    const startScreen = document.getElementById('start-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const gameoverScreen = document.getElementById('gameover-screen');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const menuBtn = document.getElementById('menu-btn');
+    const audioBtn = document.getElementById('audio-btn');
+    const backBtn = document.getElementById('back-btn');
+    const heartsContainer = document.getElementById('hearts');
+    const scoreDisplay = document.getElementById('score');
+    const streakDisplay = document.getElementById('streak');
+    const levelDisplay = document.getElementById('level');
+    const categoryBadge = document.getElementById('category-badge');
+    const questionText = document.getElementById('question-text');
+    const choicesGrid = document.getElementById('choices-grid');
+    const timerFill = document.getElementById('timer-fill');
+    const toast = document.getElementById('toast');
+    const levelOverlay = document.getElementById('level-overlay');
+    const nextLevelBtn = document.getElementById('next-level-btn');
+    const finalScoreDisplay = document.getElementById('final-score');
+    const finalStreakDisplay = document.getElementById('final-streak');
+    const finalLevelDisplay = document.getElementById('final-level');
+
+    // Audio Functions
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTone(frequency, duration, type = 'sine') {
+      if (!audioEnabled || !audioContext) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = type;
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration);
+    }
+
+    function playTap() {
+      playTone(600, 0.1, 'sine');
+    }
+
+    function playCorrect() {
+      playTone(523.25, 0.1, 'sine');
+      setTimeout(() => playTone(659.25, 0.1, 'sine'), 100);
+      setTimeout(() => playTone(783.99, 0.15, 'sine'), 200);
+      setTimeout(() => playTone(1046.50, 0.2, 'sine'), 300);
+    }
+
+    function playError() {
+      playTone(200, 0.2, 'sawtooth');
+      setTimeout(() => playTone(150, 0.2, 'sawtooth'), 100);
+    }
+
+    function playLevelComplete() {
+      playTone(523.25, 0.15, 'sine');
+      setTimeout(() => playTone(659.25, 0.15, 'sine'), 150);
+      setTimeout(() => playTone(783.99, 0.15, 'sine'), 300);
+      setTimeout(() => playTone(1046.50, 0.2, 'sine'), 450);
+      setTimeout(() => playTone(1318.51, 0.3, 'sine'), 650);
+    }
+
+    function startBackgroundMusic() {
+      if (!audioEnabled) return;
+      
+      if (backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic = null;
+      }
+      
+      backgroundMusic = new Audio('bgm.mp3');
+      backgroundMusic.loop = true;
+      backgroundMusic.volume = 0.3;
+      
+      backgroundMusic.play().catch(e => console.log('Audio play failed:', e));
+    }
+
+    function stopBackgroundMusic() {
+      if (backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic = null;
+      }
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      audioBtn.textContent = audioEnabled ? '🔊' : '🔇';
+      
+      if (audioEnabled) {
+        initAudio();
+        startBackgroundMusic();
+      } else {
+        stopBackgroundMusic();
+      }
+    }
+
+    // Game Functions
+    function showScreen(screen) {
+      startScreen.classList.add('hidden');
+      gameScreen.classList.add('hidden');
+      gameoverScreen.classList.add('hidden');
+      screen.classList.remove('hidden');
+    }
+
+    function updateHearts() {
+      const hearts = heartsContainer.querySelectorAll('.heart');
+      hearts.forEach((heart, index) => {
+        if (index < (5 - window.hearts)) {
+          heart.classList.add('lost');
+        } else {
+          heart.classList.remove('lost');
+        }
+      });
+    }
+
+    function updateScore() {
+      scoreDisplay.textContent = score;
+    }
+
+    function updateStreak() {
+      streakDisplay.textContent = streak;
+    }
+
+    function updateLevel() {
+      levelDisplay.textContent = level;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function startTimer() {
+      timeLeft = 15;
+      questionStartTime = Date.now();
+      timerFill.style.width = '100%';
+      
+      if (timerInterval) clearInterval(timerInterval);
+      
+      timerInterval = setInterval(() => {
+        timeLeft -= 0.1;
+        const percentage = (timeLeft / 15) * 100;
+        timerFill.style.width = percentage + '%';
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          handleTimeout();
+        }
+      }, 100);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function handleTimeout() {
+      isProcessing = true;
+      playError();
+      hearts--;
+      updateHearts();
+      showToast('Time\'s up!');
+
+      // Highlight correct answer
+      const choices = choicesGrid.querySelectorAll('.choice-card');
+      choices[currentQuestion.correct].classList.add('correct');
+
+      setTimeout(() => {
+        if (hearts <= 0) {
+          gameOver();
+        } else {
+          streak = 0;
+          updateStreak();
+          displayQuestion();
+          isProcessing = false;
+        }
+      }, 1500);
+    }
+
+    function getRandomQuestion() {
+      const levelQuestions = triviaQuestions[level] || triviaQuestions[1];
+      const randomIndex = Math.floor(Math.random() * levelQuestions.length);
+      return levelQuestions[randomIndex];
+    }
+
+    function displayQuestion() {
+      currentQuestion = getRandomQuestion();
+      categoryBadge.textContent = currentQuestion.category;
+      questionText.textContent = currentQuestion.question;
+      choicesGrid.innerHTML = '';
+
+      currentQuestion.choices.forEach((choice, index) => {
+        const choiceCard = document.createElement('div');
+        choiceCard.className = 'choice-card';
+        choiceCard.textContent = choice;
+        choiceCard.dataset.index = index;
+
+        choiceCard.addEventListener('pointerdown', (e) => handleChoice(e, choiceCard, index));
+
+        choicesGrid.appendChild(choiceCard);
+      });
+
+      startTimer();
+    }
+
+    function handleChoice(e, choiceCard, index) {
+      e.preventDefault();
+      
+      if (isProcessing || choiceCard.classList.contains('disabled')) {
+        return;
+      }
+
+      isProcessing = true;
+      stopTimer();
+      playTap();
+
+      const timeTaken = (Date.now() - questionStartTime) / 1000;
+      const speedBonus = timeTaken < 5 ? 10 : 0;
+
+      if (index === currentQuestion.correct) {
+        // Correct
+        choiceCard.classList.add('correct');
+        playCorrect();
+        streak++;
+        if (streak > bestStreak) bestStreak = streak;
+        
+        const points = 30 + speedBonus + (streak > 2 ? 5 : 0);
+        score += points;
+        updateScore();
+        updateStreak();
+        questionsAnswered++;
+
+        const message = speedBonus > 0 ? `+${points} (Speed Bonus!)` : `+${points}`;
+        showToast(message);
+
+        setTimeout(() => {
+          if (questionsAnswered >= questionsPerLevel) {
+            showLevelComplete();
+          } else {
+            displayQuestion();
+            isProcessing = false;
+          }
+        }, 1000);
+      } else {
+        // Wrong
+        choiceCard.classList.add('wrong');
+        choicesGrid.children[currentQuestion.correct].classList.add('correct');
+        playError();
+        document.body.classList.add('flash-red');
+        
+        hearts--;
+        streak = 0;
+        updateHearts();
+        updateStreak();
+
+        setTimeout(() => {
+          document.body.classList.remove('flash-red');
+          choiceCard.classList.remove('wrong');
+          choicesGrid.children[currentQuestion.correct].classList.remove('correct');
+
+          if (hearts <= 0) {
+            gameOver();
+          } else {
+            showToast('Try Again!');
+            setTimeout(() => {
+              displayQuestion();
+              isProcessing = false;
+            }, 1000);
+          }
+        }, 1500);
+      }
+    }
+
+    function showLevelComplete() {
+      stopTimer();
+      playLevelComplete();
+      
+      // Apply streak multiplier bonus
+      const streakBonus = streak * 10;
+      score += 150 + streakBonus;
+      updateScore();
+      
+      levelOverlay.classList.add('show');
+    }
+
+    function nextLevel() {
+      levelOverlay.classList.remove('show');
+      level++;
+      questionsAnswered = 0;
+      
+      if (level > 5) {
+        // Game completed all levels
+        gameOver();
+        return;
+      }
+      
+      updateLevel();
+      hearts = 5;
+      updateHearts();
+      displayQuestion();
+      isProcessing = false;
+    }
+
+    function startGame() {
+      initAudio();
+      hearts = 5;
+      score = 0;
+      level = 1;
+      streak = 0;
+      bestStreak = 0;
+      questionsAnswered = 0;
+      isProcessing = false;
+      updateHearts();
+      updateScore();
+      updateStreak();
+      updateLevel();
+      startBackgroundMusic();
+      showScreen(gameScreen);
+      displayQuestion();
+    }
+
+    function gameOver() {
+      stopTimer();
+      stopBackgroundMusic();
+      finalScoreDisplay.textContent = score;
+      finalStreakDisplay.textContent = bestStreak;
+      finalLevelDisplay.textContent = level;
+      showScreen(gameoverScreen);
+    }
+
+    function goToMenu() {
+      stopTimer();
+      stopBackgroundMusic();
+      showScreen(startScreen);
+    }
+
+    function goBack() {
+      stopTimer();
+      stopBackgroundMusic();
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+      }
+      showScreen(startScreen);
+
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'GO_BACK' }));
+      }
+    }
+
+    // Event Listeners
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+    menuBtn.addEventListener('click', goToMenu);
+    audioBtn.addEventListener('click', toggleAudio);
+    backBtn.addEventListener('click', goBack);
+    nextLevelBtn.addEventListener('click', nextLevel);
+
+    // Prevent default touch behavior
+    document.body.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+  </script>
+</body>
+</html>

@@ -145,5 +145,12 @@
     "icon": "https://games.smartok.app/astro-geometry/icon.png?v=1",
     "url": "https://games.smartok.app/astro-geometry/",
     "category": "Science"
+  },
+  {
+    "id": "lumina-trivia",
+    "title": "Lumina Trivia",
+    "icon": "https://games.smartok.app/lumina-trivia/icon.png?v=1",
+    "url": "https://games.smartok.app/lumina-trivia/",
+    "category": "Trivia"
   }
 ]
