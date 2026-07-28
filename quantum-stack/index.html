@@ -304,7 +304,7 @@
     let currentBlock = null;
     let isGameRunning = false;
     let isMuted = false;
-    let blockSpeed = 3;
+    let blockSpeed = 1.5;
     let direction = 1;
 
     // Canvas
@@ -472,9 +472,6 @@
       // Retro color palette
       const retroColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181', '#aa96da', '#fcbad3'];
       
-      // Fixed spawn position near top of screen (30% from top)
-      const spawnY = canvasHeight * 0.3;
-      
       if (blocks.length === 0) {
         // Base block - place at bottom of screen
         const baseY = canvasHeight - 100;
@@ -486,16 +483,26 @@
         );
         blocks.push(baseBlock);
         currentBlockWidth = INITIAL_BLOCK_WIDTH;
+        
+        // Spawn first moving block above the base block
+        const colorIndex = blocks.length % retroColors.length;
+        currentBlock = createBlock(
+          0,
+          baseY - BLOCK_HEIGHT,
+          currentBlockWidth,
+          retroColors[colorIndex]
+        );
+      } else {
+        // Spawn new block above the top block of the tower
+        const topBlock = blocks[blocks.length - 1];
+        const colorIndex = blocks.length % retroColors.length;
+        currentBlock = createBlock(
+          0,
+          topBlock.y - BLOCK_HEIGHT,
+          currentBlockWidth,
+          retroColors[colorIndex]
+        );
       }
-      
-      // Spawn new block at fixed top position
-      const colorIndex = blocks.length % retroColors.length;
-      currentBlock = createBlock(
-        0,
-        spawnY,
-        currentBlockWidth,
-        retroColors[colorIndex]
-      );
       
       // Reset direction
       direction = 1;
@@ -539,15 +546,14 @@
         currentBlock = null;
         
         if (lives > 0) {
-          // Spawn new block with same width
+          // Spawn new block with same width above the top block
           setTimeout(() => {
-            const canvasHeight = canvas.height;
-            const spawnY = canvasHeight * 0.3;
+            const topBlock = blocks[blocks.length - 1];
             const retroColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181', '#aa96da', '#fcbad3'];
             const colorIndex = blocks.length % retroColors.length;
             currentBlock = createBlock(
               0,
-              spawnY,
+              topBlock.y - BLOCK_HEIGHT,
               currentBlockWidth,
               retroColors[colorIndex]
             );
@@ -575,8 +581,8 @@
         currentBlockWidth = overlapWidth; // Update for next blocks
       }
       
-      // Place block on top of previous block
-      currentBlock.y = previousBlock.y - BLOCK_HEIGHT;
+      // The moving block is already at the correct y position (above the top block)
+      // Just keep it there after slicing
       
       // Add block to stack
       blocks.push(currentBlock);
@@ -586,7 +592,7 @@
       document.getElementById('score').textContent = score;
       
       // Increase difficulty
-      blockSpeed = 3 + Math.floor(score / 50) * 0.5;
+      blockSpeed = 1.5 + Math.floor(score / 50) * 0.3;
       
       // Shift all blocks down if tower is too high (above 40% of screen)
       if (previousBlock.y < canvas.height * 0.4) {
@@ -723,7 +729,7 @@
       score = 0;
       blocks = [];
       currentBlock = null;
-      blockSpeed = 3;
+      blockSpeed = 1.5;
       isGameRunning = true;
       
       // Update UI
