@@ -304,7 +304,7 @@
     let currentBlock = null;
     let isGameRunning = false;
     let isMuted = false;
-    let blockSpeed = 1.5;
+    let blockSpeed = 0.8;
     let direction = 1;
 
     // Canvas
@@ -581,9 +581,6 @@
         currentBlockWidth = overlapWidth; // Update for next blocks
       }
       
-      // The moving block is already at the correct y position (above the top block)
-      // Just keep it there after slicing
-      
       // Add block to stack
       blocks.push(currentBlock);
       currentBlock = null;
@@ -592,10 +589,11 @@
       document.getElementById('score').textContent = score;
       
       // Increase difficulty
-      blockSpeed = 1.5 + Math.floor(score / 50) * 0.3;
+      blockSpeed = 0.8 + Math.floor(score / 50) * 0.2;
       
-      // Shift all blocks down if tower is too high (above 40% of screen)
-      if (previousBlock.y < canvas.height * 0.4) {
+      // Evaluate shift based on the NEWLY placed block
+      const newlyPlacedBlock = blocks[blocks.length - 1];
+      if (newlyPlacedBlock.y < canvas.height * 0.4) {
         for (let i = 0; i < blocks.length; i++) {
           blocks[i].y += BLOCK_HEIGHT;
         }
@@ -729,7 +727,7 @@
       score = 0;
       blocks = [];
       currentBlock = null;
-      blockSpeed = 1.5;
+      blockSpeed = 0.8;
       isGameRunning = true;
       
       // Update UI
