@@ -124,6 +124,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 400px;
+      width: 100%;
     }
 
     canvas {
@@ -455,6 +457,7 @@
       const rect = gameArea.getBoundingClientRect();
       canvas.width = rect.width;
       canvas.height = rect.height;
+      console.log('Canvas resized to:', canvas.width, canvas.height, 'Game area rect:', rect);
     }
 
     function createBlock(x, y, width, color) {
@@ -493,6 +496,8 @@
       
       // Reset direction
       direction = 1;
+      
+      console.log('Spawned block:', currentBlock, 'Canvas size:', canvasWidth, canvasHeight);
     }
 
     function updateBlock() {
@@ -638,6 +643,8 @@
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
+      console.log('Drawing - Canvas size:', canvas.width, canvas.height, 'Blocks:', blocks.length, 'Current block:', currentBlock);
+      
       // Draw retro pixel grid
       ctx.strokeStyle = 'rgba(44, 62, 80, 0.2)';
       ctx.lineWidth = 2;
@@ -728,13 +735,15 @@
       document.getElementById('gameOverScreen').style.display = 'none';
       document.getElementById('gameScreen').classList.remove('hidden');
       
-      // Resize canvas
-      resizeCanvas();
-      
-      // Start game
-      spawnBlock();
-      playBackgroundMusic();
-      gameLoop();
+      // Resize canvas after layout update
+      requestAnimationFrame(() => {
+        resizeCanvas();
+        
+        // Start game
+        spawnBlock();
+        playBackgroundMusic();
+        gameLoop();
+      });
     }
 
     function goBack() {
