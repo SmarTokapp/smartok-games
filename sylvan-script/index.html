@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sylvan Script - Spelling Adventure</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+      font-family: 'Georgia', serif;
+    }
+
+    body {
+      background: radial-gradient(ellipse at center, #1a2f1a 0%, #0d1a0d 50%, #051005 100%);
+      color: #e0f0e0;
+    }
+
+    .game-container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      padding-top: max(20px, env(safe-area-inset-top));
+      background: linear-gradient(180deg, #2d4a2d 0%, #1a2f1a 100%);
+      border: 3px solid #3d5c3d;
+      border-radius: 8px;
+      margin: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(100, 200, 100, 0.1);
+      z-index: 200;
+      pointer-events: auto;
+    }
+
+    .back-btn {
+      background: linear-gradient(180deg, #3d5c3d 0%, #2d4a2d 100%);
+      border: 3px solid #4a6b4a;
+      color: #e0f0e0;
+      font-size: 20px;
+      font-weight: bold;
+      width: 45px;
+      height: 45px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+      transition: transform 0.1s;
+      pointer-events: auto;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hearts {
+      display: flex;
+      gap: 5px;
+      font-size: 24px;
+    }
+
+    .heart {
+      color: #4ade80;
+      text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+    }
+
+    .heart.lost {
+      color: #3d5c3d;
+      text-shadow: none;
+    }
+
+    .score {
+      font-size: 18px;
+      font-weight: bold;
+      color: #e0f0e0;
+      text-shadow: 0 0 5px rgba(100, 200, 100, 0.3);
+    }
+
+    .audio-btn {
+      background: linear-gradient(180deg, #3d5c3d 0%, #2d4a2d 100%);
+      border: 3px solid #4a6b4a;
+      color: #e0f0e0;
+      font-size: 18px;
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+      transition: transform 0.1s;
+      pointer-events: auto;
+    }
+
+    .audio-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Game Area */
+    .game-area {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      min-height: 500px;
+      overflow: hidden;
+      z-index: 10;
+      display: flex;
+    }
+
+    /* Target Word Display */
+    .target-display {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(180deg, #3d5c3d 0%, #2d4a2d 50%, #1a2f1a 100%);
+      border: 6px solid #4a6b4a;
+      border-radius: 12px;
+      padding: 20px 40px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(100, 200, 100, 0.2);
+      text-align: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .target-label {
+      font-size: 14px;
+      color: #8fbc8f;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .target-word {
+      font-size: 36px;
+      font-weight: bold;
+      color: #e0f0e0;
+      text-shadow: 0 0 10px rgba(100, 200, 100, 0.5);
+      letter-spacing: 8px;
+    }
+
+    .letter {
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .letter.pending {
+      color: #e0f0e0;
+      text-shadow: 0 0 10px rgba(100, 200, 100, 0.5);
+    }
+
+    .letter.completed {
+      color: #4ade80;
+      text-shadow: 0 0 15px rgba(74, 222, 128, 0.8);
+    }
+
+    /* Falling Leaf */
+    .leaf {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #4ade80 0%, #22c55e 50%, #16a34a 100%);
+      border: 3px solid #3d5c3d;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3), 0 0 15px rgba(74, 222, 128, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.1s;
+      z-index: 100;
+      pointer-events: auto;
+      touch-action: manipulation;
+    }
+
+    .leaf::before {
+      content: '';
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      border: 2px dashed #3d5c3d;
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    .leaf-letter {
+      font-size: 28px;
+      font-weight: bold;
+      color: #e0f0e0;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    .leaf:active {
+      transform: scale(0.95);
+    }
+
+    /* Start Screen */
+    .start-screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .game-title {
+      font-size: 36px;
+      font-weight: bold;
+      color: #e0f0e0;
+      text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+    }
+
+    .game-subtitle {
+      font-size: 18px;
+      color: #8fbc8f;
+      margin-bottom: 40px;
+      font-style: italic;
+    }
+
+    .start-btn {
+      padding: 15px 50px;
+      font-size: 22px;
+      font-weight: bold;
+      border: 4px solid #4a6b4a;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #3d5c3d 0%, #2d4a2d 100%);
+      color: #e0f0e0;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      margin-bottom: 30px;
+      font-family: 'Georgia', serif;
+    }
+
+    .start-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .attribution {
+      font-size: 12px;
+      color: #8fbc8f;
+      text-align: center;
+      padding: 20px;
+      background: rgba(45, 74, 45, 0.3);
+      border: 3px solid #3d5c3d;
+      border-radius: 8px;
+      max-width: 300px;
+    }
+
+    .attribution a {
+      color: #4ade80;
+      text-decoration: none;
+    }
+
+    /* Game Over Screen */
+    .game-over-screen {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    .game-over-title {
+      font-size: 42px;
+      font-weight: bold;
+      color: #ef4444;
+      text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+    }
+
+    .final-score {
+      font-size: 28px;
+      color: #e0f0e0;
+      margin-bottom: 40px;
+    }
+
+    .play-again-btn {
+      padding: 15px 50px;
+      font-size: 22px;
+      font-weight: bold;
+      border: 4px solid #4a6b4a;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #3d5c3d 0%, #2d4a2d 100%);
+      color: #e0f0e0;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      font-family: 'Georgia', serif;
+    }
+
+    .play-again-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Error Flash */
+    .error-flash {
+      animation: flashRed 0.3s;
+    }
+
+    @keyframes flashRed {
+      0%, 100% { background: radial-gradient(ellipse at center, #1a2f1a 0%, #0d1a0d 50%, #051005 100%); }
+      50% { background: rgba(239, 68, 68, 0.3); }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <!-- Start Screen -->
+    <div id="startScreen" class="start-screen">
+      <h1 class="game-title">SYLVAN SCRIPT</h1>
+      <p class="game-subtitle">Tap the falling leaves to spell the magic words!</p>
+      <button class="start-btn" onclick="startGame()">START GAME</button>
+      <div class="attribution">
+        "Perspectives" Kevin MacLeod (incompetech.com)<br>
+        Licensed under Creative Commons: By Attribution 4.0 License<br>
+        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">http://creativecommons.org/licenses/by/4.0/</a>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="hidden">
+      <div class="top-bar">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <div class="stats">
+          <div class="hearts" id="hearts">
+            <span class="heart">❤</span>
+            <span class="heart">❤</span>
+            <span class="heart">❤</span>
+          </div>
+          <div class="score" id="score">0</div>
+        </div>
+        <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">🔊</button>
+      </div>
+
+      <div class="game-area" id="gameArea">
+        <div class="target-display">
+          <div class="target-label">Spell This Word</div>
+          <div class="target-word" id="targetWord">NATURE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen" class="game-over-screen">
+      <h1 class="game-over-title">GAME OVER</h1>
+      <p class="final-score">Final Score: <span id="finalScore">0</span></p>
+      <p class="final-score">Best: <span id="highScore">0</span></p>
+      <button class="play-again-btn" onclick="startGame()">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script>
+    // Game State
+    let lives = 3;
+    let score = 0;
+    let targetWord = '';
+    let currentLetterIndex = 0;
+    let leaves = [];
+    let gameLoop = null;
+    let spawnInterval = null;
+    let isGameRunning = false;
+    let isMuted = false;
+
+    // Word List
+    const words = [
+      'NATURE', 'MAGIC', 'FOREST', 'RIVER', 'LEAF',
+      'TREE', 'MOSS', 'DEW', 'GLOW', 'WILD',
+      'GREEN', 'GROW', 'ROOT', 'BLOOM', 'VINE',
+      'SHADE', 'CALM', 'PEACE', 'LIGHT', 'DARK'
+    ];
+
+    // Audio Context
+    let audioContext = null;
+
+    // Background Music
+    let bgMusic = null;
+    let musicEnabled = false;
+
+    function initAudio() {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function toggleAudio() {
+      isMuted = !isMuted;
+      const audioBtn = document.getElementById('audioBtn');
+      audioBtn.textContent = isMuted ? '🔇' : '🔊';
+      
+      if (bgMusic) {
+        if (isMuted) {
+          bgMusic.pause();
+        } else if (musicEnabled && isGameRunning) {
+          bgMusic.play();
+        }
+      }
+    }
+
+    function playTapSound() {
+      if (!audioContext) initAudio();
+      if (isMuted) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+      gainNode.gain.value = 0.15;
+      
+      oscillator.start();
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      oscillator.stop(audioContext.currentTime + 0.1);
+    }
+
+    function playSuccessSound() {
+      if (!audioContext) initAudio();
+      if (isMuted) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 1000;
+      oscillator.type = 'sine';
+      gainNode.gain.value = 0.2;
+      
+      oscillator.start();
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      oscillator.stop(audioContext.currentTime + 0.2);
+    }
+
+    function playErrorSound() {
+      if (!audioContext) initAudio();
+      if (isMuted) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 150;
+      oscillator.type = 'sawtooth';
+      gainNode.gain.value = 0.3;
+      
+      oscillator.start();
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      oscillator.stop(audioContext.currentTime + 0.3);
+    }
+
+    function playGameOverSound() {
+      if (!audioContext) initAudio();
+      if (isMuted) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 100;
+      oscillator.type = 'sawtooth';
+      gainNode.gain.value = 0.3;
+      
+      oscillator.start();
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    }
+
+    function playBackgroundMusic() {
+      if (musicEnabled || isMuted) return;
+      bgMusic = new Audio('bgm.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.3;
+      bgMusic.play().catch(e => console.log('Audio play failed:', e));
+      musicEnabled = true;
+    }
+
+    function stopBackgroundMusic() {
+      if (bgMusic) {
+        bgMusic.pause();
+        bgMusic = null;
+        musicEnabled = false;
+      }
+    }
+
+    function selectRandomWord() {
+      return words[Math.floor(Math.random() * words.length)];
+    }
+
+    function updateTargetWordDisplay() {
+      const targetWordEl = document.getElementById('targetWord');
+      targetWordEl.innerHTML = '';
+      
+      for (let i = 0; i < targetWord.length; i++) {
+        const letterSpan = document.createElement('span');
+        letterSpan.className = 'letter';
+        letterSpan.textContent = targetWord[i];
+        
+        if (i < currentLetterIndex) {
+          letterSpan.classList.add('completed');
+        } else {
+          letterSpan.classList.add('pending');
+        }
+        
+        targetWordEl.appendChild(letterSpan);
+      }
+    }
+
+    function getDifficultyMultiplier() {
+      const difficultyLevel = Math.floor(score / 50);
+      return Math.min(difficultyLevel, 10);
+    }
+
+    function getFallSpeed() {
+      const baseSpeed = 1;
+      const multiplier = getDifficultyMultiplier();
+      return baseSpeed + (multiplier * 0.2);
+    }
+
+    function getSpawnRate() {
+      const baseRate = 2000;
+      const multiplier = getDifficultyMultiplier();
+      return Math.max(800, baseRate - (multiplier * 100));
+    }
+
+    function spawnLeaf() {
+      if (!isGameRunning) return;
+      
+      const gameArea = document.getElementById('gameArea');
+      const rect = gameArea.getBoundingClientRect();
+      
+      // Get the current needed letter
+      const neededLetter = targetWord[currentLetterIndex];
+      
+      // 50% chance to spawn the needed letter, 50% random letter
+      const isNeeded = Math.random() < 0.5;
+      const letter = isNeeded ? neededLetter : String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      
+      // Random horizontal position
+      const startX = Math.random() * (rect.width - 100) + 10;
+      const startY = -100;
+      
+      const leaf = {
+        x: startX,
+        y: startY,
+        letter: letter,
+        element: null,
+        speed: getFallSpeed()
+      };
+      
+      // Create DOM element
+      const element = document.createElement('div');
+      element.className = 'leaf';
+      element.style.left = startX + 'px';
+      element.style.top = startY + 'px';
+      element.style.pointerEvents = 'auto';
+      
+      const letterSpan = document.createElement('span');
+      letterSpan.className = 'leaf-letter';
+      letterSpan.textContent = leaf.letter;
+      element.appendChild(letterSpan);
+      
+      // Add pointerdown event for touch interaction
+      element.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleLeafTap(leaf);
+      });
+      
+      gameArea.appendChild(element);
+      leaf.element = element;
+      
+      leaves.push(leaf);
+    }
+
+    function handleLeafTap(leaf) {
+      if (!isGameRunning) return;
+      
+      playTapSound();
+      
+      const neededLetter = targetWord[currentLetterIndex];
+      
+      if (leaf.letter === neededLetter) {
+        // Correct letter
+        playSuccessSound();
+        score += 10;
+        document.getElementById('score').textContent = score;
+        
+        // Update progress
+        currentLetterIndex++;
+        updateTargetWordDisplay();
+        
+        // Check if word is complete
+        if (currentLetterIndex >= targetWord.length) {
+          // Word completed
+          score += 50;
+          document.getElementById('score').textContent = score;
+          
+          // Load new word
+          targetWord = selectRandomWord();
+          currentLetterIndex = 0;
+          updateTargetWordDisplay();
+        }
+      } else {
+        // Wrong letter
+        playErrorSound();
+        loseLife();
+        
+        // Flash screen red
+        document.body.classList.add('error-flash');
+        setTimeout(() => document.body.classList.remove('error-flash'), 300);
+      }
+      
+      // Remove leaf
+      if (leaf.element) {
+        leaf.element.remove();
+      }
+      leaves = leaves.filter(l => l !== leaf);
+    }
+
+    function updateLeaves() {
+      if (!isGameRunning) return;
+      
+      const gameArea = document.getElementById('gameArea');
+      const rect = gameArea.getBoundingClientRect();
+      
+      for (let i = leaves.length - 1; i >= 0; i--) {
+        const leaf = leaves[i];
+        
+        // Update position
+        leaf.y += leaf.speed;
+        leaf.element.style.top = leaf.y + 'px';
+        
+        // Check if leaf fell off screen
+        if (leaf.y > rect.height + 100) {
+          // If it was the needed letter, lose a life
+          const neededLetter = targetWord[currentLetterIndex];
+          if (leaf.letter === neededLetter) {
+            playErrorSound();
+            loseLife();
+            
+            // Flash screen red
+            document.body.classList.add('error-flash');
+            setTimeout(() => document.body.classList.remove('error-flash'), 300);
+          }
+          
+          // Remove leaf
+          if (leaf.element) {
+            leaf.element.remove();
+          }
+          leaves.splice(i, 1);
+        }
+      }
+    }
+
+    function loseLife() {
+      lives--;
+      updateHearts();
+      
+      if (lives <= 0) {
+        gameOver();
+      }
+    }
+
+    function updateHearts() {
+      const heartsContainer = document.getElementById('hearts');
+      const hearts = heartsContainer.querySelectorAll('.heart');
+      
+      hearts.forEach((heart, index) => {
+        if (index >= lives) {
+          heart.classList.add('lost');
+        } else {
+          heart.classList.remove('lost');
+        }
+      });
+    }
+
+    function gameOver() {
+      isGameRunning = false;
+      clearInterval(gameLoop);
+      clearInterval(spawnInterval);
+      stopBackgroundMusic();
+      playGameOverSound();
+      
+      // Clear all leaves
+      leaves.forEach(leaf => {
+        if (leaf.element) leaf.element.remove();
+      });
+      leaves = [];
+      
+      // Handle high score
+      const highScore = localStorage.getItem('sylvan_script_high_score') || 0;
+      if (score > highScore) {
+        localStorage.setItem('sylvan_script_high_score', score);
+      }
+      
+      document.getElementById('gameScreen').classList.add('hidden');
+      document.getElementById('gameOverScreen').style.display = 'flex';
+      document.getElementById('finalScore').textContent = score;
+      document.getElementById('highScore').textContent = Math.max(score, highScore);
+    }
+
+    function startGame() {
+      // Reset state
+      lives = 3;
+      score = 0;
+      targetWord = selectRandomWord();
+      currentLetterIndex = 0;
+      leaves = [];
+      isGameRunning = true;
+      
+      // Update UI
+      document.getElementById('score').textContent = score;
+      updateTargetWordDisplay();
+      updateHearts();
+      
+      // Show game screen
+      document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('gameOverScreen').style.display = 'none';
+      document.getElementById('gameScreen').classList.remove('hidden');
+      
+      // Start music
+      playBackgroundMusic();
+      
+      // Start game loop
+      gameLoop = setInterval(updateLeaves, 16); // ~60 FPS
+      
+      // Start spawning leaves
+      spawnInterval = setInterval(spawnLeaf, getSpawnRate());
+      
+      // Update spawn rate dynamically
+      setInterval(() => {
+        if (isGameRunning) {
+          clearInterval(spawnInterval);
+          spawnInterval = setInterval(spawnLeaf, getSpawnRate());
+        }
+      }, 5000);
+    }
+
+    function goBack() {
+      isGameRunning = false;
+      clearInterval(gameLoop);
+      clearInterval(spawnInterval);
+      stopBackgroundMusic();
+      
+      // Clear all leaves
+      leaves.forEach(leaf => {
+        if (leaf.element) leaf.element.remove();
+      });
+      leaves = [];
+      
+      document.getElementById('gameScreen').classList.add('hidden');
+      document.getElementById('startScreen').classList.remove('hidden');
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Pre-initialize audio context on first user interaction
+      document.body.addEventListener('click', () => {
+        if (!audioContext) initAudio();
+      }, { once: true });
+    });
+  </script>
+</body>
+</html>
