@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chrono Logic</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0d0221;
+      color: #00f5d4;
+      min-height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Start Screen */
+    #start-screen {
+      background: linear-gradient(135deg, #0d0221 0%, #1a0a2e 50%, #0d0221 100%);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .game-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #00f5d4;
+      text-shadow: 0 0 20px #00f5d4, 0 0 40px #00f5d4;
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+    }
+
+    .game-subtitle {
+      font-size: 1.2rem;
+      color: #7b2cbf;
+      margin-bottom: 40px;
+      text-shadow: 0 0 10px #7b2cbf;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, #00f5d4 0%, #7b2cbf 100%);
+      border: none;
+      padding: 15px 50px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #0d0221;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.5);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 30px;
+    }
+
+    .start-btn:hover, .start-btn:active {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.8);
+    }
+
+    .attribution {
+      font-size: 0.7rem;
+      color: rgba(0, 245, 212, 0.6);
+      margin-top: 20px;
+      line-height: 1.5;
+      max-width: 300px;
+    }
+
+    .attribution a {
+      color: #7b2cbf;
+      text-decoration: none;
+    }
+
+    /* Game Screen */
+    #game-screen {
+      padding: 0;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(13, 2, 33, 0.95);
+      padding: max(35px, env(safe-area-inset-top)) 20px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #7b2cbf;
+      box-shadow: 0 0 20px rgba(123, 44, 191, 0.3);
+      z-index: 100;
+    }
+
+    .hearts {
+      display: flex;
+      gap: 5px;
+      font-size: 1.5rem;
+    }
+
+    .heart {
+      color: #ff006e;
+      text-shadow: 0 0 10px #ff006e;
+    }
+
+    .heart.lost {
+      color: #333;
+      text-shadow: none;
+    }
+
+    .score-display {
+      font-size: 1.2rem;
+      color: #00f5d4;
+      text-shadow: 0 0 10px #00f5d4;
+      font-weight: bold;
+    }
+
+    .audio-btn {
+      background: none;
+      border: 2px solid #00f5d4;
+      color: #00f5d4;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .audio-btn:hover {
+      background: #00f5d4;
+      color: #0d0221;
+    }
+
+    .game-area {
+      margin-top: 100px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .level-indicator {
+      font-size: 1.5rem;
+      color: #7b2cbf;
+      text-shadow: 0 0 15px #7b2cbf;
+      margin-bottom: 20px;
+      margin-top: 25px;
+      font-weight: bold;
+    }
+
+    .instruction {
+      font-size: 1rem;
+      color: #00f5d4;
+      margin-bottom: 30px;
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 15px;
+      width: 100%;
+      justify-items: center;
+    }
+
+    .card {
+      background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 100%);
+      border: 2px solid #7b2cbf;
+      border-radius: 15px;
+      padding: 20px 15px;
+      min-width: 100px;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(123, 44, 191, 0.3);
+      touch-action: none;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(0, 245, 212, 0.5);
+      border-color: #00f5d4;
+    }
+
+    .card.correct {
+      background: linear-gradient(135deg, #00f5d4 0%, #00b894 100%);
+      border-color: #00f5d4;
+      box-shadow: 0 0 30px rgba(0, 245, 212, 0.8);
+      animation: pulse 0.5s ease;
+    }
+
+    .card.correct .card-value {
+      color: #0d0221;
+    }
+
+    .card.wrong {
+      background: linear-gradient(135deg, #ff006e 0%, #c9184a 100%);
+      border-color: #ff006e;
+      box-shadow: 0 0 30px rgba(255, 0, 110, 0.8);
+      animation: shake 0.5s ease;
+    }
+
+    .card.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .card-value {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #00f5d4;
+      text-shadow: 0 0 10px #00f5d4;
+      margin-bottom: 5px;
+    }
+
+    .card-label {
+      font-size: 0.8rem;
+      color: #7b2cbf;
+      opacity: 0.8;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .flash-red {
+      animation: flashRed 0.3s ease;
+    }
+
+    @keyframes flashRed {
+      0%, 100% { background: #0d0221; }
+      50% { background: rgba(255, 0, 110, 0.3); }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 245, 212, 0.9);
+      color: #0d0221;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-weight: bold;
+      font-size: 1rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    /* Level Complete Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(13, 2, 33, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-title {
+      font-size: 2rem;
+      color: #00f5d4;
+      text-shadow: 0 0 20px #00f5d4;
+      margin-bottom: 20px;
+    }
+
+    .overlay-score {
+      font-size: 1.5rem;
+      color: #7b2cbf;
+      margin-bottom: 30px;
+    }
+
+    .overlay-btn {
+      background: linear-gradient(135deg, #00f5d4 0%, #7b2cbf 100%);
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #0d0221;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.5);
+    }
+
+    /* Game Over Screen */
+    #gameover-screen {
+      background: linear-gradient(135deg, #0d0221 0%, #1a0a2e 100%);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .gameover-title {
+      font-size: 2.5rem;
+      color: #ff006e;
+      text-shadow: 0 0 20px #ff006e;
+      margin-bottom: 20px;
+    }
+
+    .final-score {
+      font-size: 1.5rem;
+      color: #00f5d4;
+      margin-bottom: 30px;
+    }
+
+    .restart-btn {
+      background: linear-gradient(135deg, #7b2cbf 0%, #00f5d4 100%);
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #0d0221;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(123, 44, 191, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .menu-btn {
+      background: transparent;
+      border: 2px solid #00f5d4;
+      color: #00f5d4;
+      padding: 12px 35px;
+      font-size: 1.1rem;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Start Screen -->
+  <div id="start-screen" class="screen">
+    <h1 class="game-title">CHRONO LOGIC</h1>
+    <p class="game-subtitle">Sequence the Timeline</p>
+    <button class="start-btn" id="start-btn">START GAME</button>
+    <div class="attribution">
+      "Cipher" Kevin MacLeod (incompetech.com)<br>
+      Licensed under Creative Commons: By Attribution 4.0 License<br>
+      <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">http://creativecommons.org/licenses/by/4.0/</a>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen hidden">
+    <div class="top-bar">
+      <div class="hearts" id="hearts">
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+      </div>
+      <div class="score-display">Score: <span id="score">0</span></div>
+      <button class="audio-btn" id="audio-btn">🔊</button>
+    </div>
+    <div class="game-area">
+      <div class="level-indicator">Level <span id="level">1</span></div>
+      <p class="instruction">Tap in chronological order (earliest to latest)</p>
+      <div class="cards-container" id="cards-container"></div>
+    </div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameover-screen" class="screen hidden">
+    <h1 class="gameover-title">GAME OVER</h1>
+    <p class="final-score">Final Score: <span id="final-score">0</span></p>
+    <p class="final-score">Level Reached: <span id="final-level">1</span></p>
+    <button class="restart-btn" id="restart-btn">PLAY AGAIN</button>
+    <button class="menu-btn" id="menu-btn">MAIN MENU</button>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Level Complete Overlay -->
+  <div class="overlay" id="level-overlay">
+    <h2 class="overlay-title">Level Complete!</h2>
+    <p class="overlay-score">+30 Points</p>
+    <button class="overlay-btn" id="next-level-btn">Next Level</button>
+  </div>
+
+  <script>
+    // Game State
+    let hearts = 5;
+    let score = 0;
+    let level = 1;
+    let audioEnabled = true;
+    let audioContext = null;
+    let backgroundMusic = null;
+    let currentSequence = [];
+    let playerSequence = [];
+    let isProcessing = false;
+
+    // Historical data for sequences
+    const historicalEvents = [
+      { year: 1969, label: "Moon Landing" },
+      { year: 1989, label: "Berlin Wall Falls" },
+      { year: 2001, label: "Wikipedia Launch" },
+      { year: 2007, label: "First iPhone" },
+      { year: 2016, label: "AlphaGo Wins" },
+      { year: 1440, label: "Printing Press" },
+      { year: 1519, label: "Magellan Circumnavigation" },
+      { year: 1776, label: "US Independence" },
+      { year: 1903, label: "First Flight" },
+      { year: 1945, label: "WWII Ends" },
+      { year: 1066, label: "Battle of Hastings" },
+      { year: 1215, label: "Magna Carta" },
+      { year: 1492, label: "Columbus Voyage" },
+      { year: 1789, label: "French Revolution" },
+      { year: 1963, label: "MLK Speech" },
+      { year: 2560, label: "Great Pyramid" },
+      { year: 776, label: "First Olympics" },
+      { year: 1453, label: "Fall of Constantinople" },
+      { year: 1815, label: "Battle of Waterloo" },
+      { year: 1980, label: "Pac-Man Release" }
+    ];
+
+    // Time-based sequences
+    const timeSequences = [
+      { time: "06:00", label: "Dawn" },
+      { time: "09:00", label: "Morning" },
+      { time: "12:00", label: "Noon" },
+      { time: "15:00", label: "Afternoon" },
+      { time: "18:00", label: "Evening" },
+      { time: "21:00", label: "Night" },
+      { time: "00:00", label: "Midnight" },
+      { time: "03:00", label: "Late Night" }
+    ];
+
+    // Number sequences
+    const numberSequences = [
+      { value: 1, label: "First" },
+      { value: 5, label: "Fifth" },
+      { value: 10, label: "Tenth" },
+      { value: 25, label: "Twenty-Fifth" },
+      { value: 50, label: "Fiftieth" },
+      { value: 100, label: "Hundredth" },
+      { value: 500, label: "Five Hundred" },
+      { value: 1000, label: "Thousand" }
+    ];
+
+    // DOM Elements
+    const startScreen = document.getElementById('start-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const gameoverScreen = document.getElementById('gameover-screen');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const menuBtn = document.getElementById('menu-btn');
+    const audioBtn = document.getElementById('audio-btn');
+    const heartsContainer = document.getElementById('hearts');
+    const scoreDisplay = document.getElementById('score');
+    const levelDisplay = document.getElementById('level');
+    const cardsContainer = document.getElementById('cards-container');
+    const toast = document.getElementById('toast');
+    const levelOverlay = document.getElementById('level-overlay');
+    const nextLevelBtn = document.getElementById('next-level-btn');
+    const finalScoreDisplay = document.getElementById('final-score');
+    const finalLevelDisplay = document.getElementById('final-level');
+
+    // Audio Functions
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTone(frequency, duration, type = 'sine') {
+      if (!audioEnabled || !audioContext) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = type;
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration);
+    }
+
+    function playCardTap() {
+      playTone(800, 0.1, 'sine');
+    }
+
+    function playSuccess() {
+      playTone(523.25, 0.1, 'sine');
+      setTimeout(() => playTone(659.25, 0.1, 'sine'), 100);
+      setTimeout(() => playTone(783.99, 0.15, 'sine'), 200);
+    }
+
+    function playError() {
+      playTone(200, 0.2, 'sawtooth');
+      setTimeout(() => playTone(150, 0.2, 'sawtooth'), 100);
+    }
+
+    function playLevelComplete() {
+      playTone(523.25, 0.15, 'sine');
+      setTimeout(() => playTone(659.25, 0.15, 'sine'), 150);
+      setTimeout(() => playTone(783.99, 0.15, 'sine'), 300);
+      setTimeout(() => playTone(1046.50, 0.3, 'sine'), 450);
+    }
+
+    function startBackgroundMusic() {
+      if (!audioEnabled) return;
+      
+      if (backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic = null;
+      }
+      
+      backgroundMusic = new Audio('bgm.mp3');
+      backgroundMusic.loop = true;
+      backgroundMusic.volume = 0.3;
+      
+      backgroundMusic.play().catch(e => console.log('Audio play failed:', e));
+    }
+
+    function stopBackgroundMusic() {
+      if (backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic = null;
+      }
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      audioBtn.textContent = audioEnabled ? '🔊' : '🔇';
+      
+      if (audioEnabled) {
+        initAudio();
+        startBackgroundMusic();
+      } else {
+        stopBackgroundMusic();
+      }
+    }
+
+    // Game Functions
+    function showScreen(screen) {
+      startScreen.classList.add('hidden');
+      gameScreen.classList.add('hidden');
+      gameoverScreen.classList.add('hidden');
+      screen.classList.remove('hidden');
+    }
+
+    function updateHearts() {
+      const hearts = heartsContainer.querySelectorAll('.heart');
+      hearts.forEach((heart, index) => {
+        if (index < (5 - window.hearts)) {
+          heart.classList.add('lost');
+        } else {
+          heart.classList.remove('lost');
+        }
+      });
+    }
+
+    function updateScore() {
+      scoreDisplay.textContent = score;
+    }
+
+    function updateLevel() {
+      levelDisplay.textContent = level;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function getCardsForLevel() {
+      let count;
+      if (level <= 2) count = 3;
+      else if (level <= 5) count = 4;
+      else count = 5;
+
+      // Randomly choose a sequence type
+      const type = Math.random();
+      let source;
+      let valueKey;
+
+      if (type < 0.4) {
+        source = historicalEvents;
+        valueKey = 'year';
+      } else if (type < 0.7) {
+        source = timeSequences;
+        valueKey = 'time';
+      } else {
+        source = numberSequences;
+        valueKey = 'value';
+      }
+
+      // Shuffle and pick
+      const shuffled = [...source].sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, count);
+
+      // Sort by value for correct sequence
+      const sorted = [...selected].sort((a, b) => {
+        if (valueKey === 'time') {
+          return a.time.localeCompare(b.time);
+        }
+        return a[valueKey] - b[valueKey];
+      });
+
+      // Shuffle for display
+      const displayOrder = [...sorted].sort(() => Math.random() - 0.5);
+
+      return {
+        correctSequence: sorted,
+        displayCards: displayOrder,
+        valueKey
+      };
+    }
+
+    function createCards() {
+      cardsContainer.innerHTML = '';
+      playerSequence = [];
+      isProcessing = false;
+
+      const { correctSequence, displayCards, valueKey } = getCardsForLevel();
+      currentSequence = correctSequence;
+
+      displayCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'card';
+        cardEl.dataset.index = index;
+        cardEl.dataset.value = card[valueKey];
+
+        const valueEl = document.createElement('div');
+        valueEl.className = 'card-value';
+        valueEl.textContent = card[valueKey];
+
+        const labelEl = document.createElement('div');
+        labelEl.className = 'card-label';
+        labelEl.textContent = card.label;
+
+        cardEl.appendChild(valueEl);
+        cardEl.appendChild(labelEl);
+
+        cardEl.addEventListener('pointerdown', (e) => handleCardTap(e, cardEl, card, valueKey));
+
+        cardsContainer.appendChild(cardEl);
+      });
+    }
+
+    function handleCardTap(e, cardEl, card, valueKey) {
+      e.preventDefault();
+      
+      if (isProcessing || cardEl.classList.contains('correct') || cardEl.classList.contains('disabled')) {
+        return;
+      }
+
+      playCardTap();
+
+      const expectedIndex = playerSequence.length;
+      const expectedCard = currentSequence[expectedIndex];
+
+      if (card[valueKey] === expectedCard[valueKey]) {
+        // Correct
+        cardEl.classList.add('correct');
+        playerSequence.push(card);
+
+        if (playerSequence.length === currentSequence.length) {
+          // Sequence complete
+          isProcessing = true;
+          playSuccess();
+          score += 30;
+          updateScore();
+          
+          if (hearts < 5) {
+            hearts++;
+            updateHearts();
+          }
+
+          setTimeout(() => {
+            showLevelComplete();
+          }, 500);
+        }
+      } else {
+        // Wrong
+        isProcessing = true;
+        cardEl.classList.add('wrong');
+        playError();
+        document.body.classList.add('flash-red');
+        
+        hearts--;
+        updateHearts();
+
+        setTimeout(() => {
+          document.body.classList.remove('flash-red');
+          cardEl.classList.remove('wrong');
+
+          if (hearts <= 0) {
+            gameOver();
+          } else {
+            // Reset round
+            showToast('Try again!');
+            setTimeout(() => {
+              createCards();
+            }, 1000);
+          }
+        }, 500);
+      }
+    }
+
+    function showLevelComplete() {
+      playLevelComplete();
+      levelOverlay.classList.add('show');
+    }
+
+    function nextLevel() {
+      levelOverlay.classList.remove('show');
+      level++;
+      updateLevel();
+      createCards();
+    }
+
+    function startGame() {
+      initAudio();
+      hearts = 5;
+      score = 0;
+      level = 1;
+      updateHearts();
+      updateScore();
+      updateLevel();
+      startBackgroundMusic();
+      showScreen(gameScreen);
+      createCards();
+    }
+
+    function gameOver() {
+      stopBackgroundMusic();
+      finalScoreDisplay.textContent = score;
+      finalLevelDisplay.textContent = level;
+      showScreen(gameoverScreen);
+    }
+
+    function goToMenu() {
+      stopBackgroundMusic();
+      showScreen(startScreen);
+    }
+
+    // Event Listeners
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+    menuBtn.addEventListener('click', goToMenu);
+    audioBtn.addEventListener('click', toggleAudio);
+    nextLevelBtn.addEventListener('click', nextLevel);
+
+    // Prevent default touch behavior
+    document.body.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+  </script>
+</body>
+</html>

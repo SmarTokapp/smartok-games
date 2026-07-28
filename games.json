@@ -131,5 +131,12 @@
     "icon": "https://games.smartok.app/pharaohs-code/icon.png?v=1",
     "url": "https://games.smartok.app/pharaohs-code/",
     "category": "Education"
+  },
+  {
+    "id": "chrono-logic",
+    "title": "Chrono Logic",
+    "icon": "https://games.smartok.app/chrono-logic/icon.png?v=1",
+    "url": "https://games.smartok.app/chrono-logic/",
+    "category": "Logic"
   }
 ]
