@@ -312,7 +312,7 @@
     const gameArea = document.getElementById('gameArea');
 
     // Block dimensions
-    const BLOCK_HEIGHT = 50;
+    const BLOCK_HEIGHT = 60;
     const INITIAL_BLOCK_WIDTH = 200;
     let currentBlockWidth = INITIAL_BLOCK_WIDTH;
 
@@ -587,8 +587,11 @@
       // Increase difficulty
       blockSpeed = 3 + Math.floor(score / 50) * 0.5;
       
-      // Shift camera down to keep tower visible
-      cameraY += BLOCK_HEIGHT;
+      // Shift camera down only if tower is too high (above 40% of screen)
+      const drawnY = previousBlock.y + cameraY;
+      if (drawnY < canvas.height * 0.4) {
+        cameraY += BLOCK_HEIGHT;
+      }
       
       // Spawn next block
       setTimeout(() => {
