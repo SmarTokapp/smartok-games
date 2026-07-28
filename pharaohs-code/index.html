@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pharaoh's Code</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1207 0%, #2d1f0f 50%, #1a1207 100%);
+            color: #d4af37;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            padding-top: max(15px, env(safe-area-inset-top));
+            background: linear-gradient(180deg, #2d1f0f 0%, #1a1207 100%);
+            border-bottom: 2px solid #d4af37;
+            z-index: 999;
+            pointer-events: auto;
+        }
+
+        .back-button {
+            background: linear-gradient(180deg, #1a1207 0%, #2d1f0f 100%);
+            color: #d4af37;
+            border: 2px solid #ffd700;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 999;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .stats-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .hearts {
+            display: flex;
+            gap: 5px;
+            font-size: 24px;
+        }
+
+        .heart {
+            color: #ff4444;
+        }
+
+        .heart.lost {
+            color: #444;
+        }
+
+        .score {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d4af37;
+        }
+
+        .mute-button {
+            background: linear-gradient(180deg, #d4af37 0%, #b8960c 100%);
+            color: #1a1207;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 20px 20px 20px;
+            overflow: hidden;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .tile {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #3d2d1a 0%, #2d1f0f 100%);
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            pointer-events: auto;
+            font-size: 14px;
+            font-weight: bold;
+            color: #d4af37;
+            text-align: center;
+            padding: 5px;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tile::before {
+            content: '?';
+            position: absolute;
+            font-size: 32px;
+            color: #d4af37;
+            opacity: 0.3;
+        }
+
+        .tile.revealed::before {
+            display: none;
+        }
+
+        .tile.revealed {
+            background: linear-gradient(135deg, #d4af37 0%, #b8960c 100%);
+            color: #1a1207;
+            border-color: #ffd700;
+        }
+
+        .tile.matched {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            border-color: #66BB6A;
+        }
+
+        .tile.matched::before {
+            display: none;
+        }
+
+        .start-screen, .game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1207 0%, #2d1f0f 50%, #1a1207 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+            padding: 20px;
+        }
+
+        .start-screen h1, .game-over-screen h1 {
+            font-size: 36px;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .start-screen p, .game-over-screen p {
+            font-size: 18px;
+            color: #d4af37;
+            margin-bottom: 30px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .start-button, .restart-button {
+            background: linear-gradient(180deg, #d4af37 0%, #b8960c 100%);
+            color: #1a1207;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            pointer-events: auto;
+            margin-bottom: 30px;
+        }
+
+        .attribution {
+            font-size: 12px;
+            color: #d4af37;
+            text-align: center;
+            opacity: 0.7;
+            margin-top: 20px;
+        }
+
+        .attribution a {
+            color: #d4af37;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .level-indicator {
+            font-size: 24px;
+            color: #d4af37;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            z-index: 10;
+        }
+
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(180deg, #d4af37 0%, #b8960c 100%);
+            color: #1a1207;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .level-complete-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .level-complete-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .level-complete-overlay h2 {
+            font-size: 48px;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+        }
+
+        .level-complete-overlay p {
+            font-size: 24px;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="top-bar">
+            <button class="back-button" id="backButton">← Back</button>
+            <div class="stats-container">
+                <div class="hearts" id="hearts">
+                    <span class="heart">❤</span>
+                    <span class="heart">❤</span>
+                    <span class="heart">❤</span>
+                    <span class="heart">❤</span>
+                    <span class="heart">❤</span>
+                </div>
+                <div class="score">Score: <span id="score">0</span></div>
+            </div>
+            <button class="mute-button" id="muteButton">🔊</button>
+        </div>
+
+        <div class="game-area">
+            <div class="level-indicator" id="levelIndicator">Level 1</div>
+            <div class="grid" id="grid"></div>
+        </div>
+
+        <div class="start-screen" id="startScreen">
+            <h1>Pharaoh's Code</h1>
+            <p>Match countries with their capitals in this ancient Egyptian memory challenge!</p>
+            <button class="start-button" id="startButton">Start Game</button>
+            <div class="attribution">
+                "Cool Vibes" Kevin MacLeod (incompetech.com)<br>
+                Licensed under Creative Commons: By Attribution 4.0 License<br>
+                <a href="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</a>
+            </div>
+        </div>
+
+        <div class="game-over-screen hidden" id="gameOverScreen">
+            <h1>Game Over</h1>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <button class="restart-button" id="restartButton">Play Again</button>
+        </div>
+
+        <div class="toast" id="toast">Match!</div>
+
+        <div class="level-complete-overlay" id="levelCompleteOverlay">
+            <h2>Level Complete!</h2>
+            <p>+100 Bonus Points</p>
+            <p>Lives Restored</p>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let lives = 5;
+        let score = 0;
+        let level = 1;
+        let flippedTiles = [];
+        let matchedPairs = 0;
+        let isLocked = false;
+        let isMuted = false;
+        let audioContext = null;
+        let bgMusic = null;
+        let pairsPerLevel = 4;
+        let seenTiles = new Set();
+
+        // Country-Capital Pairs (Expanded to 30+)
+        const countryCapitalPairs = [
+            { country: 'France', capital: 'Paris' },
+            { country: 'Japan', capital: 'Tokyo' },
+            { country: 'Germany', capital: 'Berlin' },
+            { country: 'Italy', capital: 'Rome' },
+            { country: 'Spain', capital: 'Madrid' },
+            { country: 'UK', capital: 'London' },
+            { country: 'China', capital: 'Beijing' },
+            { country: 'Russia', capital: 'Moscow' },
+            { country: 'Brazil', capital: 'Brasilia' },
+            { country: 'Canada', capital: 'Ottawa' },
+            { country: 'Australia', capital: 'Canberra' },
+            { country: 'India', capital: 'New Delhi' },
+            { country: 'Mexico', capital: 'Mexico City' },
+            { country: 'South Korea', capital: 'Seoul' },
+            { country: 'Egypt', capital: 'Cairo' },
+            { country: 'Argentina', capital: 'Buenos Aires' },
+            { country: 'Turkey', capital: 'Ankara' },
+            { country: 'Thailand', capital: 'Bangkok' },
+            { country: 'Greece', capital: 'Athens' },
+            { country: 'Sweden', capital: 'Stockholm' },
+            { country: 'Norway', capital: 'Oslo' },
+            { country: 'Netherlands', capital: 'Amsterdam' },
+            { country: 'Belgium', capital: 'Brussels' },
+            { country: 'Switzerland', capital: 'Bern' },
+            { country: 'Austria', capital: 'Vienna' },
+            { country: 'Poland', capital: 'Warsaw' },
+            { country: 'Czech Republic', capital: 'Prague' },
+            { country: 'Portugal', capital: 'Lisbon' },
+            { country: 'Denmark', capital: 'Copenhagen' },
+            { country: 'Finland', capital: 'Helsinki' },
+            { country: 'Ireland', capital: 'Dublin' },
+            { country: 'New Zealand', capital: 'Wellington' },
+            { country: 'South Africa', capital: 'Pretoria' },
+            { country: 'Nigeria', capital: 'Abuja' },
+            { country: 'Kenya', capital: 'Nairobi' }
+        ];
+
+        // DOM Elements
+        const grid = document.getElementById('grid');
+        const heartsContainer = document.getElementById('hearts');
+        const scoreDisplay = document.getElementById('score');
+        const levelIndicator = document.getElementById('levelIndicator');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const startButton = document.getElementById('startButton');
+        const restartButton = document.getElementById('restartButton');
+        const backButton = document.getElementById('backButton');
+        const muteButton = document.getElementById('muteButton');
+        const toast = document.getElementById('toast');
+        const levelCompleteOverlay = document.getElementById('levelCompleteOverlay');
+
+        // Audio Functions
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (isMuted || !audioContext) return;
+
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            switch(type) {
+                case 'flip':
+                    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                    break;
+                case 'match':
+                    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                    break;
+                case 'error':
+                    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+            }
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            muteButton.textContent = isMuted ? '🔇' : '🔊';
+            
+            if (bgMusic) {
+                if (isMuted) {
+                    bgMusic.pause();
+                } else {
+                    bgMusic.play().catch(e => console.log('Audio play failed:', e));
+                }
+            }
+        }
+
+        function playBackgroundMusic() {
+            if (isMuted) return;
+            
+            bgMusic = new Audio('bgm.mp3');
+            bgMusic.loop = true;
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(e => console.log('Background music play failed:', e));
+        }
+
+        function stopBackgroundMusic() {
+            if (bgMusic) {
+                bgMusic.pause();
+                bgMusic.currentTime = 0;
+                bgMusic = null;
+            }
+        }
+
+        // Game Functions
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function getRandomPairs(count) {
+            const shuffled = shuffleArray(countryCapitalPairs);
+            return shuffled.slice(0, count);
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 800);
+        }
+
+        function updateGridColumns() {
+            if (pairsPerLevel === 4) {
+                grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+            } else if (pairsPerLevel === 6) {
+                grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+            } else {
+                grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+            }
+        }
+
+        function createTiles() {
+            grid.innerHTML = '';
+            updateGridColumns();
+            seenTiles.clear(); // Reset seen tiles for new level
+            const pairs = getRandomPairs(pairsPerLevel);
+            const tiles = [];
+
+            pairs.forEach(pair => {
+                tiles.push({ text: pair.country, pairId: pairs.indexOf(pair), type: 'country' });
+                tiles.push({ text: pair.capital, pairId: pairs.indexOf(pair), type: 'capital' });
+            });
+
+            const shuffledTiles = shuffleArray(tiles);
+
+            shuffledTiles.forEach((tile, index) => {
+                const tileElement = document.createElement('div');
+                tileElement.className = 'tile';
+                tileElement.dataset.index = index;
+                tileElement.dataset.pairId = tile.pairId;
+                tileElement.dataset.text = tile.text;
+                tileElement.textContent = '';
+                
+                tileElement.addEventListener('pointerdown', handleTileClick);
+                
+                grid.appendChild(tileElement);
+            });
+        }
+
+        function handleTileClick(e) {
+            if (isLocked) return;
+            
+            const tile = e.target;
+            
+            if (tile.classList.contains('revealed') || tile.classList.contains('matched')) return;
+
+            initAudio();
+            playSound('flip');
+            
+            tile.classList.add('revealed');
+            tile.textContent = tile.dataset.text;
+            flippedTiles.push(tile);
+
+            if (flippedTiles.length === 2) {
+                isLocked = true;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [tile1, tile2] = flippedTiles;
+            const tile1Id = tile1.dataset.index;
+            const tile2Id = tile2.dataset.index;
+
+            if (tile1.dataset.pairId === tile2.dataset.pairId) {
+                // Match!
+                playSound('match');
+                score += 20;
+                updateScore();
+                showToast('Match!');
+                
+                setTimeout(() => {
+                    tile1.classList.add('matched');
+                    tile2.classList.add('matched');
+                    matchedPairs++;
+                    flippedTiles = [];
+                    isLocked = false;
+
+                    if (matchedPairs === pairsPerLevel) {
+                        levelComplete();
+                    }
+                }, 300);
+            } else {
+                // No match - check if tiles were previously seen
+                const tile1Seen = seenTiles.has(tile1Id);
+                const tile2Seen = seenTiles.has(tile2Id);
+                
+                // Add both tiles to seen set
+                seenTiles.add(tile1Id);
+                seenTiles.add(tile2Id);
+                
+                // Only deduct heart if at least one tile was already seen
+                if (tile1Seen || tile2Seen) {
+                    playSound('error');
+                    lives--;
+                    updateHearts();
+                    showToast('Try Again');
+                } else {
+                    // First time seeing both tiles - no penalty
+                    showToast('First Look!');
+                }
+
+                setTimeout(() => {
+                    tile1.classList.remove('revealed');
+                    tile2.classList.remove('revealed');
+                    tile1.textContent = '';
+                    tile2.textContent = '';
+                    flippedTiles = [];
+                    isLocked = false;
+
+                    if (lives <= 0) {
+                        gameOver();
+                    }
+                }, 800);
+            }
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = score;
+        }
+
+        function updateHearts() {
+            const hearts = heartsContainer.querySelectorAll('.heart');
+            hearts.forEach((heart, index) => {
+                if (index < lives) {
+                    heart.classList.remove('lost');
+                } else {
+                    heart.classList.add('lost');
+                }
+            });
+        }
+
+        function levelComplete() {
+            score += 100;
+            updateScore();
+            level++;
+            levelIndicator.textContent = `Level ${level}`;
+            matchedPairs = 0;
+            
+            // Progressive difficulty: increase pairs per level
+            if (level === 2) {
+                pairsPerLevel = 6;
+            } else if (level >= 3) {
+                pairsPerLevel = 8;
+            }
+            
+            // Show level complete overlay
+            levelCompleteOverlay.classList.add('show');
+            
+            setTimeout(() => {
+                levelCompleteOverlay.classList.remove('show');
+                // Restore lives to 5 for new level
+                lives = 5;
+                updateHearts();
+                createTiles();
+            }, 2000);
+        }
+
+        function gameOver() {
+            finalScoreDisplay.textContent = score;
+            gameOverScreen.classList.remove('hidden');
+            
+            if (bgMusic) {
+                bgMusic.pause();
+                bgMusic = null;
+            }
+        }
+
+        function startGame() {
+            lives = 5;
+            score = 0;
+            level = 1;
+            pairsPerLevel = 4;
+            matchedPairs = 0;
+            flippedTiles = [];
+            isLocked = false;
+            
+            updateScore();
+            updateHearts();
+            levelIndicator.textContent = 'Level 1';
+            
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            
+            createTiles();
+            playBackgroundMusic();
+        }
+
+        // Event Listeners
+        startButton.addEventListener('pointerdown', () => {
+            initAudio();
+            startGame();
+        });
+
+        restartButton.addEventListener('pointerdown', () => {
+            initAudio();
+            startGame();
+        });
+
+        function goBack() {
+            // Stop all audio first
+            stopBackgroundMusic();
+            if (window.AudioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+            
+            // Navigate back
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'GO_BACK' }));
+            } else if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                document.getElementById('gameScreen')?.classList.add('hidden');
+                document.getElementById('startScreen').classList.remove('hidden');
+            }
+        }
+
+        backButton.addEventListener('pointerdown', goBack);
+
+        muteButton.addEventListener('pointerdown', toggleMute);
+    </script>
+</body>
+</html>

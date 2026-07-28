@@ -124,5 +124,12 @@
     "icon": "https://games.smartok.app/sylvan-script/icon.png?v=2",
     "url": "https://games.smartok.app/sylvan-script/",
     "category": "Word"
+  },
+  {
+    "id": "pharaohs-code",
+    "title": "Pharaoh's Code",
+    "icon": "https://games.smartok.app/pharaohs-code/icon.png?v=1",
+    "url": "https://games.smartok.app/pharaohs-code/",
+    "category": "Education"
   }
 ]
