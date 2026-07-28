@@ -379,7 +379,7 @@
       if (bgMusic) {
         if (isMuted) {
           bgMusic.pause();
-        } else if (musicEnabled) {
+        } else if (musicEnabled && isGameRunning) {
           bgMusic.play();
         }
       }
@@ -462,7 +462,7 @@
     }
 
     function playBackgroundMusic() {
-      if (musicEnabled) return;
+      if (musicEnabled || isMuted) return;
       bgMusic = new Audio('bgm.mp3');
       bgMusic.loop = true;
       bgMusic.volume = 0.3;
@@ -576,8 +576,12 @@
       
       const gameArea = document.getElementById('gameArea');
       const rect = gameArea.getBoundingClientRect();
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+      
+      // Get true visual center of shield accounting for CSS transform
+      const shieldElement = document.getElementById('shield');
+      const shieldRect = shieldElement.getBoundingClientRect();
+      const trueCenterX = shieldRect.left + (shieldRect.width / 2) - rect.left;
+      const trueCenterY = shieldRect.top + (shieldRect.height / 2) - rect.top;
       const shieldRadius = 60; // 120px / 2
       
       for (let i = projectiles.length - 1; i >= 0; i--) {
@@ -591,8 +595,8 @@
         proj.element.style.left = proj.x + 'px';
         proj.element.style.top = proj.y + 'px';
         
-        // Check collision with shield
-        const distance = Math.sqrt(Math.pow(proj.x - centerX, 2) + Math.pow(proj.y - centerY, 2));
+        // Check collision with shield using true visual center
+        const distance = Math.sqrt(Math.pow(proj.x - trueCenterX, 2) + Math.pow(proj.y - trueCenterY, 2));
         
         if (distance <= shieldRadius) {
           // Collision detected
