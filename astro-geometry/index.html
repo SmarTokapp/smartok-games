@@ -133,7 +133,7 @@
       left: 0;
       right: 0;
       background: rgba(5, 8, 20, 0.95);
-      padding: max(35px, env(safe-area-inset-top)) 20px 15px 10px;
+      padding: max(35px, env(safe-area-inset-top)) 20px 15px 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -232,6 +232,22 @@
       font-size: 1.2rem;
       color: #00d4ff;
       margin-bottom: 15px;
+    }
+
+    .timer-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(0, 212, 255, 0.2);
+      border-radius: 2px;
+      margin-top: 15px;
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00d4ff, #ffd700);
+      width: 100%;
+      transition: width 0.1s linear;
     }
 
     .crystal-display {
@@ -458,6 +474,9 @@
       <div class="question-container">
         <div class="crystal-display">💎</div>
         <p class="question-text" id="question-text">Loading question...</p>
+        <div class="timer-bar">
+          <div class="timer-fill" id="timer-fill"></div>
+        </div>
       </div>
       <div class="choices-grid" id="choices-grid"></div>
     </div>
@@ -495,6 +514,8 @@
     let questionsAnswered = 0;
     let questionsPerLevel = 5;
     let isProcessing = false;
+    let timerInterval = null;
+    let timeLeft = 15;
 
     // Geometry Question Database (40+ questions)
     const geometryQuestions = {
@@ -508,7 +529,13 @@
         { question: "A square has how many equal sides?", choices: ["2", "3", "4", "5"], correct: 2 },
         { question: "Which shape has 3 sides?", choices: ["Square", "Triangle", "Pentagon", "Hexagon"], correct: 1 },
         { question: "How many vertices does a square have?", choices: ["3", "4", "5", "6"], correct: 1 },
-        { question: "A rectangle has how many right angles?", choices: ["2", "3", "4", "5"], correct: 2 }
+        { question: "A rectangle has how many right angles?", choices: ["2", "3", "4", "5"], correct: 2 },
+        { question: "How many sides does a heptagon have?", choices: ["6", "7", "8", "9"], correct: 1 },
+        { question: "Which shape has 6 sides?", choices: ["Pentagon", "Hexagon", "Heptagon", "Octagon"], correct: 1 },
+        { question: "A rhombus has how many equal sides?", choices: ["2", "3", "4", "5"], correct: 2 },
+        { question: "How many vertices does a nonagon have?", choices: ["7", "8", "9", "10"], correct: 2 },
+        { question: "Which shape has 9 sides?", choices: ["Octagon", "Nonagon", "Decagon", "Hendecagon"], correct: 1 },
+        { question: "A parallelogram has how many pairs of parallel sides?", choices: ["1", "2", "3", "4"], correct: 1 }
       ],
       2: [ // Level 2: Angles & Triangles
         { question: "Which angle equals exactly 90°?", choices: ["Acute", "Right", "Obtuse", "Straight"], correct: 1 },
@@ -520,7 +547,13 @@
         { question: "An isosceles triangle has:", choices: ["0 equal sides", "2 equal sides", "3 equal sides", "4 equal sides"], correct: 1 },
         { question: "How many angles in a quadrilateral?", choices: ["2", "3", "4", "5"], correct: 2 },
         { question: "A straight angle measures:", choices: ["90°", "180°", "270°", "360°"], correct: 1 },
-        { question: "Complementary angles sum to:", choices: ["45°", "90°", "180°", "360°"], correct: 1 }
+        { question: "Complementary angles sum to:", choices: ["45°", "90°", "180°", "360°"], correct: 1 },
+        { question: "Supplementary angles sum to:", choices: ["90°", "180°", "270°", "360°"], correct: 1 },
+        { question: "A scalene triangle has:", choices: ["0 equal sides", "2 equal sides", "3 equal sides", "All equal sides"], correct: 0 },
+        { question: "How many degrees in a right angle?", choices: ["45°", "90°", "180°", "270°"], correct: 1 },
+        { question: "Which triangle has all angles less than 90°?", choices: ["Right", "Obtuse", "Acute", "Equilateral"], correct: 2 },
+        { question: "The sum of exterior angles of any polygon is:", choices: ["180°", "360°", "540°", "720°"], correct: 1 },
+        { question: "An equilateral triangle has how many degrees per angle?", choices: ["45°", "60°", "90°", "120°"], correct: 1 }
       ],
       3: [ // Level 3: Symmetry & Perimeter
         { question: "Which shape has 4 lines of symmetry?", choices: ["Triangle", "Square", "Pentagon", "Hexagon"], correct: 1 },
@@ -532,7 +565,13 @@
         { question: "A regular pentagon has:", choices: ["3 lines of symmetry", "4 lines of symmetry", "5 lines of symmetry", "No symmetry"], correct: 2 },
         { question: "Perimeter of regular hexagon side 3:", choices: ["12", "15", "18", "21"], correct: 2 },
         { question: "Which shape has 1 line of symmetry?", choices: ["Circle", "Isosceles triangle", "Square", "Regular hexagon"], correct: 1 },
-        { question: "Perimeter of regular octagon side 4:", choices: ["24", "28", "32", "36"], correct: 2 }
+        { question: "Perimeter of regular octagon side 4:", choices: ["24", "28", "32", "36"], correct: 2 },
+        { question: "Perimeter of triangle with sides 3,4,5:", choices: ["10", "12", "14", "16"], correct: 1 },
+        { question: "A regular hexagon has how many lines of symmetry?", choices: ["4", "5", "6", "8"], correct: 2 },
+        { question: "Perimeter of square with side 8:", choices: ["24", "28", "32", "36"], correct: 2 },
+        { question: "Which shape has no lines of symmetry?", choices: ["Circle", "Square", "Scalene triangle", "Equilateral triangle"], correct: 2 },
+        { question: "Perimeter of rectangle 5×9:", choices: ["14", "18", "28", "45"], correct: 2 },
+        { question: "A kite has how many lines of symmetry?", choices: ["0", "1", "2", "4"], correct: 1 }
       ],
       4: [ // Level 4: 3D Projections
         { question: "How many edges does a cube have?", choices: ["8", "10", "12", "16"], correct: 2 },
@@ -544,7 +583,13 @@
         { question: "How many vertices does an octahedron have?", choices: ["4", "6", "8", "10"], correct: 1 },
         { question: "A dodecahedron has how many faces?", choices: ["10", "12", "14", "16"], correct: 1 },
         { question: "How many edges does a dodecahedron have?", choices: ["20", "24", "30", "36"], correct: 2 },
-        { question: "An icosahedron has how many faces?", choices: ["12", "15", "18", "20"], correct: 3 }
+        { question: "An icosahedron has how many faces?", choices: ["12", "15", "18", "20"], correct: 3 },
+        { question: "How many vertices does a tetrahedron have?", choices: ["3", "4", "5", "6"], correct: 1 },
+        { question: "A cube has how many faces of equal shape?", choices: ["4", "6", "8", "12"], correct: 1 },
+        { question: "How many edges does an octahedron have?", choices: ["8", "10", "12", "14"], correct: 2 },
+        { question: "A tetrahedron is a type of:", choices: ["Pyramid", "Prism", "Platonic solid", "Cylinder"], correct: 2 },
+        { question: "How many faces meet at each vertex of a cube?", choices: ["2", "3", "4", "6"], correct: 1 },
+        { question: "An octahedron has how many edges meeting at each vertex?", choices: ["3", "4", "5", "6"], correct: 1 }
       ],
       5: [ // Level 5: Advanced Polyhedrons
         { question: "Identify the polyhedron with 20 faces:", choices: ["Dodecahedron", "Icosahedron", "Octahedron", "Tetrahedron"], correct: 1 },
@@ -556,7 +601,13 @@
         { question: "Which is NOT a Platonic solid?", choices: ["Cube", "Tetrahedron", "Cylinder", "Octahedron"], correct: 2 },
         { question: "How many vertices does a dodecahedron have?", choices: ["12", "15", "18", "20"], correct: 3 },
         { question: "A pentagonal prism has how many faces?", choices: ["5", "6", "7", "8"], correct: 2 },
-        { question: "How many edges does a pentagonal prism have?", choices: ["10", "12", "15", "20"], correct: 2 }
+        { question: "How many edges does a pentagonal prism have?", choices: ["10", "12", "15", "20"], correct: 2 },
+        { question: "How many faces does a hexagonal prism have?", choices: ["6", "7", "8", "9"], correct: 2 },
+        { question: "A triangular pyramid is also called:", choices: ["Tetrahedron", "Octahedron", "Dodecahedron", "Icosahedron"], correct: 0 },
+        { question: "How many edges does an icosahedron have?", choices: ["20", "25", "30", "35"], correct: 2 },
+        { question: "A cube has how many space diagonals?", choices: ["4", "6", "8", "12"], correct: 0 },
+        { question: "How many vertices does a hexagonal prism have?", choices: ["10", "12", "14", "16"], correct: 1 },
+        { question: "A rectangular prism has how many faces?", choices: ["4", "5", "6", "8"], correct: 2 }
       ]
     };
 
@@ -574,6 +625,7 @@
     const levelDisplay = document.getElementById('level');
     const questionText = document.getElementById('question-text');
     const choicesGrid = document.getElementById('choices-grid');
+    const timerFill = document.getElementById('timer-fill');
     const toast = document.getElementById('toast');
     const levelOverlay = document.getElementById('level-overlay');
     const nextLevelBtn = document.getElementById('next-level-btn');
@@ -708,6 +760,52 @@
       setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
+    function startTimer() {
+      timeLeft = 15;
+      timerFill.style.width = '100%';
+      
+      if (timerInterval) clearInterval(timerInterval);
+      
+      timerInterval = setInterval(() => {
+        timeLeft -= 0.1;
+        const percentage = (timeLeft / 15) * 100;
+        timerFill.style.width = percentage + '%';
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          handleTimeout();
+        }
+      }, 100);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function handleTimeout() {
+      isProcessing = true;
+      playError();
+      hearts--;
+      updateHearts();
+      showToast('Time\'s up!');
+
+      // Highlight correct answer
+      const choices = choicesGrid.querySelectorAll('.choice-node');
+      choices[currentQuestion.correct].classList.add('correct');
+
+      setTimeout(() => {
+        if (hearts <= 0) {
+          gameOver();
+        } else {
+          displayQuestion();
+          isProcessing = false;
+        }
+      }, 1500);
+    }
+
     function getRandomQuestion() {
       const levelQuestions = geometryQuestions[level] || geometryQuestions[1];
       const randomIndex = Math.floor(Math.random() * levelQuestions.length);
@@ -729,6 +827,8 @@
 
         choicesGrid.appendChild(choiceNode);
       });
+
+      startTimer();
     }
 
     function handleChoice(e, choiceNode, index) {
@@ -739,6 +839,7 @@
       }
 
       isProcessing = true;
+      stopTimer();
       playTap();
 
       if (index === currentQuestion.correct) {
