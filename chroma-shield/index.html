@@ -60,6 +60,7 @@
       justify-content: center;
       box-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
       transition: transform 0.2s, box-shadow 0.2s;
+      pointer-events: auto;
     }
 
     .back-btn:hover {
@@ -110,6 +111,7 @@
       justify-content: center;
       box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
       transition: transform 0.2s, box-shadow 0.2s;
+      pointer-events: auto;
     }
 
     .audio-btn:hover {
@@ -145,6 +147,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 10;
+      pointer-events: none;
     }
 
     .shield-cyan {
@@ -333,7 +336,7 @@
         <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">🔊</button>
       </div>
 
-      <div class="game-area" id="gameArea" onclick="toggleShield()"></div>
+      <div class="game-area" id="gameArea"></div>
       <div class="shield shield-cyan" id="shield"></div>
     </div>
 
@@ -730,6 +733,14 @@
       document.body.addEventListener('click', () => {
         if (!audioContext) initAudio();
       }, { once: true });
+      
+      // Add global shield toggle event listener to game screen
+      const gameScreen = document.getElementById('gameScreen');
+      gameScreen.addEventListener('pointerdown', (e) => {
+        // Ignore clicks on buttons
+        if (e.target.closest('button')) return;
+        toggleShield();
+      });
     });
   </script>
 </body>
