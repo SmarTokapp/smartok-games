@@ -107,13 +107,31 @@
       left: 0;
       right: 0;
       background: rgba(13, 2, 33, 0.95);
-      padding: max(35px, env(safe-area-inset-top)) 20px 15px;
+      padding: max(35px, env(safe-area-inset-top)) 20px 15px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 2px solid #7b2cbf;
       box-shadow: 0 0 20px rgba(123, 44, 191, 0.3);
       z-index: 100;
+    }
+
+    .back-btn {
+      background: #0d0221;
+      color: #00f5d4;
+      border: 2px solid #00f5d4;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      pointer-events: auto;
+      box-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
     }
 
     .hearts {
@@ -399,6 +417,7 @@
   <!-- Game Screen -->
   <div id="game-screen" class="screen hidden">
     <div class="top-bar">
+      <button class="back-btn" id="back-btn" onclick="goBack()">←</button>
       <div class="hearts" id="hearts">
         <span class="heart">❤</span>
         <span class="heart">❤</span>
@@ -503,6 +522,7 @@
     const restartBtn = document.getElementById('restart-btn');
     const menuBtn = document.getElementById('menu-btn');
     const audioBtn = document.getElementById('audio-btn');
+    const backBtn = document.getElementById('back-btn');
     const heartsContainer = document.getElementById('hearts');
     const scoreDisplay = document.getElementById('score');
     const levelDisplay = document.getElementById('level');
@@ -800,12 +820,26 @@
       showScreen(startScreen);
     }
 
+    function goBack() {
+      stopBackgroundMusic();
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+      }
+      showScreen(startScreen);
+
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'GO_BACK' }));
+      }
+    }
+
     // Event Listeners
     startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', startGame);
     menuBtn.addEventListener('click', goToMenu);
     audioBtn.addEventListener('click', toggleAudio);
     nextLevelBtn.addEventListener('click', nextLevel);
+    backBtn.addEventListener('click', goBack);
 
     // Prevent default touch behavior
     document.body.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
