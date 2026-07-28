@@ -12,10 +12,10 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(180deg, #ff7e5f 0%, #feb47b 30%, #2c3e50 100%);
       min-height: 100vh;
-      color: #fff;
+      color: #2c3e50;
       overflow: hidden;
       touch-action: manipulation;
     }
@@ -39,32 +39,34 @@
       align-items: center;
       padding: 15px;
       padding-top: max(15px, env(safe-area-inset-top));
-      background: rgba(139, 0, 139, 0.2);
-      border: 2px solid #8b008b;
-      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 4px solid #2c3e50;
+      border-radius: 0;
       margin-bottom: 20px;
-      box-shadow: 0 0 20px rgba(139, 0, 139, 0.5);
+      box-shadow: 4px 4px 0px #2c3e50;
     }
 
     .back-btn {
-      background: linear-gradient(135deg, #ff00ff, #8b008b);
-      border: none;
-      color: #fff;
-      font-size: 24px;
+      background: #ff6b6b;
+      border: 3px solid #2c3e50;
+      color: #2c3e50;
+      font-size: 20px;
+      font-weight: bold;
       width: 45px;
       height: 45px;
-      border-radius: 50%;
+      border-radius: 0;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
-      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 3px 3px 0px #2c3e50;
+      transition: transform 0.1s, box-shadow 0.1s;
+      pointer-events: auto;
     }
 
     .back-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px #2c3e50;
     }
 
     .stats {
@@ -80,41 +82,39 @@
     }
 
     .heart {
-      color: #ff0066;
-      text-shadow: 0 0 10px #ff0066;
+      color: #ff6b6b;
     }
 
     .heart.lost {
-      color: #333;
-      text-shadow: none;
+      color: #ccc;
     }
 
     .score {
       font-size: 18px;
       font-weight: bold;
-      color: #00ffff;
-      text-shadow: 0 0 10px #00ffff;
+      color: #2c3e50;
     }
 
     .audio-btn {
-      background: linear-gradient(135deg, #00ffff, #0088ff);
-      border: none;
-      color: #000;
-      font-size: 20px;
+      background: #4ecdc4;
+      border: 3px solid #2c3e50;
+      color: #2c3e50;
+      font-size: 18px;
       width: 40px;
       height: 40px;
-      border-radius: 50%;
+      border-radius: 0;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
-      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 3px 3px 0px #2c3e50;
+      transition: transform 0.1s, box-shadow 0.1s;
+      pointer-events: auto;
     }
 
     .audio-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px #2c3e50;
     }
 
     /* Game Area */
@@ -145,15 +145,15 @@
     .game-title {
       font-size: 36px;
       font-weight: bold;
-      color: #ff00ff;
-      text-shadow: 0 0 20px #ff00ff;
+      color: #2c3e50;
+      text-shadow: 3px 3px 0px #ff6b6b;
       margin-bottom: 20px;
+      letter-spacing: 2px;
     }
 
     .game-subtitle {
       font-size: 18px;
-      color: #00ffff;
-      text-shadow: 0 0 10px #00ffff;
+      color: #2c3e50;
       margin-bottom: 40px;
     }
 
@@ -161,33 +161,33 @@
       padding: 15px 50px;
       font-size: 22px;
       font-weight: bold;
-      border: 3px solid #ff00ff;
-      border-radius: 30px;
-      background: linear-gradient(135deg, #ff00ff, #8b008b);
-      color: #fff;
+      border: 4px solid #2c3e50;
+      border-radius: 0;
+      background: #4ecdc4;
+      color: #2c3e50;
       cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
+      transition: all 0.1s;
+      box-shadow: 4px 4px 0px #2c3e50;
       margin-bottom: 30px;
     }
 
     .start-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 40px rgba(255, 0, 255, 0.8);
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #2c3e50;
     }
 
     .attribution {
       font-size: 12px;
-      color: #888;
+      color: #2c3e50;
       text-align: center;
       padding: 20px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 3px solid #2c3e50;
       max-width: 300px;
     }
 
     .attribution a {
-      color: #00ffff;
+      color: #4ecdc4;
       text-decoration: none;
     }
 
@@ -204,15 +204,15 @@
     .game-over-title {
       font-size: 42px;
       font-weight: bold;
-      color: #ff0000;
-      text-shadow: 0 0 30px #ff0000;
+      color: #ff6b6b;
+      text-shadow: 3px 3px 0px #2c3e50;
       margin-bottom: 20px;
+      letter-spacing: 2px;
     }
 
     .final-score {
       font-size: 28px;
-      color: #00ffff;
-      text-shadow: 0 0 15px #00ffff;
+      color: #2c3e50;
       margin-bottom: 40px;
     }
 
@@ -220,18 +220,18 @@
       padding: 15px 50px;
       font-size: 22px;
       font-weight: bold;
-      border: 3px solid #00ffff;
-      border-radius: 30px;
-      background: linear-gradient(135deg, #00ffff, #0088ff);
-      color: #000;
+      border: 4px solid #2c3e50;
+      border-radius: 0;
+      background: #4ecdc4;
+      color: #2c3e50;
       cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+      transition: all 0.1s;
+      box-shadow: 4px 4px 0px #2c3e50;
     }
 
     .play-again-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.8);
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #2c3e50;
     }
 
     .hidden {
@@ -244,8 +244,8 @@
     }
 
     @keyframes flashRed {
-      0%, 100% { background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%); }
-      50% { background: rgba(255, 0, 0, 0.5); }
+      0%, 100% { background: linear-gradient(180deg, #ff7e5f 0%, #feb47b 30%, #2c3e50 100%); }
+      50% { background: rgba(255, 107, 107, 0.5); }
     }
   </style>
 </head>
@@ -466,13 +466,16 @@
       const canvasHeight = canvas.height;
       const baseY = canvasHeight - 50;
       
+      // Retro color palette
+      const retroColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181', '#aa96da', '#fcbad3'];
+      
       if (blocks.length === 0) {
         // Base block
         const baseBlock = createBlock(
           (canvasWidth - INITIAL_BLOCK_WIDTH) / 2,
           baseY,
           INITIAL_BLOCK_WIDTH,
-          '#ff00ff'
+          retroColors[0]
         );
         blocks.push(baseBlock);
         currentBlockWidth = INITIAL_BLOCK_WIDTH;
@@ -480,11 +483,12 @@
       
       // Spawn new block at top
       const spawnY = baseY - (blocks.length * BLOCK_HEIGHT) - BLOCK_HEIGHT;
+      const colorIndex = blocks.length % retroColors.length;
       currentBlock = createBlock(
         0,
         spawnY,
         currentBlockWidth,
-        `hsl(${(blocks.length * 30) % 360}, 100%, 50%)`
+        retroColors[colorIndex]
       );
       
       // Reset direction
@@ -532,11 +536,13 @@
             const canvasHeight = canvas.height;
             const baseY = canvasHeight - 50;
             const spawnY = baseY - (blocks.length * BLOCK_HEIGHT) - BLOCK_HEIGHT;
+            const retroColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181', '#aa96da', '#fcbad3'];
+            const colorIndex = blocks.length % retroColors.length;
             currentBlock = createBlock(
               0,
               spawnY,
               currentBlockWidth,
-              `hsl(${(blocks.length * 30) % 360}, 100%, 50%)`
+              retroColors[colorIndex]
             );
             direction = 1;
           }, 500);
@@ -632,16 +638,16 @@
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Draw background grid
-      ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
-      ctx.lineWidth = 1;
-      for (let i = 0; i < canvas.width; i += 40) {
+      // Draw retro pixel grid
+      ctx.strokeStyle = 'rgba(44, 62, 80, 0.2)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < canvas.width; i += 32) {
         ctx.beginPath();
         ctx.moveTo(i, 0);
         ctx.lineTo(i, canvas.height);
         ctx.stroke();
       }
-      for (let i = 0; i < canvas.height; i += 40) {
+      for (let i = 0; i < canvas.height; i += 32) {
         ctx.beginPath();
         ctx.moveTo(0, i);
         ctx.lineTo(canvas.width, i);
@@ -670,22 +676,28 @@
       ctx.fillStyle = block.color;
       ctx.fillRect(block.x, block.y, block.width, BLOCK_HEIGHT);
       
-      // 3D effect - top face
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.fillRect(block.x, block.y, block.width, 5);
+      // Retro pixel border
+      ctx.strokeStyle = '#2c3e50';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(block.x, block.y, block.width, BLOCK_HEIGHT);
       
-      // 3D effect - right face
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-      ctx.fillRect(block.x + block.width - 5, block.y, 5, BLOCK_HEIGHT);
+      // Retro highlight - top face
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.fillRect(block.x + 2, block.y + 2, block.width - 4, 4);
       
-      // Glow effect for top block
+      // Retro shadow - right face
+      ctx.fillStyle = 'rgba(44, 62, 80, 0.3)';
+      ctx.fillRect(block.x + block.width - 4, block.y + 2, 4, BLOCK_HEIGHT - 4);
+      
+      // Retro shadow - bottom face
+      ctx.fillStyle = 'rgba(44, 62, 80, 0.3)';
+      ctx.fillRect(block.x + 2, block.y + BLOCK_HEIGHT - 4, block.width - 4, 4);
+      
+      // Glow effect for top block (retro style)
       if (isTop) {
-        ctx.shadowColor = block.color;
-        ctx.shadowBlur = 20;
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(block.x, block.y, block.width, BLOCK_HEIGHT);
-        ctx.shadowBlur = 0;
+        ctx.strokeStyle = '#ff6b6b';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(block.x - 2, block.y - 2, block.width + 4, BLOCK_HEIGHT + 4);
       }
     }
 
@@ -735,12 +747,14 @@
     // Event Listeners
     window.addEventListener('resize', resizeCanvas);
     
-    gameArea.addEventListener('click', dropBlock);
-    gameArea.addEventListener('touchstart', (e) => {
-      e.preventDefault();
+    // Add global block drop event listener to game screen
+    const gameScreen = document.getElementById('gameScreen');
+    gameScreen.addEventListener('pointerdown', (e) => {
+      // Ignore clicks on buttons
+      if (e.target.closest('button')) return;
       dropBlock();
     });
-
+    
     // Initial canvas setup
     resizeCanvas();
   </script>
