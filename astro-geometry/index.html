@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Astro Geometry</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #050814 0%, #0d1b2a 50%, #050814 100%);
+      color: #00d4ff;
+      min-height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    /* Animated Stars Background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle 2s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Start Screen */
+    #start-screen {
+      background: linear-gradient(135deg, #050814 0%, #0d1b2a 50%, #050814 100%);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .game-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #00d4ff;
+      text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff;
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+    }
+
+    .game-subtitle {
+      font-size: 1.2rem;
+      color: #ffd700;
+      margin-bottom: 40px;
+      text-shadow: 0 0 10px #ffd700;
+    }
+
+    .start-btn {
+      background: linear-gradient(135deg, #00d4ff 0%, #ffd700 100%);
+      border: none;
+      padding: 15px 50px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #050814;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 30px;
+    }
+
+    .start-btn:hover, .start-btn:active {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+    }
+
+    .attribution {
+      font-size: 0.7rem;
+      color: rgba(0, 212, 255, 0.6);
+      margin-top: 20px;
+      line-height: 1.5;
+      max-width: 300px;
+    }
+
+    .attribution a {
+      color: #ffd700;
+      text-decoration: none;
+    }
+
+    /* Game Screen */
+    #game-screen {
+      padding: 0;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(5, 8, 20, 0.95);
+      padding: max(35px, env(safe-area-inset-top)) 20px 15px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #00d4ff;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+      z-index: 100;
+    }
+
+    .back-btn {
+      background: #050814;
+      color: #00d4ff;
+      border: 2px solid #00d4ff;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      pointer-events: auto;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    }
+
+    .hearts {
+      display: flex;
+      gap: 5px;
+      font-size: 1.5rem;
+    }
+
+    .heart {
+      color: #ff006e;
+      text-shadow: 0 0 10px #ff006e;
+    }
+
+    .heart.lost {
+      color: #333;
+      text-shadow: none;
+    }
+
+    .score-display {
+      font-size: 1.2rem;
+      color: #00d4ff;
+      text-shadow: 0 0 10px #00d4ff;
+      font-weight: bold;
+    }
+
+    .audio-btn {
+      background: none;
+      border: 2px solid #00d4ff;
+      color: #00d4ff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .audio-btn:hover {
+      background: #00d4ff;
+      color: #050814;
+    }
+
+    .game-area {
+      margin-top: 100px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .level-indicator {
+      font-size: 1.5rem;
+      color: #ffd700;
+      text-shadow: 0 0 15px #ffd700;
+      margin-bottom: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .question-container {
+      background: rgba(0, 212, 255, 0.1);
+      border: 2px solid #00d4ff;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    }
+
+    .question-text {
+      font-size: 1.2rem;
+      color: #00d4ff;
+      margin-bottom: 15px;
+    }
+
+    .crystal-display {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .choices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      width: 100%;
+    }
+
+    .choice-node {
+      background: linear-gradient(135deg, #0d1b2a 0%, #1a2f4a 100%);
+      border: 2px solid #00d4ff;
+      border-radius: 15px;
+      padding: 20px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+      touch-action: none;
+      font-size: 1rem;
+      color: #00d4ff;
+      text-align: center;
+    }
+
+    .choice-node:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+      border-color: #ffd700;
+    }
+
+    .choice-node.correct {
+      background: linear-gradient(135deg, #00d4ff 0%, #ffd700 100%);
+      border-color: #ffd700;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+      animation: pulse 0.5s ease;
+      color: #050814;
+    }
+
+    .choice-node.wrong {
+      background: linear-gradient(135deg, #ff006e 0%, #c9184a 100%);
+      border-color: #ff006e;
+      box-shadow: 0 0 30px rgba(255, 0, 110, 0.8);
+      animation: shake 0.5s ease;
+    }
+
+    .choice-node.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .flash-red {
+      animation: flashRed 0.3s ease;
+    }
+
+    @keyframes flashRed {
+      0%, 100% { background: #050814; }
+      50% { background: rgba(255, 0, 110, 0.3); }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 212, 255, 0.9);
+      color: #050814;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-weight: bold;
+      font-size: 1rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    /* Level Complete Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 20, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-title {
+      font-size: 2rem;
+      color: #00d4ff;
+      text-shadow: 0 0 20px #00d4ff;
+      margin-bottom: 20px;
+    }
+
+    .overlay-score {
+      font-size: 1.5rem;
+      color: #ffd700;
+      margin-bottom: 30px;
+    }
+
+    .overlay-btn {
+      background: linear-gradient(135deg, #00d4ff 0%, #ffd700 100%);
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #050814;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    }
+
+    /* Game Over Screen */
+    #gameover-screen {
+      background: linear-gradient(135deg, #050814 0%, #0d1b2a 100%);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .gameover-title {
+      font-size: 2.5rem;
+      color: #ff006e;
+      text-shadow: 0 0 20px #ff006e;
+      margin-bottom: 20px;
+    }
+
+    .final-score {
+      font-size: 1.5rem;
+      color: #00d4ff;
+      margin-bottom: 30px;
+    }
+
+    .restart-btn {
+      background: linear-gradient(135deg, #ffd700 0%, #00d4ff 100%);
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #050814;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .menu-btn {
+      background: transparent;
+      border: 2px solid #00d4ff;
+      color: #00d4ff;
+      padding: 12px 35px;
+      font-size: 1.1rem;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Stars -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Start Screen -->
+  <div id="start-screen" class="screen">
+    <h1 class="game-title">ASTRO GEOMETRY</h1>
+    <p class="game-subtitle">Cosmic Shape Challenge</p>
+    <button class="start-btn" id="start-btn">START GAME</button>
+    <div class="attribution">
+      "Airport Lounge" Kevin MacLeod (incompetech.com)<br>
+      Licensed under Creative Commons: By Attribution 4.0 License<br>
+      <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">http://creativecommons.org/licenses/by/4.0/</a>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen hidden">
+    <div class="top-bar">
+      <button class="back-btn" id="back-btn" onclick="goBack()">←</button>
+      <div class="hearts" id="hearts">
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+        <span class="heart">❤</span>
+      </div>
+      <div class="score-display">Score: <span id="score">0</span></div>
+      <button class="audio-btn" id="audio-btn">🔊</button>
+    </div>
+    <div class="game-area">
+      <div class="level-indicator">Level <span id="level">1</span></div>
+      <div class="question-container">
+        <div class="crystal-display">💎</div>
+        <p class="question-text" id="question-text">Loading question...</p>
+      </div>
+      <div class="choices-grid" id="choices-grid"></div>
+    </div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameover-screen" class="screen hidden">
+    <h1 class="gameover-title">GAME OVER</h1>
+    <p class="final-score">Final Score: <span id="final-score">0</span></p>
+    <p class="final-score">Level Reached: <span id="final-level">1</span></p>
+    <button class="restart-btn" id="restart-btn">PLAY AGAIN</button>
+    <button class="menu-btn" id="menu-btn">MAIN MENU</button>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Level Complete Overlay -->
+  <div class="overlay" id="level-overlay">
+    <h2 class="overlay-title">Level Complete!</h2>
+    <p class="overlay-score">+100 Bonus Points</p>
+    <p class="overlay-score">Lives Restored</p>
+    <button class="overlay-btn" id="next-level-btn">Next Level</button>
+  </div>
+
+  <script>
+    // Game State
+    let hearts = 5;
+    let score = 0;
+    let level = 1;
+    let audioEnabled = true;
+    let audioContext = null;
+    let backgroundMusic = null;
+    let currentQuestion = null;
+    let questionsAnswered = 0;
+    let questionsPerLevel = 5;
+    let isProcessing = false;
+
+    // Geometry Question Database (40+ questions)
+    const geometryQuestions = {
+      1: [ // Level 1: Polygons & Properties
+        { question: "How many vertices does a hexagon have?", choices: ["5", "6", "7", "8"], correct: 1 },
+        { question: "Which shape has 8 sides?", choices: ["Hexagon", "Heptagon", "Octagon", "Nonagon"], correct: 2 },
+        { question: "How many sides does a pentagon have?", choices: ["4", "5", "6", "7"], correct: 1 },
+        { question: "A triangle has how many vertices?", choices: ["2", "3", "4", "5"], correct: 1 },
+        { question: "Which shape is a quadrilateral?", choices: ["Triangle", "Square", "Pentagon", "Hexagon"], correct: 1 },
+        { question: "How many sides does a decagon have?", choices: ["8", "9", "10", "11"], correct: 2 },
+        { question: "A square has how many equal sides?", choices: ["2", "3", "4", "5"], correct: 2 },
+        { question: "Which shape has 3 sides?", choices: ["Square", "Triangle", "Pentagon", "Hexagon"], correct: 1 },
+        { question: "How many vertices does a square have?", choices: ["3", "4", "5", "6"], correct: 1 },
+        { question: "A rectangle has how many right angles?", choices: ["2", "3", "4", "5"], correct: 2 }
+      ],
+      2: [ // Level 2: Angles & Triangles
+        { question: "Which angle equals exactly 90°?", choices: ["Acute", "Right", "Obtuse", "Straight"], correct: 1 },
+        { question: "An acute angle is less than:", choices: ["45°", "90°", "180°", "360°"], correct: 1 },
+        { question: "An obtuse angle is greater than:", choices: ["45°", "90°", "180°", "270°"], correct: 1 },
+        { question: "How many degrees in a triangle?", choices: ["90°", "180°", "270°", "360°"], correct: 1 },
+        { question: "An equilateral triangle has:", choices: ["2 equal sides", "3 equal sides", "4 equal sides", "No equal sides"], correct: 1 },
+        { question: "A right triangle has one angle of:", choices: ["45°", "60°", "90°", "120°"], correct: 2 },
+        { question: "An isosceles triangle has:", choices: ["0 equal sides", "2 equal sides", "3 equal sides", "4 equal sides"], correct: 1 },
+        { question: "How many angles in a quadrilateral?", choices: ["2", "3", "4", "5"], correct: 2 },
+        { question: "A straight angle measures:", choices: ["90°", "180°", "270°", "360°"], correct: 1 },
+        { question: "Complementary angles sum to:", choices: ["45°", "90°", "180°", "360°"], correct: 1 }
+      ],
+      3: [ // Level 3: Symmetry & Perimeter
+        { question: "Which shape has 4 lines of symmetry?", choices: ["Triangle", "Square", "Pentagon", "Hexagon"], correct: 1 },
+        { question: "A circle has how many lines of symmetry?", choices: ["0", "1", "Infinite", "4"], correct: 2 },
+        { question: "Perimeter of a square with side 5:", choices: ["10", "15", "20", "25"], correct: 2 },
+        { question: "Perimeter of equilateral triangle side 6:", choices: ["12", "18", "24", "30"], correct: 1 },
+        { question: "Which has rotational symmetry?", choices: ["Scalene triangle", "Square", "Irregular pentagon", "Random shape"], correct: 1 },
+        { question: "Perimeter of rectangle 4×6:", choices: ["10", "20", "24", "48"], correct: 1 },
+        { question: "A regular pentagon has:", choices: ["3 lines of symmetry", "4 lines of symmetry", "5 lines of symmetry", "No symmetry"], correct: 2 },
+        { question: "Perimeter of regular hexagon side 3:", choices: ["12", "15", "18", "21"], correct: 2 },
+        { question: "Which shape has 1 line of symmetry?", choices: ["Circle", "Isosceles triangle", "Square", "Regular hexagon"], correct: 1 },
+        { question: "Perimeter of regular octagon side 4:", choices: ["24", "28", "32", "36"], correct: 2 }
+      ],
+      4: [ // Level 4: 3D Projections
+        { question: "How many edges does a cube have?", choices: ["8", "10", "12", "16"], correct: 2 },
+        { question: "How many faces does a cube have?", choices: ["4", "6", "8", "12"], correct: 1 },
+        { question: "How many vertices does a cube have?", choices: ["6", "8", "10", "12"], correct: 1 },
+        { question: "A tetrahedron has how many faces?", choices: ["3", "4", "5", "6"], correct: 1 },
+        { question: "How many edges does a tetrahedron have?", choices: ["4", "6", "8", "10"], correct: 1 },
+        { question: "An octahedron has how many faces?", choices: ["6", "8", "10", "12"], correct: 1 },
+        { question: "How many vertices does an octahedron have?", choices: ["4", "6", "8", "10"], correct: 1 },
+        { question: "A dodecahedron has how many faces?", choices: ["10", "12", "14", "16"], correct: 1 },
+        { question: "How many edges does a dodecahedron have?", choices: ["20", "24", "30", "36"], correct: 2 },
+        { question: "An icosahedron has how many faces?", choices: ["12", "15", "18", "20"], correct: 3 }
+      ],
+      5: [ // Level 5: Advanced Polyhedrons
+        { question: "Identify the polyhedron with 20 faces:", choices: ["Dodecahedron", "Icosahedron", "Octahedron", "Tetrahedron"], correct: 1 },
+        { question: "How many vertices does an icosahedron have?", choices: ["10", "12", "14", "16"], correct: 1 },
+        { question: "A cube is a type of:", choices: ["Pyramid", "Prism", "Platonic solid", "Cylinder"], correct: 2 },
+        { question: "How many faces does a triangular prism have?", choices: ["3", "4", "5", "6"], correct: 2 },
+        { question: "A square pyramid has how many faces?", choices: ["4", "5", "6", "8"], correct: 1 },
+        { question: "How many edges does a triangular prism have?", choices: ["6", "8", "9", "12"], correct: 2 },
+        { question: "Which is NOT a Platonic solid?", choices: ["Cube", "Tetrahedron", "Cylinder", "Octahedron"], correct: 2 },
+        { question: "How many vertices does a dodecahedron have?", choices: ["12", "15", "18", "20"], correct: 3 },
+        { question: "A pentagonal prism has how many faces?", choices: ["5", "6", "7", "8"], correct: 2 },
+        { question: "How many edges does a pentagonal prism have?", choices: ["10", "12", "15", "20"], correct: 2 }
+      ]
+    };
+
+    // DOM Elements
+    const startScreen = document.getElementById('start-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const gameoverScreen = document.getElementById('gameover-screen');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const menuBtn = document.getElementById('menu-btn');
+    const audioBtn = document.getElementById('audio-btn');
+    const backBtn = document.getElementById('back-btn');
+    const heartsContainer = document.getElementById('hearts');
+    const scoreDisplay = document.getElementById('score');
+    const levelDisplay = document.getElementById('level');
+    const questionText = document.getElementById('question-text');
+    const choicesGrid = document.getElementById('choices-grid');
+    const toast = document.getElementById('toast');
+    const levelOverlay = document.getElementById('level-overlay');
+    const nextLevelBtn = document.getElementById('next-level-btn');
+    const finalScoreDisplay = document.getElementById('final-score');
+    const finalLevelDisplay = document.getElementById('final-level');
+    const starsContainer = document.getElementById('stars');
+
+    // Create animated stars
+    function createStars() {
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // Audio Functions
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTone(frequency, duration, type = 'sine') {
+      if (!audioEnabled || !audioContext) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = type;
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration);
+    }
+
+    function playTap() {
+      playTone(600, 0.1, 'sine');
+    }
+
+    function playCorrect() {
+      playTone(523.25, 0.1, 'sine');
+      setTimeout(() => playTone(659.25, 0.1, 'sine'), 100);
+      setTimeout(() => playTone(783.99, 0.15, 'sine'), 200);
+    }
+
+    function playError() {
+      playTone(200, 0.2, 'sawtooth');
+      setTimeout(() => playTone(150, 0.2, 'sawtooth'), 100);
+    }
+
+    function playLevelComplete() {
+      playTone(523.25, 0.15, 'sine');
+      setTimeout(() => playTone(659.25, 0.15, 'sine'), 150);
+      setTimeout(() => playTone(783.99, 0.15, 'sine'), 300);
+      setTimeout(() => playTone(1046.50, 0.3, 'sine'), 450);
+    }
+
+    function startBackgroundMusic() {
+      if (!audioEnabled) return;
+      
+      if (backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic = null;
+      }
+      
+      backgroundMusic = new Audio('bgm.mp3');
+      backgroundMusic.loop = true;
+      backgroundMusic.volume = 0.3;
+      
+      backgroundMusic.play().catch(e => console.log('Audio play failed:', e));
+    }
+
+    function stopBackgroundMusic() {
+      if (backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic = null;
+      }
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      audioBtn.textContent = audioEnabled ? '🔊' : '🔇';
+      
+      if (audioEnabled) {
+        initAudio();
+        startBackgroundMusic();
+      } else {
+        stopBackgroundMusic();
+      }
+    }
+
+    // Game Functions
+    function showScreen(screen) {
+      startScreen.classList.add('hidden');
+      gameScreen.classList.add('hidden');
+      gameoverScreen.classList.add('hidden');
+      screen.classList.remove('hidden');
+    }
+
+    function updateHearts() {
+      const hearts = heartsContainer.querySelectorAll('.heart');
+      hearts.forEach((heart, index) => {
+        if (index < (5 - window.hearts)) {
+          heart.classList.add('lost');
+        } else {
+          heart.classList.remove('lost');
+        }
+      });
+    }
+
+    function updateScore() {
+      scoreDisplay.textContent = score;
+    }
+
+    function updateLevel() {
+      levelDisplay.textContent = level;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function getRandomQuestion() {
+      const levelQuestions = geometryQuestions[level] || geometryQuestions[1];
+      const randomIndex = Math.floor(Math.random() * levelQuestions.length);
+      return levelQuestions[randomIndex];
+    }
+
+    function displayQuestion() {
+      currentQuestion = getRandomQuestion();
+      questionText.textContent = currentQuestion.question;
+      choicesGrid.innerHTML = '';
+
+      currentQuestion.choices.forEach((choice, index) => {
+        const choiceNode = document.createElement('div');
+        choiceNode.className = 'choice-node';
+        choiceNode.textContent = choice;
+        choiceNode.dataset.index = index;
+
+        choiceNode.addEventListener('pointerdown', (e) => handleChoice(e, choiceNode, index));
+
+        choicesGrid.appendChild(choiceNode);
+      });
+    }
+
+    function handleChoice(e, choiceNode, index) {
+      e.preventDefault();
+      
+      if (isProcessing || choiceNode.classList.contains('disabled')) {
+        return;
+      }
+
+      isProcessing = true;
+      playTap();
+
+      if (index === currentQuestion.correct) {
+        // Correct
+        choiceNode.classList.add('correct');
+        playCorrect();
+        score += 25;
+        updateScore();
+        questionsAnswered++;
+
+        setTimeout(() => {
+          if (questionsAnswered >= questionsPerLevel) {
+            showLevelComplete();
+          } else {
+            displayQuestion();
+            isProcessing = false;
+          }
+        }, 500);
+      } else {
+        // Wrong
+        choiceNode.classList.add('wrong');
+        playError();
+        document.body.classList.add('flash-red');
+        
+        hearts--;
+        updateHearts();
+
+        setTimeout(() => {
+          document.body.classList.remove('flash-red');
+          choiceNode.classList.remove('wrong');
+
+          if (hearts <= 0) {
+            gameOver();
+          } else {
+            showToast('Try Again!');
+            setTimeout(() => {
+              displayQuestion();
+              isProcessing = false;
+            }, 1000);
+          }
+        }, 500);
+      }
+    }
+
+    function showLevelComplete() {
+      playLevelComplete();
+      score += 100;
+      updateScore();
+      levelOverlay.classList.add('show');
+    }
+
+    function nextLevel() {
+      levelOverlay.classList.remove('show');
+      level++;
+      questionsAnswered = 0;
+      
+      if (level > 5) {
+        // Game completed all levels
+        gameOver();
+        return;
+      }
+      
+      updateLevel();
+      hearts = 5;
+      updateHearts();
+      displayQuestion();
+      isProcessing = false;
+    }
+
+    function startGame() {
+      initAudio();
+      hearts = 5;
+      score = 0;
+      level = 1;
+      questionsAnswered = 0;
+      isProcessing = false;
+      updateHearts();
+      updateScore();
+      updateLevel();
+      startBackgroundMusic();
+      showScreen(gameScreen);
+      displayQuestion();
+    }
+
+    function gameOver() {
+      stopBackgroundMusic();
+      finalScoreDisplay.textContent = score;
+      finalLevelDisplay.textContent = level;
+      showScreen(gameoverScreen);
+    }
+
+    function goToMenu() {
+      stopBackgroundMusic();
+      showScreen(startScreen);
+    }
+
+    function goBack() {
+      stopBackgroundMusic();
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+      }
+      showScreen(startScreen);
+
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'GO_BACK' }));
+      }
+    }
+
+    // Event Listeners
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+    menuBtn.addEventListener('click', goToMenu);
+    audioBtn.addEventListener('click', toggleAudio);
+    backBtn.addEventListener('click', goBack);
+    nextLevelBtn.addEventListener('click', nextLevel);
+
+    // Prevent default touch behavior
+    document.body.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+
+    // Initialize
+    createStars();
+  </script>
+</body>
+</html>

@@ -138,5 +138,12 @@
     "icon": "https://games.smartok.app/chrono-logic/icon.png?v=1",
     "url": "https://games.smartok.app/chrono-logic/",
     "category": "Logic"
+  },
+  {
+    "id": "astro-geometry",
+    "title": "Astro Geometry",
+    "icon": "https://games.smartok.app/astro-geometry/icon.png?v=1",
+    "url": "https://games.smartok.app/astro-geometry/",
+    "category": "Science"
   }
 ]
