@@ -35,26 +35,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 15px;
-            padding-top: max(15px, env(safe-area-inset-top));
+            padding: 10px 15px 10px 60px;
+            padding-top: max(20px, env(safe-area-inset-top));
             background: linear-gradient(180deg, #2d1f0f 0%, #1a1207 100%);
             border-bottom: 2px solid #d4af37;
             z-index: 999;
             pointer-events: auto;
-        }
-
-        .back-button {
-            background: linear-gradient(180deg, #1a1207 0%, #2d1f0f 100%);
-            color: #d4af37;
-            border: 2px solid #ffd700;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            pointer-events: auto;
-            z-index: 999;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
         }
 
         .stats-container {
@@ -98,10 +84,11 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
             padding: 10px 20px 20px 20px;
             overflow: hidden;
+            max-height: calc(100vh - 120px);
         }
 
         .grid {
@@ -109,6 +96,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             max-width: 400px;
+            max-height: 55vh;
             width: 100%;
         }
 
@@ -122,7 +110,7 @@
             align-items: center;
             cursor: pointer;
             pointer-events: auto;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             color: #d4af37;
             text-align: center;
@@ -130,6 +118,7 @@
             transition: transform 0.3s ease;
             position: relative;
             overflow: hidden;
+            max-height: 12vh;
         }
 
         .tile::before {
@@ -171,7 +160,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 300;
+            z-index: 1000;
             padding: 20px;
         }
 
@@ -289,7 +278,6 @@
 <body>
     <div class="game-container">
         <div class="top-bar">
-            <button class="back-button" id="backButton">← Back</button>
             <div class="stats-container">
                 <div class="hearts" id="hearts">
                     <span class="heart">❤</span>
@@ -397,7 +385,6 @@
         const finalScoreDisplay = document.getElementById('finalScore');
         const startButton = document.getElementById('startButton');
         const restartButton = document.getElementById('restartButton');
-        const backButton = document.getElementById('backButton');
         const muteButton = document.getElementById('muteButton');
         const toast = document.getElementById('toast');
         const levelCompleteOverlay = document.getElementById('levelCompleteOverlay');
@@ -697,27 +684,6 @@
             initAudio();
             startGame();
         });
-
-        function goBack() {
-            // Stop all audio first
-            stopBackgroundMusic();
-            if (window.AudioContext) {
-                audioContext.close();
-                audioContext = null;
-            }
-            
-            // Navigate back
-            if (window.ReactNativeWebView) {
-                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'GO_BACK' }));
-            } else if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                document.getElementById('gameScreen')?.classList.add('hidden');
-                document.getElementById('startScreen').classList.remove('hidden');
-            }
-        }
-
-        backButton.addEventListener('pointerdown', goBack);
 
         muteButton.addEventListener('pointerdown', toggleMute);
     </script>
