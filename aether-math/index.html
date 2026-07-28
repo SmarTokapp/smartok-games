@@ -121,26 +121,28 @@
 
     /* Game Area */
     .game-area {
-      flex: 1;
       position: relative;
-      display: flex;
-      align-items: center;
+      flex: 1;
+      width: 100%;
+      min-height: 500px;
       overflow: hidden;
+      z-index: 10;
+      display: flex;
     }
 
     /* Target Number Display */
     .target-display {
       position: absolute;
-      top: 20px;
+      top: 40%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       background: linear-gradient(180deg, #d4a574 0%, #b8860b 50%, #8b6914 100%);
       border: 6px solid #5c3d2e;
       border-radius: 12px;
       padding: 20px 40px;
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3);
       text-align: center;
-      z-index: 1;
+      z-index: 20;
       pointer-events: none;
     }
 
