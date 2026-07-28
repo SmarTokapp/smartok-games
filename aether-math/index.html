@@ -138,7 +138,8 @@
       margin-bottom: 20px;
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3);
       text-align: center;
-      z-index: 10;
+      z-index: 1;
+      pointer-events: none;
     }
 
     .target-label {
@@ -170,7 +171,8 @@
       justify-content: center;
       cursor: pointer;
       transition: transform 0.1s;
-      z-index: 5;
+      z-index: 100;
+      pointer-events: auto;
       touch-action: manipulation;
     }
 
@@ -632,6 +634,7 @@
       element.className = 'gear';
       element.style.left = startX + 'px';
       element.style.top = startY + 'px';
+      element.style.pointerEvents = 'auto';
       
       const equationSpan = document.createElement('span');
       equationSpan.className = 'gear-equation';
@@ -641,6 +644,7 @@
       // Add pointerdown event for touch interaction
       element.addEventListener('pointerdown', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         handleGearTap(gear);
       });
       
