@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aether Math - Mental Math Challenge</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: radial-gradient(ellipse at center, #d4a574 0%, #8b5a2b 50%, #4a2c1a 100%);
+      min-height: 100vh;
+      color: #2c1810;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    .game-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      padding-top: max(20px, env(safe-area-inset-top));
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      padding-top: max(15px, env(safe-area-inset-top));
+      background: linear-gradient(180deg, #c9a66b 0%, #8b6914 100%);
+      border: 4px solid #5c3d2e;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+      touch-action: auto;
+    }
+
+    .back-btn {
+      background: linear-gradient(180deg, #b8860b 0%, #8b6914 100%);
+      border: 3px solid #5c3d2e;
+      color: #2c1810;
+      font-size: 20px;
+      font-weight: bold;
+      width: 45px;
+      height: 45px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+      transition: transform 0.1s;
+      pointer-events: auto;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hearts {
+      display: flex;
+      gap: 5px;
+      font-size: 24px;
+    }
+
+    .heart {
+      color: #c41e3a;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .heart.lost {
+      color: #5c3d2e;
+      text-shadow: none;
+    }
+
+    .score {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c1810;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .audio-btn {
+      background: linear-gradient(180deg, #b8860b 0%, #8b6914 100%);
+      border: 3px solid #5c3d2e;
+      color: #2c1810;
+      font-size: 18px;
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+      transition: transform 0.1s;
+      pointer-events: auto;
+    }
+
+    .audio-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Game Area */
+    .game-area {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Target Number Display */
+    .target-display {
+      background: linear-gradient(180deg, #d4a574 0%, #b8860b 50%, #8b6914 100%);
+      border: 6px solid #5c3d2e;
+      border-radius: 12px;
+      padding: 20px 40px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+      text-align: center;
+      z-index: 10;
+    }
+
+    .target-label {
+      font-size: 14px;
+      color: #5c3d2e;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+    }
+
+    .target-number {
+      font-size: 48px;
+      font-weight: bold;
+      color: #2c1810;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Gear (Math Equation) */
+    .gear {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #c9a66b 0%, #8b6914 70%, #5c3d2e 100%);
+      border: 4px solid #5c3d2e;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.1s;
+      z-index: 5;
+      touch-action: manipulation;
+    }
+
+    .gear::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #5c3d2e;
+      border-radius: 50%;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .gear::after {
+      content: '';
+      position: absolute;
+      width: 90%;
+      height: 90%;
+      border: 2px dashed #5c3d2e;
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    .gear-equation {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c1810;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+      z-index: 1;
+    }
+
+    .gear:active {
+      transform: scale(0.95);
+    }
+
+    /* Start Screen */
+    .start-screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    .game-title {
+      font-size: 36px;
+      font-weight: bold;
+      color: #2c1810;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+    }
+
+    .game-subtitle {
+      font-size: 18px;
+      color: #5c3d2e;
+      margin-bottom: 40px;
+      font-style: italic;
+    }
+
+    .start-btn {
+      padding: 15px 50px;
+      font-size: 22px;
+      font-weight: bold;
+      border: 4px solid #5c3d2e;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #b8860b 0%, #8b6914 100%);
+      color: #2c1810;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      margin-bottom: 30px;
+      font-family: 'Georgia', serif;
+    }
+
+    .start-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .attribution {
+      font-size: 12px;
+      color: #5c3d2e;
+      text-align: center;
+      padding: 20px;
+      background: rgba(92, 61, 46, 0.3);
+      border: 3px solid #5c3d2e;
+      border-radius: 8px;
+      max-width: 300px;
+    }
+
+    .attribution a {
+      color: #b8860b;
+      text-decoration: none;
+    }
+
+    /* Game Over Screen */
+    .game-over-screen {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    .game-over-title {
+      font-size: 42px;
+      font-weight: bold;
+      color: #c41e3a;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+    }
+
+    .final-score {
+      font-size: 28px;
+      color: #2c1810;
+      margin-bottom: 40px;
+    }
+
+    .play-again-btn {
+      padding: 15px 50px;
+      font-size: 22px;
+      font-weight: bold;
+      border: 4px solid #5c3d2e;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #b8860b 0%, #8b6914 100%);
+      color: #2c1810;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      font-family: 'Georgia', serif;
+    }
+
+    .play-again-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Error Flash */
+    .error-flash {
+      animation: flashRed 0.3s;
+    }
+
+    @keyframes flashRed {
+      0%, 100% { background: radial-gradient(ellipse at center, #d4a574 0%, #8b5a2b 50%, #4a2c1a 100%); }
+      50% { background: rgba(196, 30, 58, 0.5); }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <!-- Start Screen -->
+    <div id="startScreen" class="start-screen">
+      <h1 class="game-title">AETHER MATH</h1>
+      <p class="game-subtitle">Tap gears that equal the target number!</p>
+      <button class="start-btn" onclick="startGame()">START GAME</button>
+      <div class="attribution">
+        "Clean Soul" Kevin MacLeod (incompetech.com)<br>
+        Licensed under Creative Commons: By Attribution 4.0 License<br>
+        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">http://creativecommons.org/licenses/by/4.0/</a>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="hidden">
+      <div class="top-bar">
+        <button class="back-btn" onclick="goBack()">←</button>
+        <div class="stats">
+          <div class="hearts" id="hearts">
+            <span class="heart">❤</span>
+            <span class="heart">❤</span>
+            <span class="heart">❤</span>
+          </div>
+          <div class="score" id="score">0</div>
+        </div>
+        <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">🔊</button>
+      </div>
+
+      <div class="game-area" id="gameArea">
+        <div class="target-display">
+          <div class="target-label">Target</div>
+          <div class="target-number" id="targetNumber">12</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen" class="game-over-screen">
+      <h1 class="game-over-title">GAME OVER</h1>
+      <p class="final-score">Final Score: <span id="finalScore">0</span></p>
+      <p class="final-score">Best: <span id="highScore">0</span></p>
+      <button class="play-again-btn" onclick="startGame()">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script>
+    // Game State
+    let lives = 3;
+    let score = 0;
+    let targetNumber = 12;
+    let gears = [];
+    let gameLoop = null;
+    let spawnInterval = null;
+    let isGameRunning = false;
+    let isMuted = false;
+
+    // Audio Context
+    let audioContext = null;
+
+    // Background Music
+    let bgMusic = null;
+    let musicEnabled = false;
+
+    function initAudio() {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function toggleAudio() {
+      isMuted = !isMuted;
+      const audioBtn = document.getElementById('audioBtn');
+      audioBtn.textContent = isMuted ? '🔇' : '🔊';
+      
+      if (bgMusic) {
+        if (isMuted) {
+          bgMusic.pause();
+        } else if (musicEnabled && isGameRunning) {
+          bgMusic.play();
+        }
+      }
+    }
+
+    function playTapSound() {
+      if (!audioContext) initAudio();
+      if (isMuted) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 600;
+      oscillator.type = 'sine';
+      gainNode.gain.value = 0.15;
+      
+      oscillator.start();
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      oscillator.stop(audioContext.currentTime + 0.1);
+    }
+
+    function playSuccessSound() {
+      if (!audioContext) initAudio();
+      if (isMuted) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 880;
+      oscillator.type = 'sine';
+      gainNode.gain.value = 0.2;
+      
+      oscillator.start();
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      oscillator.stop(audioContext.currentTime + 0.2);
+    }
+
+    function playErrorSound() {
+      if (!audioContext) initAudio();
+      if (isMuted) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 150;
+      oscillator.type = 'sawtooth';
+      gainNode.gain.value = 0.3;
+      
+      oscillator.start();
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      oscillator.stop(audioContext.currentTime + 0.3);
+    }
+
+    function playGameOverSound() {
+      if (!audioContext) initAudio();
+      if (isMuted) return;
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 100;
+      oscillator.type = 'sawtooth';
+      gainNode.gain.value = 0.3;
+      
+      oscillator.start();
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    }
+
+    function playBackgroundMusic() {
+      if (musicEnabled || isMuted) return;
+      bgMusic = new Audio('bgm.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.3;
+      bgMusic.play().catch(e => console.log('Audio play failed:', e));
+      musicEnabled = true;
+    }
+
+    function stopBackgroundMusic() {
+      if (bgMusic) {
+        bgMusic.pause();
+        bgMusic = null;
+        musicEnabled = false;
+      }
+    }
+
+    function generateTargetNumber() {
+      // Generate a target number between 5 and 30
+      return Math.floor(Math.random() * 26) + 5;
+    }
+
+    function generateMathEquation(target) {
+      const operations = ['+', '-', 'x'];
+      const operation = operations[Math.floor(Math.random() * operations.length)];
+      let a, b, result;
+      
+      switch(operation) {
+        case '+':
+          a = Math.floor(Math.random() * (target - 1)) + 1;
+          b = target - a;
+          result = a + b;
+          break;
+        case '-':
+          a = target + Math.floor(Math.random() * 10) + 1;
+          b = a - target;
+          result = a - b;
+          break;
+        case 'x':
+          // Find factors of target
+          const factors = [];
+          for (let i = 1; i <= target; i++) {
+            if (target % i === 0) factors.push(i);
+          }
+          if (factors.length >= 2) {
+            const idx = Math.floor(Math.random() * factors.length);
+            a = factors[idx];
+            b = target / a;
+            result = a * b;
+          } else {
+            // Fallback to addition if no good factors
+            a = Math.floor(Math.random() * (target - 1)) + 1;
+            b = target - a;
+            result = a + b;
+            operation = '+';
+          }
+          break;
+      }
+      
+      return {
+        equation: `${a} ${operation} ${b}`,
+        result: result,
+        isCorrect: result === target
+      };
+    }
+
+    function generateDecoyEquation(target) {
+      // Generate an equation that does NOT equal the target
+      const operations = ['+', '-', 'x'];
+      const operation = operations[Math.floor(Math.random() * operations.length)];
+      let a, b, result;
+      
+      // Ensure result is different from target
+      do {
+        switch(operation) {
+          case '+':
+            a = Math.floor(Math.random() * 20) + 1;
+            b = Math.floor(Math.random() * 20) + 1;
+            result = a + b;
+            break;
+          case '-':
+            a = Math.floor(Math.random() * 20) + 10;
+            b = Math.floor(Math.random() * 10) + 1;
+            result = a - b;
+            break;
+          case 'x':
+            a = Math.floor(Math.random() * 10) + 1;
+            b = Math.floor(Math.random() * 10) + 1;
+            result = a * b;
+            break;
+        }
+      } while (result === target);
+      
+      return {
+        equation: `${a} ${operation} ${b}`,
+        result: result,
+        isCorrect: false
+      };
+    }
+
+    function getDifficultyMultiplier() {
+      // Increase difficulty as score increases
+      const difficultyLevel = Math.floor(score / 50);
+      return Math.min(difficultyLevel, 10);
+    }
+
+    function getFallSpeed() {
+      const baseSpeed = 1;
+      const multiplier = getDifficultyMultiplier();
+      return baseSpeed + (multiplier * 0.2);
+    }
+
+    function getSpawnRate() {
+      const baseRate = 2000;
+      const multiplier = getDifficultyMultiplier();
+      return Math.max(800, baseRate - (multiplier * 100));
+    }
+
+    function spawnGear() {
+      if (!isGameRunning) return;
+      
+      const gameArea = document.getElementById('gameArea');
+      const rect = gameArea.getBoundingClientRect();
+      
+      // 40% chance to spawn a correct gear, 60% decoy
+      const isCorrect = Math.random() < 0.4;
+      const mathData = isCorrect ? generateMathEquation(targetNumber) : generateDecoyEquation(targetNumber);
+      
+      // Random horizontal position
+      const startX = Math.random() * (rect.width - 120) + 10;
+      const startY = -120;
+      
+      const gear = {
+        x: startX,
+        y: startY,
+        equation: mathData.equation,
+        result: mathData.result,
+        isCorrect: mathData.isCorrect,
+        element: null,
+        speed: getFallSpeed()
+      };
+      
+      // Create DOM element
+      const element = document.createElement('div');
+      element.className = 'gear';
+      element.style.left = startX + 'px';
+      element.style.top = startY + 'px';
+      
+      const equationSpan = document.createElement('span');
+      equationSpan.className = 'gear-equation';
+      equationSpan.textContent = gear.equation;
+      element.appendChild(equationSpan);
+      
+      // Add pointerdown event for touch interaction
+      element.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        handleGearTap(gear);
+      });
+      
+      gameArea.appendChild(element);
+      gear.element = element;
+      
+      gears.push(gear);
+    }
+
+    function handleGearTap(gear) {
+      if (!isGameRunning) return;
+      
+      playTapSound();
+      
+      if (gear.isCorrect) {
+        // Correct tap
+        playSuccessSound();
+        score += 10;
+        document.getElementById('score').textContent = score;
+        
+        // Change target number
+        targetNumber = generateTargetNumber();
+        document.getElementById('targetNumber').textContent = targetNumber;
+      } else {
+        // Wrong tap
+        playErrorSound();
+        loseLife();
+        
+        // Flash screen red
+        document.body.classList.add('error-flash');
+        setTimeout(() => document.body.classList.remove('error-flash'), 300);
+      }
+      
+      // Remove gear
+      if (gear.element) {
+        gear.element.remove();
+      }
+      gears = gears.filter(g => g !== gear);
+    }
+
+    function updateGears() {
+      if (!isGameRunning) return;
+      
+      const gameArea = document.getElementById('gameArea');
+      const rect = gameArea.getBoundingClientRect();
+      
+      for (let i = gears.length - 1; i >= 0; i--) {
+        const gear = gears[i];
+        
+        // Update position
+        gear.y += gear.speed;
+        gear.element.style.top = gear.y + 'px';
+        
+        // Check if gear fell off screen
+        if (gear.y > rect.height + 50) {
+          // If it was a correct gear, lose a life
+          if (gear.isCorrect) {
+            playErrorSound();
+            loseLife();
+            
+            // Flash screen red
+            document.body.classList.add('error-flash');
+            setTimeout(() => document.body.classList.remove('error-flash'), 300);
+          }
+          
+          // Remove gear
+          if (gear.element) {
+            gear.element.remove();
+          }
+          gears.splice(i, 1);
+        }
+      }
+    }
+
+    function loseLife() {
+      lives--;
+      updateHearts();
+      
+      if (lives <= 0) {
+        gameOver();
+      }
+    }
+
+    function updateHearts() {
+      const heartsContainer = document.getElementById('hearts');
+      const hearts = heartsContainer.querySelectorAll('.heart');
+      
+      hearts.forEach((heart, index) => {
+        if (index >= lives) {
+          heart.classList.add('lost');
+        } else {
+          heart.classList.remove('lost');
+        }
+      });
+    }
+
+    function gameOver() {
+      isGameRunning = false;
+      clearInterval(gameLoop);
+      clearInterval(spawnInterval);
+      stopBackgroundMusic();
+      playGameOverSound();
+      
+      // Clear all gears
+      gears.forEach(gear => {
+        if (gear.element) gear.element.remove();
+      });
+      gears = [];
+      
+      // Handle high score
+      const highScore = localStorage.getItem('aether_math_high_score') || 0;
+      if (score > highScore) {
+        localStorage.setItem('aether_math_high_score', score);
+      }
+      
+      document.getElementById('gameScreen').classList.add('hidden');
+      document.getElementById('gameOverScreen').style.display = 'flex';
+      document.getElementById('finalScore').textContent = score;
+      document.getElementById('highScore').textContent = Math.max(score, highScore);
+    }
+
+    function startGame() {
+      // Reset state
+      lives = 3;
+      score = 0;
+      targetNumber = generateTargetNumber();
+      gears = [];
+      isGameRunning = true;
+      
+      // Update UI
+      document.getElementById('score').textContent = score;
+      document.getElementById('targetNumber').textContent = targetNumber;
+      updateHearts();
+      
+      // Show game screen
+      document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('gameOverScreen').style.display = 'none';
+      document.getElementById('gameScreen').classList.remove('hidden');
+      
+      // Start music
+      playBackgroundMusic();
+      
+      // Start game loop
+      gameLoop = setInterval(updateGears, 16); // ~60 FPS
+      
+      // Start spawning gears
+      spawnInterval = setInterval(spawnGear, getSpawnRate());
+      
+      // Update spawn rate dynamically
+      setInterval(() => {
+        if (isGameRunning) {
+          clearInterval(spawnInterval);
+          spawnInterval = setInterval(spawnGear, getSpawnRate());
+        }
+      }, 5000);
+    }
+
+    function goBack() {
+      isGameRunning = false;
+      clearInterval(gameLoop);
+      clearInterval(spawnInterval);
+      stopBackgroundMusic();
+      
+      // Clear all gears
+      gears.forEach(gear => {
+        if (gear.element) gear.element.remove();
+      });
+      gears = [];
+      
+      document.getElementById('gameScreen').classList.add('hidden');
+      document.getElementById('startScreen').classList.remove('hidden');
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Pre-initialize audio context on first user interaction
+      document.body.addEventListener('click', () => {
+        if (!audioContext) initAudio();
+      }, { once: true });
+    });
+  </script>
+</body>
+</html>
