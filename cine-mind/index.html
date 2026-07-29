@@ -14,23 +14,23 @@
     <div class="category-grid">
       <button class="category-btn" data-category="hollywoodClassics">
         <span class="category-icon">🎬</span>
-        <span class="category-name">Hollywood Classics</span>
+        <span class="category-name" data-i18n="hollywoodClassics">Hollywood Classics</span>
       </button>
       <button class="category-btn" data-category="directors">
         <span class="category-icon">🎥</span>
-        <span class="category-name">Directors & Visionaries</span>
+        <span class="category-name" data-i18n="directors">Directors & Visionaries</span>
       </button>
       <button class="category-btn" data-category="awardWinners">
         <span class="category-icon">🏆</span>
-        <span class="category-name">Award Winners</span>
+        <span class="category-name" data-i18n="awardWinners">Award Winners</span>
       </button>
       <button class="category-btn" data-category="popCulture">
         <span class="category-icon">🍿</span>
-        <span class="category-name">Pop Culture Cinema</span>
+        <span class="category-name" data-i18n="popCulture">Pop Culture Cinema</span>
       </button>
     </div>
     <div class="high-score-display">
-      High Score: <span id="overallHighScore">0</span>
+      <span data-i18n="highScore">High Score</span>: <span id="overallHighScore">0</span>
     </div>
     <p class="credits-text">Music: "Adding the Sun" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0</p>
   </div>
@@ -54,33 +54,34 @@
       <div id="answerOptions" class="answer-options"></div>
     </div>
     <div class="score-display">
-      Score: <span id="currentScore">0</span>
+      <span data-i18n="score">Score</span>: <span id="currentScore">0</span>
     </div>
   </div>
 
   <div id="gameOverScreen" class="screen hidden">
-    <h2 class="game-over-title">Game Over</h2>
+    <h2 class="game-over-title" data-i18n="gameOver">Game Over</h2>
     <div class="star-rating">
       <span id="star1">⭐</span>
       <span id="star2">⭐</span>
       <span id="star3">⭐</span>
     </div>
     <div class="final-score">
-      Final Score: <span id="finalScore">0</span>
+      <span data-i18n="finalScore">Final Score</span>: <span id="finalScore">0</span>
     </div>
     <div class="accuracy-display">
-      Accuracy: <span id="accuracy">0%</span>
+      <span data-i18n="accuracy">Accuracy</span>: <span id="accuracy">0%</span>
     </div>
     <div class="category-high-score">
-      Category High Score: <span id="categoryHighScore">0</span>
+      <span data-i18n="categoryHighScore">Category High Score</span>: <span id="categoryHighScore">0</span>
     </div>
     <div class="game-over-buttons">
-      <button id="replayBtn" class="game-over-btn">Replay Category</button>
-      <button id="mainMenuBtn" class="game-over-btn">Main Menu</button>
+      <button id="replayBtn" class="game-over-btn" data-i18n="replayCategory">Replay Category</button>
+      <button id="mainMenuBtn" class="game-over-btn" data-i18n="mainMenu">Main Menu</button>
     </div>
     <p class="credits-text">Music: "Adding the Sun" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0</p>
   </div>
 
+  <script src="../i18n-loader.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
