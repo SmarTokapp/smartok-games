@@ -697,10 +697,20 @@
         }
 
         // Event Listeners
-        startButton.addEventListener('pointerdown', async () => {
-            await gameI18n.init('pharaohs-code');
-            initAudio();
-            startGame();
+        startButton.addEventListener('pointerdown', async (e) => {
+            console.log('[pharaohs-code] Start button clicked');
+            e.preventDefault();
+            try {
+                await gameI18n.init('pharaohs-code');
+                console.log('[pharaohs-code] i18n initialized, starting game');
+                initAudio();
+                startGame();
+            } catch (error) {
+                console.error('[pharaohs-code] Error starting game:', error);
+                // Fallback: start game even if i18n fails
+                initAudio();
+                startGame();
+            }
         });
 
         restartButton.addEventListener('pointerdown', async () => {
