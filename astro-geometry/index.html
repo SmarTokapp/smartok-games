@@ -438,6 +438,7 @@
       cursor: pointer;
     }
   </style>
+  <script src="../shared/i18n-loader.js"></script>
 </head>
 <body>
   <!-- Animated Stars -->
@@ -445,9 +446,9 @@
 
   <!-- Start Screen -->
   <div id="start-screen" class="screen">
-    <h1 class="game-title">ASTRO GEOMETRY</h1>
-    <p class="game-subtitle">Cosmic Shape Challenge</p>
-    <button class="start-btn" id="start-btn">START GAME</button>
+    <h1 class="game-title" data-i18n="gameTitle">ASTRO GEOMETRY</h1>
+    <p class="game-subtitle" data-i18n="gameSubtitle">Cosmic Shape Challenge</p>
+    <button class="start-btn" id="start-btn" data-i18n="startGame">START GAME</button>
     <div class="attribution">
       "Airport Lounge" Kevin MacLeod (incompetech.com)<br>
       Licensed under Creative Commons: By Attribution 4.0 License<br>
@@ -466,14 +467,14 @@
         <span class="heart">❤</span>
         <span class="heart">❤</span>
       </div>
-      <div class="score-display">Score: <span id="score">0</span></div>
+      <div class="score-display" data-i18n="score">Score: <span id="score">0</span></div>
       <button class="audio-btn" id="audio-btn">🔊</button>
     </div>
     <div class="game-area">
-      <div class="level-indicator">Level <span id="level">1</span></div>
+      <div class="level-indicator" data-i18n="level">Level <span id="level">1</span></div>
       <div class="question-container">
         <div class="crystal-display">💎</div>
-        <p class="question-text" id="question-text">Loading question...</p>
+        <p class="question-text" id="question-text" data-i18n="loadingQuestion">Loading question...</p>
         <div class="timer-bar">
           <div class="timer-fill" id="timer-fill"></div>
         </div>
@@ -484,11 +485,11 @@
 
   <!-- Game Over Screen -->
   <div id="gameover-screen" class="screen hidden">
-    <h1 class="gameover-title">GAME OVER</h1>
-    <p class="final-score">Final Score: <span id="final-score">0</span></p>
-    <p class="final-score">Level Reached: <span id="final-level">1</span></p>
-    <button class="restart-btn" id="restart-btn">PLAY AGAIN</button>
-    <button class="menu-btn" id="menu-btn">MAIN MENU</button>
+    <h1 class="gameover-title" data-i18n="gameOver">GAME OVER</h1>
+    <p class="final-score" data-i18n="finalScore">Final Score: <span id="final-score">0</span></p>
+    <p class="final-score" data-i18n="levelReached">Level Reached: <span id="final-level">1</span></p>
+    <button class="restart-btn" id="restart-btn" data-i18n="playAgain">PLAY AGAIN</button>
+    <button class="menu-btn" id="menu-btn" data-i18n="mainMenu">MAIN MENU</button>
   </div>
 
   <!-- Toast -->
@@ -496,10 +497,10 @@
 
   <!-- Level Complete Overlay -->
   <div class="overlay" id="level-overlay">
-    <h2 class="overlay-title">Level Complete!</h2>
-    <p class="overlay-score">+100 Bonus Points</p>
-    <p class="overlay-score">Lives Restored</p>
-    <button class="overlay-btn" id="next-level-btn">Next Level</button>
+    <h2 class="overlay-title" data-i18n="levelComplete">Level Complete!</h2>
+    <p class="overlay-score" data-i18n="bonusPoints">+100 Bonus Points</p>
+    <p class="overlay-score" data-i18n="livesRestored">Lives Restored</p>
+    <button class="overlay-btn" id="next-level-btn" data-i18n="nextLevel">Next Level</button>
   </div>
 
   <script>
@@ -790,7 +791,7 @@
       playError();
       hearts--;
       updateHearts();
-      showToast('Time\'s up!');
+      showToast(gameI18n.t('timesUp'));
 
       // Highlight correct answer
       const choices = choicesGrid.querySelectorAll('.choice-node');
@@ -874,7 +875,7 @@
           if (hearts <= 0) {
             gameOver();
           } else {
-            showToast('Try Again!');
+            showToast(gameI18n.t('tryAgain'));
             setTimeout(() => {
               displayQuestion();
               isProcessing = false;
@@ -923,6 +924,12 @@
       showScreen(gameScreen);
       displayQuestion();
     }
+
+    // Event Listeners
+    startBtn.addEventListener('click', async () => {
+      await gameI18n.init('astro-geometry');
+      startGame();
+    });
 
     function gameOver() {
       stopBackgroundMusic();

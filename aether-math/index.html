@@ -337,9 +337,9 @@
   <div class="game-container">
     <!-- Start Screen -->
     <div id="startScreen" class="start-screen">
-      <h1 class="game-title">AETHER MATH</h1>
-      <p class="game-subtitle">Tap gears that equal the target number!</p>
-      <button class="start-btn" onclick="startGame()">START GAME</button>
+      <h1 class="game-title" data-i18n="gameTitle">AETHER MATH</h1>
+      <p class="game-subtitle" data-i18n="gameSubtitle">Tap gears that equal the target number!</p>
+      <button class="start-btn" onclick="startGame()" data-i18n="startGame">START GAME</button>
       <div class="attribution">
         "Clean Soul" Kevin MacLeod (incompetech.com)<br>
         Licensed under Creative Commons: By Attribution 4.0 License<br>
@@ -364,7 +364,7 @@
 
       <div class="game-area" id="gameArea">
         <div class="target-display">
-          <div class="target-label">Target</div>
+          <div class="target-label" data-i18n="target">Target</div>
           <div class="target-number" id="targetNumber">12</div>
         </div>
       </div>
@@ -372,13 +372,14 @@
 
     <!-- Game Over Screen -->
     <div id="gameOverScreen" class="game-over-screen">
-      <h1 class="game-over-title">GAME OVER</h1>
-      <p class="final-score">Final Score: <span id="finalScore">0</span></p>
-      <p class="final-score">Best: <span id="highScore">0</span></p>
-      <button class="play-again-btn" onclick="startGame()">PLAY AGAIN</button>
+      <h1 class="game-over-title" data-i18n="gameOver">GAME OVER</h1>
+      <p class="final-score" data-i18n="finalScore">Final Score: <span id="finalScore">0</span></p>
+      <p class="final-score" data-i18n="best">Best: <span id="highScore">0</span></p>
+      <button class="play-again-btn" onclick="startGame()" data-i18n="playAgain">PLAY AGAIN</button>
     </div>
   </div>
 
+  <script src="../i18n-loader.js"></script>
   <script>
     // Game State
     let lives = 3;
@@ -389,6 +390,11 @@
     let spawnInterval = null;
     let isGameRunning = false;
     let isMuted = false;
+
+    // Use universal i18n loader
+    function t(key) {
+        return gameI18n.t(key);
+    }
 
     // Audio Context
     let audioContext = null;
@@ -823,12 +829,16 @@
     }
 
     // Initialize on load
-    document.addEventListener('DOMContentLoaded', () => {
+    async function init() {
+      await gameI18n.init('aether-math');
+      
       // Pre-initialize audio context on first user interaction
       document.body.addEventListener('click', () => {
         if (!audioContext) initAudio();
       }, { once: true });
-    });
+    }
+    
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>

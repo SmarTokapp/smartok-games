@@ -1,5 +1,10 @@
 // Music: "Devonshire Waltz Moderato" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0
 
+// Use universal i18n loader
+function t(key) {
+    return gameI18n.t(key);
+}
+
 // Game State
 const gameState = {
   currentCategory: null,
@@ -11,8 +16,7 @@ const gameState = {
   timer: null,
   timeLeft: 10,
   totalQuestions: 0,
-  correctAnswers: 0,
-  language: 'en'
+  correctAnswers: 0
 };
 
 // Audio Engine
@@ -532,7 +536,10 @@ function exitToStartScreen() {
 }
 
 // Initialize Game
-function init() {
+async function init() {
+  // Initialize i18n loader
+  await gameI18n.init('bio-mind');
+  
   // Load mute state
   isMuted = localStorage.getItem('bioMind_muted') === 'true';
   updateMuteButton();
