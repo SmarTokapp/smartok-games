@@ -1,5 +1,10 @@
 // Muse Mind: Culture & Arts - Game Script
 
+// Use universal i18n loader
+function t(key) {
+    return gameI18n.t(key);
+}
+
 // Question Database - 30 questions per category (120 total)
 const questions = {
     masterpieces: [
@@ -437,34 +442,43 @@ function showScreen(screenId) {
     document.getElementById(screenId).classList.add('active');
 }
 
-// Event Listeners
-categoryBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const category = btn.dataset.category;
-        startGame(category);
+// Initialize
+async function init() {
+    // Initialize i18n loader
+    await gameI18n.init('muse-mind');
+    
+    // Event Listeners
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const category = btn.dataset.category;
+            startGame(category);
+        });
     });
-});
 
-startSoundToggle.addEventListener('click', () => {
-    initAudio();
-    toggleMusic();
-});
+    startSoundToggle.addEventListener('click', () => {
+        initAudio();
+        toggleMusic();
+    });
 
-gameSoundToggle.addEventListener('click', () => {
-    toggleMusic();
-});
+    gameSoundToggle.addEventListener('click', () => {
+        toggleMusic();
+    });
 
-replayBtn.addEventListener('click', () => {
-    playClickSound();
-    startGame(currentCategory);
-});
+    replayBtn.addEventListener('click', () => {
+        playClickSound();
+        startGame(currentCategory);
+    });
 
-menuBtn.addEventListener('click', () => {
-    playClickSound();
-    usedQuestionIndices.clear();
-    showScreen('startScreen');
-});
+    menuBtn.addEventListener('click', () => {
+        playClickSound();
+        usedQuestionIndices.clear();
+        showScreen('startScreen');
+    });
 
-// Initialize audio on first interaction
-document.addEventListener('touchstart', initAudio, { once: true });
-document.addEventListener('click', initAudio, { once: true });
+    // Initialize audio on first interaction
+    document.addEventListener('touchstart', initAudio, { once: true });
+    document.addEventListener('click', initAudio, { once: true });
+}
+
+// Start the game
+init();
