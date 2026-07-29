@@ -39,27 +39,27 @@ class I18nLoader {
 
     async init(gameId) {
         try {
-            // Adjust the path './locales/' to match your GitHub repository structure
-            const response = await fetch(`./locales/${this.currentLang}.json`);
-            
+            // Use centralized locales folder at ../locales/ relative to game directories
+            const response = await fetch(`../locales/${this.currentLang}.json`);
+
             if (!response.ok) {
                 throw new Error(`HTTP fetch failed with status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             this.translations = data[gameId] || {};
-            
+
             console.log(`[i18n] Dictionary loaded successfully for game ID: ${gameId}`);
             this.applyTranslationsToDOM();
-            
+
         } catch (error) {
             console.error(`[i18n] ERROR: Failed to fetch dictionary for ${this.currentLang}.`, error);
-            
+
             // Fallback to English if the requested language fails
             if (this.currentLang !== DEFAULT_LANGUAGE) {
                 console.log(`[i18n] Falling back to English dictionary`);
                 try {
-                    const fallbackResponse = await fetch(`./locales/${DEFAULT_LANGUAGE}.json`);
+                    const fallbackResponse = await fetch(`../locales/${DEFAULT_LANGUAGE}.json`);
                     if (fallbackResponse.ok) {
                         const fallbackData = await fallbackResponse.json();
                         this.translations = fallbackData[gameId] || {};
