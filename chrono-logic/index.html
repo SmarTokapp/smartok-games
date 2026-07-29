@@ -400,13 +400,14 @@
       cursor: pointer;
     }
   </style>
+  <script src="../shared/i18n-loader.js"></script>
 </head>
 <body>
   <!-- Start Screen -->
   <div id="start-screen" class="screen">
-    <h1 class="game-title">CHRONO LOGIC</h1>
-    <p class="game-subtitle">Sequence the Timeline</p>
-    <button class="start-btn" id="start-btn">START GAME</button>
+    <h1 class="game-title" data-i18n="gameTitle">CHRONO LOGIC</h1>
+    <p class="game-subtitle" data-i18n="gameSubtitle">Sequence the Timeline</p>
+    <button class="start-btn" id="start-btn" data-i18n="startGame">START GAME</button>
     <div class="attribution">
       "Cipher" Kevin MacLeod (incompetech.com)<br>
       Licensed under Creative Commons: By Attribution 4.0 License<br>
@@ -425,23 +426,23 @@
         <span class="heart">❤</span>
         <span class="heart">❤</span>
       </div>
-      <div class="score-display">Score: <span id="score">0</span></div>
+      <div class="score-display" data-i18n="score">Score: <span id="score">0</span></div>
       <button class="audio-btn" id="audio-btn">🔊</button>
     </div>
     <div class="game-area">
-      <div class="level-indicator">Level <span id="level">1</span></div>
-      <p class="instruction">Tap in chronological order (earliest to latest)</p>
+      <div class="level-indicator" data-i18n="level">Level <span id="level">1</span></div>
+      <p class="instruction" data-i18n="instruction">Tap in chronological order (earliest to latest)</p>
       <div class="cards-container" id="cards-container"></div>
     </div>
   </div>
 
   <!-- Game Over Screen -->
   <div id="gameover-screen" class="screen hidden">
-    <h1 class="gameover-title">GAME OVER</h1>
-    <p class="final-score">Final Score: <span id="final-score">0</span></p>
-    <p class="final-score">Level Reached: <span id="final-level">1</span></p>
-    <button class="restart-btn" id="restart-btn">PLAY AGAIN</button>
-    <button class="menu-btn" id="menu-btn">MAIN MENU</button>
+    <h1 class="gameover-title" data-i18n="gameOver">GAME OVER</h1>
+    <p class="final-score" data-i18n="finalScore">Final Score: <span id="final-score">0</span></p>
+    <p class="final-score" data-i18n="levelReached">Level Reached: <span id="final-level">1</span></p>
+    <button class="restart-btn" id="restart-btn" data-i18n="playAgain">PLAY AGAIN</button>
+    <button class="menu-btn" id="menu-btn" data-i18n="mainMenu">MAIN MENU</button>
   </div>
 
   <!-- Toast -->
@@ -449,9 +450,9 @@
 
   <!-- Level Complete Overlay -->
   <div class="overlay" id="level-overlay">
-    <h2 class="overlay-title">Level Complete!</h2>
-    <p class="overlay-score">+30 Points</p>
-    <button class="overlay-btn" id="next-level-btn">Next Level</button>
+    <h2 class="overlay-title" data-i18n="levelComplete">Level Complete!</h2>
+    <p class="overlay-score" data-i18n="bonusPoints">+30 Points</p>
+    <button class="overlay-btn" id="next-level-btn" data-i18n="nextLevel">Next Level</button>
   </div>
 
   <script>
@@ -774,7 +775,7 @@
             gameOver();
           } else {
             // Reset round
-            showToast('Try again!');
+            showToast(gameI18n.t('tryAgain'));
             setTimeout(() => {
               createCards();
             }, 1000);
@@ -834,7 +835,10 @@
     }
 
     // Event Listeners
-    startBtn.addEventListener('click', startGame);
+    startBtn.addEventListener('click', async () => {
+      await gameI18n.init('chrono-logic');
+      startGame();
+    });
     restartBtn.addEventListener('click', startGame);
     menuBtn.addEventListener('click', goToMenu);
     audioBtn.addEventListener('click', toggleAudio);

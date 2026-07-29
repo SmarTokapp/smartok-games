@@ -2,55 +2,9 @@
 // Cyberpunk-themed fast-paced quiz game with streak multipliers and sound effects
 // Music from Uppbeat: Kevin MacLeod - Backed Vibes | License code: ZQA249WJ8JURTTID
 
-// Translation Dictionary
-const translations = {
-    en: {
-        chooseCategory: "Choose Category",
-        highScore: "High Score",
-        score: "Score",
-        streak: "streak",
-        gameOver: "Game Over!",
-        finalScore: "Final Score",
-        questions: "Questions",
-        correct: "Correct",
-        bestStreak: "Best Streak",
-        newHighScore: "New High Score!",
-        playAgain: "Play Again",
-        replayCategory: "Replay Category",
-        mainMenu: "Main Menu",
-        timesUp: "Time's up!",
-        wrong: "Wrong!",
-        points: "points!"
-    },
-    es: {
-        chooseCategory: "Elige Categoría",
-        highScore: "Puntuación Máxima",
-        score: "Puntuación",
-        streak: "racha",
-        gameOver: "¡Fin del Juego!",
-        finalScore: "Puntuación Final",
-        questions: "Preguntas",
-        correct: "Correctas",
-        bestStreak: "Mejor Racha",
-        newHighScore: "¡Nueva Puntuación Máxima!",
-        playAgain: "Jugar de Nuevo",
-        replayCategory: "Repetir Categoría",
-        mainMenu: "Menú Principal",
-        timesUp: "¡Tiempo Agotado!",
-        wrong: "¡Incorrecto!",
-        points: "puntos!"
-    }
-};
-
-// Detect language
-let currentLanguage = 'en';
-const userLang = navigator.language || navigator.userLanguage;
-if (userLang.startsWith('es')) {
-    currentLanguage = 'es';
-}
-
+// Use universal i18n loader
 function t(key) {
-    return translations[currentLanguage][key] || translations['en'][key] || key;
+    return gameI18n.t(key);
 }
 
 // Game State
@@ -342,8 +296,10 @@ const elements = {
 };
 
 // Initialize
-function init() {
-    applyTranslations();
+async function init() {
+    // Initialize i18n loader
+    await gameI18n.init('brain-spark');
+    
     updateCategoryHighScores();
     updateOverallHighScore();
     
@@ -420,22 +376,6 @@ function getOverallHighScore() {
 
 function updateOverallHighScore() {
     elements.highScoreValue.textContent = getOverallHighScore();
-}
-
-function applyTranslations() {
-    // Update static text elements
-    document.querySelector('.section-title').textContent = t('chooseCategory');
-    document.querySelector('.high-score-label').textContent = t('highScore');
-    document.querySelector('.score-label').textContent = t('score');
-    document.querySelector('.streak-label').textContent = t('streak');
-    document.querySelector('.game-over-title').textContent = t('gameOver');
-    document.querySelector('.final-score-label').textContent = t('finalScore');
-    document.querySelectorAll('.stat-label')[0].textContent = t('questions');
-    document.querySelectorAll('.stat-label')[1].textContent = t('correct');
-    document.querySelectorAll('.stat-label')[2].textContent = t('bestStreak');
-    document.querySelector('.new-high-score-text').textContent = t('newHighScore');
-    elements.replayCategoryBtn.textContent = t('replayCategory');
-    elements.mainMenuBtn.textContent = t('mainMenu');
 }
 
 function updateCategoryHighScores() {

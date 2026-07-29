@@ -311,9 +311,9 @@
   <div class="game-container">
     <!-- Start Screen -->
     <div id="startScreen" class="start-screen">
-      <h1 class="game-title">CHROMA SHIELD</h1>
-      <p class="game-subtitle">Tap to toggle shield color. Match incoming projectiles!</p>
-      <button class="start-btn" onclick="startGame()">START GAME</button>
+      <h1 class="game-title" data-i18n="gameTitle">CHROMA SHIELD</h1>
+      <p class="game-subtitle" data-i18n="gameSubtitle">Tap to toggle shield color. Match incoming projectiles!</p>
+      <button class="start-btn" onclick="startGame()" data-i18n="startGame">START GAME</button>
       <div class="attribution">
         "Life of Riley" Kevin MacLeod (incompetech.com)<br>
         Licensed under Creative Commons: By Attribution 4.0 License<br>
@@ -342,13 +342,14 @@
 
     <!-- Game Over Screen -->
     <div id="gameOverScreen" class="game-over-screen">
-      <h1 class="game-over-title">GAME OVER</h1>
-      <p class="final-score">Final Score: <span id="finalScore">0</span></p>
-      <p class="final-score">Best: <span id="highScore">0</span></p>
-      <button class="play-again-btn" onclick="startGame()">PLAY AGAIN</button>
+      <h1 class="game-over-title" data-i18n="gameOver">GAME OVER</h1>
+      <p class="final-score" data-i18n="finalScore">Final Score: <span id="finalScore">0</span></p>
+      <p class="final-score" data-i18n="best">Best: <span id="highScore">0</span></p>
+      <button class="play-again-btn" onclick="startGame()" data-i18n="playAgain">PLAY AGAIN</button>
     </div>
   </div>
 
+  <script src="../i18n-loader.js"></script>
   <script>
     // Game State
     let lives = 3;
@@ -359,6 +360,11 @@
     let spawnInterval = null;
     let isGameRunning = false;
     let isMuted = false;
+
+    // Use universal i18n loader
+    function t(key) {
+        return gameI18n.t(key);
+    }
 
     // Audio Context
     let audioContext = null;
@@ -732,7 +738,9 @@
     }
 
     // Initialize on load
-    document.addEventListener('DOMContentLoaded', () => {
+    async function init() {
+      await gameI18n.init('chroma-shield');
+      
       // Pre-initialize audio context on first user interaction
       document.body.addEventListener('click', () => {
         if (!audioContext) initAudio();
@@ -745,7 +753,9 @@
         if (e.target.closest('button')) return;
         toggleShield();
       });
-    });
+    }
+    
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>

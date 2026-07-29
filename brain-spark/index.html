@@ -17,28 +17,28 @@
                 <p class="game-subtitle">Quiz Blitz</p>
             </div>
             <div class="category-selection">
-                <h2 class="section-title">Choose Category</h2>
+                <h2 class="section-title" data-i18n="chooseCategory">Choose Category</h2>
                 <div class="category-grid">
                     <button class="category-btn" data-category="science">
                         <span class="category-icon">🔬</span>
-                        <span class="category-name">Science</span>
+                        <span class="category-name" data-i18n="science">Science</span>
                     </button>
                     <button class="category-btn" data-category="tech">
                         <span class="category-icon">💻</span>
-                        <span class="category-name">Tech</span>
+                        <span class="category-name" data-i18n="tech">Tech</span>
                     </button>
                     <button class="category-btn" data-category="history">
                         <span class="category-icon">🌍</span>
-                        <span class="category-name">World History</span>
+                        <span class="category-name" data-i18n="history">World History</span>
                     </button>
                     <button class="category-btn" data-category="innovation">
                         <span class="category-icon">💡</span>
-                        <span class="category-name">Innovation</span>
+                        <span class="category-name" data-i18n="innovation">Innovation</span>
                     </button>
                 </div>
             </div>
             <div class="high-score-display">
-                <span class="high-score-label">High Score:</span>
+                <span class="high-score-label" data-i18n="highScore">High Score:</span>
                 <span id="highScoreValue" class="high-score-value">0</span>
             </div>
             <p class="credits-text">Music: Backed Vibes by Kevin MacLeod (Uppbeat)</p>
@@ -50,7 +50,7 @@
             <div class="game-header">
                 <button id="exitGameBtn" class="back-arrow-btn">←</button>
                 <div class="score-display">
-                    <span class="score-label">Score:</span>
+                    <span class="score-label" data-i18n="score">Score:</span>
                     <span id="scoreValue" class="score-value">0</span>
                 </div>
                 <div class="lives-display" id="livesContainer">
@@ -59,7 +59,7 @@
                 <div class="streak-display">
                     <span class="streak-icon">🔥</span>
                     <span id="streakValue" class="streak-value">0</span>
-                    <span class="streak-label">streak</span>
+                    <span class="streak-label" data-i18n="streak">streak</span>
                 </div>
             </div>
             
@@ -91,38 +91,39 @@
         <div id="gameOverScreen" class="screen">
             <div class="game-over-content">
                 <div class="game-over-icon">🎮</div>
-                <h2 class="game-over-title">Game Over!</h2>
+                <h2 class="game-over-title" data-i18n="gameOver">Game Over!</h2>
                 <div class="star-rating" id="starRating">
                     <!-- Stars will be injected here -->
                 </div>
                 <div class="final-score">
-                    <span class="final-score-label">Final Score:</span>
+                    <span class="final-score-label" data-i18n="finalScore">Final Score:</span>
                     <span id="finalScoreValue" class="final-score-value">0</span>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-item">
-                        <span class="stat-label">Questions</span>
+                        <span class="stat-label" data-i18n="questions">Questions</span>
                         <span id="questionsAnswered" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Correct</span>
+                        <span class="stat-label" data-i18n="correct">Correct</span>
                         <span id="correctAnswers" class="stat-value">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Best Streak</span>
+                        <span class="stat-label" data-i18n="bestStreak">Best Streak</span>
                         <span id="bestStreak" class="stat-value">0</span>
                     </div>
                 </div>
                 <div class="new-high-score" id="newHighScore" style="display: none;">
                     <span class="trophy-icon">🏆</span>
-                    <span class="new-high-score-text">New High Score!</span>
+                    <span class="new-high-score-text" data-i18n="newHighScore">New High Score!</span>
                 </div>
-                <button id="replayCategoryBtn" class="play-again-btn">Replay Category</button>
-                <button id="mainMenuBtn" class="home-btn">Main Menu</button>
+                <button id="replayCategoryBtn" class="play-again-btn" data-i18n="replayCategory">Replay Category</button>
+                <button id="mainMenuBtn" class="home-btn" data-i18n="mainMenu">Main Menu</button>
             </div>
         </div>
     </div>
 
+    <script src="../i18n-loader.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
