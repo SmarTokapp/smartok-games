@@ -517,6 +517,8 @@
     let isProcessing = false;
     let timerInterval = null;
     let timeLeft = 15;
+    let questionPool = [];
+    let askedQuestions = new Set();
 
     // Geometry Question Database (40+ questions)
     const geometryQuestions = {
@@ -809,8 +811,38 @@
 
     function getRandomQuestion() {
       const levelQuestions = geometryQuestions[level] || geometryQuestions[1];
-      const randomIndex = Math.floor(Math.random() * levelQuestions.length);
-      return levelQuestions[randomIndex];
+      
+      // Initialize pool if empty
+      if (questionPool.length === 0) {
+        questionPool = [...levelQuestions];
+        // Shuffle pool
+        for (let i = questionPool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [questionPool[i], questionPool[j]] = [questionPool[j], questionPool[i]];
+        }
+      }
+      
+      // If pool is exhausted, reshuffle asked questions
+      if (questionPool.length === 0) {
+        askedQuestions.clear();
+        questionPool = [...levelQuestions];
+        for (let i = questionPool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [questionPool[i], questionPool[j]] = [questionPool[j], questionPool[i]];
+        }
+      }
+      
+      // Get a question from pool
+      const question = questionPool.pop();
+      const questionKey = `${level}-${question.question}`;
+      
+      // If we've seen this question recently, try again
+      if (askedQuestions.has(questionKey) && questionPool.length > 0) {
+        return getRandomQuestion();
+      }
+      
+      askedQuestions.add(questionKey);
+      return question;
     }
 
     function displayQuestion() {
@@ -896,6 +928,8 @@
       levelOverlay.classList.remove('show');
       level++;
       questionsAnswered = 0;
+      questionPool = [];
+      askedQuestions.clear();
       
       if (level > 5) {
         // Game completed all levels
@@ -917,6 +951,8 @@
       level = 1;
       questionsAnswered = 0;
       isProcessing = false;
+      questionPool = [];
+      askedQuestions.clear();
       updateHearts();
       updateScore();
       updateLevel();
