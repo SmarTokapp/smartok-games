@@ -839,7 +839,7 @@
       }
       showScreen(startScreen);
 
-      if (window.ReactNativeWebView) {
+      if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'GO_BACK' }));
       }
     }
@@ -849,7 +849,9 @@
       console.log('[chrono-logic] Start button clicked');
       e.preventDefault();
       try {
-        await gameI18n.init('chrono-logic');
+        if (typeof gameI18n !== 'undefined') {
+          await gameI18n.init('chrono-logic');
+        }
         console.log('[chrono-logic] i18n initialized, starting game');
         startGame();
       } catch (error) {
