@@ -835,9 +835,18 @@
     }
 
     // Event Listeners
-    startBtn.addEventListener('click', async () => {
-      await gameI18n.init('chrono-logic');
-      startGame();
+    startBtn.addEventListener('click', async (e) => {
+      console.log('[chrono-logic] Start button clicked');
+      e.preventDefault();
+      try {
+        await gameI18n.init('chrono-logic');
+        console.log('[chrono-logic] i18n initialized, starting game');
+        startGame();
+      } catch (error) {
+        console.error('[chrono-logic] Error starting game:', error);
+        // Fallback: start game even if i18n fails
+        startGame();
+      }
     });
     restartBtn.addEventListener('click', startGame);
     menuBtn.addEventListener('click', goToMenu);
