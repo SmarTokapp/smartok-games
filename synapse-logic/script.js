@@ -1,5 +1,10 @@
 // Music from Uppbeat: Kevin MacLeod - Eastern Thought | License code: XDB1NKHBSYZNRBLB
 
+// Use universal i18n loader
+function t(key) {
+    return gameI18n.t(key);
+}
+
 // Game State
 const gameState = {
   currentCategory: null,
@@ -11,46 +16,13 @@ const gameState = {
   timer: null,
   timeLeft: 10,
   totalQuestions: 0,
-  correctAnswers: 0,
-  language: 'en'
+  correctAnswers: 0
 };
 
 // Audio Engine
 let audioContext = null;
 let backgroundMusic = null;
 let isMuted = false;
-
-// Translations
-const translations = {
-  en: {
-    fastMath: 'Fast Math',
-    sequenceLogic: 'Sequence Logic',
-    equationBalance: 'Equation Balance',
-    memoryMatrix: 'Memory Matrix',
-    highScore: 'High Score',
-    score: 'Score',
-    gameOver: 'Game Over',
-    finalScore: 'Final Score',
-    accuracy: 'Accuracy',
-    categoryHighScore: 'Category High Score',
-    replayCategory: 'Replay Category',
-    mainMenu: 'Main Menu'
-  },
-  es: {
-    fastMath: 'Matemáticas Rápidas',
-    sequenceLogic: 'Lógica de Secuencias',
-    equationBalance: 'Balance de Ecuaciones',
-    memoryMatrix: 'Matriz de Memoria',
-    highScore: 'Puntuación Máxima',
-    score: 'Puntuación',
-    gameOver: 'Juego Terminado',
-    finalScore: 'Puntuación Final',
-    accuracy: 'Precisión',
-    categoryHighScore: 'Puntuación Máxima de Categoría',
-    replayCategory: 'Repetir Categoría',
-    mainMenu: 'Menú Principal'
-  }
-};
 
 // Question Database (60+ puzzles per category = 240+ total)
 const questions = {
@@ -508,28 +480,6 @@ function getNextQuestion() {
   return gameState.availableQuestions.pop();
 }
 
-// Detect Language
-function detectLanguage() {
-  const lang = navigator.language || navigator.userLanguage;
-  if (lang.startsWith('es')) {
-    gameState.language = 'es';
-  } else {
-    gameState.language = 'en';
-  }
-}
-
-// Apply Translations
-function applyTranslations() {
-  const t = translations[gameState.language];
-  
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (t[key]) {
-      el.textContent = t[key];
-    }
-  });
-}
-
 // Update Mute Button
 function updateMuteButton() {
   const startSoundToggle = document.getElementById('startSoundToggle');
@@ -784,9 +734,9 @@ function exitToStartScreen() {
 }
 
 // Initialize Game
-function init() {
-  detectLanguage();
-  applyTranslations();
+async function init() {
+  // Initialize i18n loader
+  await gameI18n.init('synapse-logic');
   
   // Load mute state
   isMuted = localStorage.getItem('synapseLogic_muted') === 'true';
