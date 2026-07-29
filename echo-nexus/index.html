@@ -327,9 +327,9 @@
   <div class="game-container">
     <!-- Start Screen -->
     <div id="startScreen" class="start-screen">
-      <h1 class="game-title">ECHO NEXUS</h1>
-      <p class="game-subtitle">Watch the sequence, then repeat it!</p>
-      <button class="start-btn" onclick="startGame()">START GAME</button>
+      <h1 class="game-title" data-i18n="gameTitle">ECHO NEXUS</h1>
+      <p class="game-subtitle" data-i18n="gameSubtitle">Watch the sequence, then repeat it!</p>
+      <button class="start-btn" onclick="startGame()" data-i18n="startGame">START GAME</button>
       <div class="attribution">
         "Bumba Crossing" Kevin MacLeod (incompetech.com)<br>
         Licensed under Creative Commons: By Attribution 4.0 License<br>
@@ -348,7 +348,7 @@
             <span class="heart">❤</span>
           </div>
           <div class="score" id="score">0</div>
-          <div class="status" id="status">Watch...</div>
+          <div class="status" id="status" data-i18n="watch">Watch...</div>
         </div>
         <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">🔊</button>
       </div>
@@ -365,12 +365,13 @@
 
     <!-- Game Over Screen -->
     <div id="gameOverScreen" class="game-over-screen">
-      <h1 class="game-over-title">GAME OVER</h1>
-      <p class="final-score">Final Score: <span id="finalScore">0</span></p>
-      <button class="play-again-btn" onclick="startGame()">PLAY AGAIN</button>
+      <h1 class="game-over-title" data-i18n="gameOver">GAME OVER</h1>
+      <p class="final-score" data-i18n="finalScore">Final Score: <span id="finalScore">0</span></p>
+      <button class="play-again-btn" onclick="startGame()" data-i18n="playAgain">PLAY AGAIN</button>
     </div>
   </div>
 
+  <script src="../i18n-loader.js"></script>
   <script>
     // Game State
     let sequence = [];
@@ -380,6 +381,11 @@
     let isPlayerTurn = false;
     let isPlayingSequence = false;
     let isMuted = false;
+
+    // Use universal i18n loader
+    function t(key) {
+        return gameI18n.t(key);
+    }
 
     // Audio Context
     let audioContext = null;
@@ -528,7 +534,7 @@
       isPlayingSequence = true;
       isPlayerTurn = false;
       disableNodes();
-      document.getElementById('status').textContent = 'Watch...';
+      document.getElementById('status').textContent = t('watch');
       
       let index = 0;
       const interval = setInterval(() => {
@@ -540,7 +546,7 @@
           isPlayingSequence = false;
           isPlayerTurn = true;
           enableNodes();
-          document.getElementById('status').textContent = 'Your Turn!';
+          document.getElementById('status').textContent = t('yourTurn');
         }
       }, 600);
     }
@@ -664,12 +670,16 @@
     }
 
     // Initialize on load
-    document.addEventListener('DOMContentLoaded', () => {
+    async function init() {
+      await gameI18n.init('echo-nexus');
+      
       // Pre-initialize audio context on first user interaction
       document.body.addEventListener('click', () => {
         if (!audioContext) initAudio();
       }, { once: true });
-    });
+    }
+    
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>

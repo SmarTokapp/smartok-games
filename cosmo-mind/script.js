@@ -2,6 +2,11 @@
 // Deep space-themed fast-paced quiz game with streak multipliers and sound effects
 // Music: "Equatorial Complex" by Kevin MacLeod (incompetech.com) - Licensed under CC BY 4.0
 
+// Use universal i18n loader
+function t(key) {
+    return gameI18n.t(key);
+}
+
 // Audio Context for sound effects
 let audioContext = null;
 
@@ -608,43 +613,52 @@ function exitGame() {
     updateOverallHighScore();
 }
 
-// Event Listeners
-elements.categoryBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        initAudio();
-        playClickSound();
-        const category = btn.dataset.category;
-        startGame(category);
+// Initialize
+async function init() {
+    // Initialize i18n loader
+    await gameI18n.init('cosmo-mind');
+    
+    // Event Listeners
+    elements.categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            initAudio();
+            playClickSound();
+            const category = btn.dataset.category;
+            startGame(category);
+        });
     });
-});
 
-elements.exitGameBtn.addEventListener('click', () => {
-    playClickSound();
-    exitGame();
-});
+    elements.exitGameBtn.addEventListener('click', () => {
+        playClickSound();
+        exitGame();
+    });
 
-elements.replayCategoryBtn.addEventListener('click', () => {
-    playClickSound();
-    if (gameState.category) {
-        startGame(gameState.category);
-    }
-});
+    elements.replayCategoryBtn.addEventListener('click', () => {
+        playClickSound();
+        if (gameState.category) {
+            startGame(gameState.category);
+        }
+    });
 
-elements.mainMenuBtn.addEventListener('click', () => {
-    playClickSound();
-    exitGame();
-});
+    elements.mainMenuBtn.addEventListener('click', () => {
+        playClickSound();
+        exitGame();
+    });
 
-elements.muteBtn.addEventListener('click', () => {
-    toggleAudio();
-});
-
-const muteBtnGame = document.getElementById('muteBtnGame');
-if (muteBtnGame) {
-    muteBtnGame.addEventListener('click', () => {
+    elements.muteBtn.addEventListener('click', () => {
         toggleAudio();
     });
+
+    const muteBtnGame = document.getElementById('muteBtnGame');
+    if (muteBtnGame) {
+        muteBtnGame.addEventListener('click', () => {
+            toggleAudio();
+        });
+    }
 }
+
+// Start the game
+init();
 
 // Update audio toggle button icon based on initial state
 updateAudioToggleIcon();
