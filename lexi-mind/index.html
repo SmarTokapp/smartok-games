@@ -13,23 +13,23 @@
     <div class="category-grid">
       <button class="category-btn" data-category="anagrams">
         <span class="category-icon">🔤</span>
-        <span class="category-name" data-key="anagrams">Anagrams</span>
+        <span class="category-name" data-i18n="anagrams">Anagrams</span>
       </button>
       <button class="category-btn" data-category="synonyms">
         <span class="category-icon">🔄</span>
-        <span class="category-name" data-key="synonyms">Synonyms</span>
+        <span class="category-name" data-i18n="synonyms">Synonyms</span>
       </button>
       <button class="category-btn" data-category="definitions">
         <span class="category-icon">📖</span>
-        <span class="category-name" data-key="definitions">Definitions</span>
+        <span class="category-name" data-i18n="definitions">Definitions</span>
       </button>
       <button class="category-btn" data-category="wordComplete">
         <span class="category-icon">✏️</span>
-        <span class="category-name" data-key="wordComplete">Word Complete</span>
+        <span class="category-name" data-i18n="wordComplete">Word Complete</span>
       </button>
     </div>
     <div class="high-score-display">
-      <span data-key="highScore">High Score</span>: <span id="overallHighScore">0</span>
+      <span data-i18n="highScore">High Score</span>: <span id="overallHighScore">0</span>
     </div>
     <button id="muteBtn" class="mute-btn">🔊</button>
     <p class="credits-text">Music: Backbay Lounge by Kevin MacLeod (Uppbeat)</p>
@@ -54,32 +54,33 @@
       <div id="answerOptions" class="answer-options"></div>
     </div>
     <div class="score-display">
-      <span data-key="score">Score</span>: <span id="currentScore">0</span>
+      <span data-i18n="score">Score</span>: <span id="currentScore">0</span>
     </div>
   </div>
 
   <div id="gameOverScreen" class="screen hidden">
-    <h2 class="game-over-title" data-key="gameOver">Game Over</h2>
+    <h2 class="game-over-title" data-i18n="gameOver">Game Over</h2>
     <div class="star-rating">
       <span id="star1">⭐</span>
       <span id="star2">⭐</span>
       <span id="star3">⭐</span>
     </div>
     <div class="final-score">
-      <span data-key="finalScore">Final Score</span>: <span id="finalScore">0</span>
+      <span data-i18n="finalScore">Final Score</span>: <span id="finalScore">0</span>
     </div>
     <div class="accuracy-display">
-      <span data-key="accuracy">Accuracy</span>: <span id="accuracy">0%</span>
+      <span data-i18n="accuracy">Accuracy</span>: <span id="accuracy">0%</span>
     </div>
     <div class="category-high-score">
-      <span data-key="categoryHighScore">Category High Score</span>: <span id="categoryHighScore">0</span>
+      <span data-i18n="categoryHighScore">Category High Score</span>: <span id="categoryHighScore">0</span>
     </div>
     <div class="game-over-buttons">
-      <button id="replayBtn" class="game-over-btn" data-key="replayCategory">Replay Category</button>
-      <button id="mainMenuBtn" class="game-over-btn" data-key="mainMenu">Main Menu</button>
+      <button id="replayBtn" class="game-over-btn" data-i18n="replayCategory">Replay Category</button>
+      <button id="mainMenuBtn" class="game-over-btn" data-i18n="mainMenu">Main Menu</button>
     </div>
   </div>
 
+  <script src="../i18n-loader.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

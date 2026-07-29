@@ -1,5 +1,10 @@
 // Music from Uppbeat: Kevin MacLeod - Backbay Lounge | License code: LXSA3RGOTFZRSV8Y
 
+// Use universal i18n loader
+function t(key) {
+    return gameI18n.t(key);
+}
+
 // Game State
 const gameState = {
   currentCategory: null,
@@ -12,8 +17,7 @@ const gameState = {
   timeLeft: 10,
   totalQuestions: 0,
   correctAnswers: 0,
-  isMuted: false,
-  language: 'en'
+  isMuted: false
 };
 
 // Audio Context
@@ -23,38 +27,6 @@ let audioContext = null;
 const bgm = new Audio('bgm.mp3');
 bgm.loop = true;
 bgm.volume = 0.2;
-
-// Translations
-const translations = {
-  en: {
-    anagrams: 'Anagrams',
-    synonyms: 'Synonyms',
-    definitions: 'Definitions',
-    wordComplete: 'Word Complete',
-    highScore: 'High Score',
-    score: 'Score',
-    gameOver: 'Game Over',
-    finalScore: 'Final Score',
-    accuracy: 'Accuracy',
-    categoryHighScore: 'Category High Score',
-    replayCategory: 'Replay Category',
-    mainMenu: 'Main Menu'
-  },
-  es: {
-    anagrams: 'Anagramas',
-    synonyms: 'Sinónimos',
-    definitions: 'Definiciones',
-    wordComplete: 'Completar Palabra',
-    highScore: 'Puntuación Máxima',
-    score: 'Puntuación',
-    gameOver: 'Juego Terminado',
-    finalScore: 'Puntuación Final',
-    accuracy: 'Precisión',
-    categoryHighScore: 'Puntuación Máxima de Categoría',
-    replayCategory: 'Repetir Categoría',
-    mainMenu: 'Menú Principal'
-  }
-};
 
 // Question Database (60+ puzzles per category = 240+ total)
 const questions = {
@@ -478,27 +450,6 @@ function getNextQuestion() {
   return gameState.availableQuestions.pop();
 }
 
-// Detect Language
-function detectLanguage() {
-  const lang = navigator.language || navigator.userLanguage;
-  if (lang.startsWith('es')) {
-    gameState.language = 'es';
-  } else {
-    gameState.language = 'en';
-  }
-}
-
-// Apply Translations
-function applyTranslations() {
-  const t = translations[gameState.language];
-  document.querySelectorAll('[data-key]').forEach(el => {
-    const key = el.getAttribute('data-key');
-    if (t[key]) {
-      el.textContent = t[key];
-    }
-  });
-}
-
 // Update Mute Button
 function updateMuteButton() {
   const muteBtn = document.getElementById('muteBtn');
@@ -732,9 +683,9 @@ function exitGame() {
 }
 
 // Initialize
-function init() {
-  detectLanguage();
-  applyTranslations();
+async function init() {
+  // Initialize i18n loader
+  await gameI18n.init('lexi-mind');
   
   // Load mute state
   gameState.isMuted = localStorage.getItem('lexiMind_muted') === 'true';
