@@ -797,12 +797,7 @@
       playError();
       hearts--;
       updateHearts();
-      let timesUpMsg = 'Time\'s Up!';
-      try {
-        timesUpMsg = gameI18n.t('timesUp');
-      } catch (err) {
-        console.warn('[lumina-trivia] i18n error, using fallback:', err);
-      }
+      const timesUpMsg = (typeof gameI18n !== 'undefined') ? gameI18n.t('timesUp') : 'Time\'s Up!';
       showToast(timesUpMsg);
 
       // Highlight correct answer
@@ -898,11 +893,8 @@
 
         let message = `+${points}`;
         if (speedBonus > 0) {
-          try {
-            message = `+${points} (${gameI18n.t('speedBonus')})`;
-          } catch (err) {
-            console.warn('[lumina-trivia] i18n error, using fallback:', err);
-          }
+          const speedBonusText = (typeof gameI18n !== 'undefined') ? gameI18n.t('speedBonus') : 'Speed Bonus';
+          message = `+${points} (${speedBonusText})`;
         }
         showToast(message);
 
@@ -934,7 +926,8 @@
           if (hearts <= 0) {
             gameOver();
           } else {
-            showToast(gameI18n.t('tryAgain'));
+            const tryAgainMsg = (typeof gameI18n !== 'undefined') ? gameI18n.t('tryAgain') : 'Try Again';
+            showToast(tryAgainMsg);
             setTimeout(() => {
               displayQuestion();
               isProcessing = false;
