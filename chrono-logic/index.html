@@ -784,12 +784,7 @@
             gameOver();
           } else {
             // Reset round
-            let tryAgainMsg = 'Try Again';
-            try {
-              tryAgainMsg = gameI18n.t('tryAgain');
-            } catch (err) {
-              console.warn('[chrono-logic] i18n error, using fallback:', err);
-            }
+            const tryAgainMsg = (typeof gameI18n !== 'undefined') ? gameI18n.t('tryAgain') : 'Try Again';
             showToast(tryAgainMsg);
             setTimeout(() => {
               createCards();

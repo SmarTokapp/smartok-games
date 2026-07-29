@@ -802,12 +802,7 @@
       playError();
       hearts--;
       updateHearts();
-      let timesUpMsg = 'Time\'s Up!';
-      try {
-        timesUpMsg = gameI18n.t('timesUp');
-      } catch (err) {
-        console.warn('[astro-geometry] i18n error, using fallback:', err);
-      }
+      const timesUpMsg = (typeof gameI18n !== 'undefined') ? gameI18n.t('timesUp') : 'Time\'s Up!';
       showToast(timesUpMsg);
 
       // Highlight correct answer
@@ -914,12 +909,7 @@
           if (hearts <= 0) {
             gameOver();
           } else {
-            let tryAgainMsg = 'Try Again';
-            try {
-              tryAgainMsg = gameI18n.t('tryAgain');
-            } catch (err) {
-              console.warn('[astro-geometry] i18n error, using fallback:', err);
-            }
+            const tryAgainMsg = (typeof gameI18n !== 'undefined') ? gameI18n.t('tryAgain') : 'Try Again';
             showToast(tryAgainMsg);
             setTimeout(() => {
               displayQuestion();
