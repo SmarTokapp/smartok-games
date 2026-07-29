@@ -889,7 +889,14 @@
         updateStreak();
         questionsAnswered++;
 
-        const message = speedBonus > 0 ? `+${points} (${gameI18n.t('speedBonus')})` : `+${points}`;
+        let message = `+${points}`;
+        if (speedBonus > 0) {
+          try {
+            message = `+${points} (${gameI18n.t('speedBonus')})`;
+          } catch (err) {
+            console.warn('[lumina-trivia] i18n error, using fallback:', err);
+          }
+        }
         showToast(message);
 
         setTimeout(() => {

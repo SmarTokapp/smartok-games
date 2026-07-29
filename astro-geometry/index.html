@@ -907,7 +907,13 @@
           if (hearts <= 0) {
             gameOver();
           } else {
-            showToast(gameI18n.t('tryAgain'));
+            let tryAgainMsg = 'Try Again';
+            try {
+              tryAgainMsg = gameI18n.t('tryAgain');
+            } catch (err) {
+              console.warn('[astro-geometry] i18n error, using fallback:', err);
+            }
+            showToast(tryAgainMsg);
             setTimeout(() => {
               displayQuestion();
               isProcessing = false;
