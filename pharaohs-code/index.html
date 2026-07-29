@@ -713,7 +713,9 @@
             console.log('[pharaohs-code] Start button clicked');
             e.preventDefault();
             try {
-                await gameI18n.init('pharaohs-code');
+                if (typeof gameI18n !== 'undefined') {
+                    await gameI18n.init('pharaohs-code');
+                }
                 console.log('[pharaohs-code] i18n initialized, starting game');
                 initAudio();
                 startGame();
@@ -739,7 +741,7 @@
             document.getElementById('gameScreen')?.classList.add('hidden');
             document.getElementById('startScreen')?.classList.remove('hidden');
 
-            if (window.ReactNativeWebView) {
+            if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
                 window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'GO_BACK' }));
             }
         }

@@ -1013,7 +1013,7 @@
       }
       showScreen(startScreen);
 
-      if (window.ReactNativeWebView) {
+      if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'GO_BACK' }));
       }
     }
