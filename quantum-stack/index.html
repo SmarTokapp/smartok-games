@@ -257,9 +257,9 @@
   <div class="game-container">
     <!-- Start Screen -->
     <div id="startScreen" class="start-screen">
-      <h1 class="game-title">QUANTUM STACK</h1>
-      <p class="game-subtitle">Stack the blocks perfectly to build your tower!</p>
-      <button class="start-btn" onclick="startGame()">START GAME</button>
+      <h1 class="game-title" data-i18n="gameTitle">QUANTUM STACK</h1>
+      <p class="game-subtitle" data-i18n="gameSubtitle">Stack the blocks perfectly to build your tower!</p>
+      <button class="start-btn" onclick="startGame()" data-i18n="startGame">START GAME</button>
       <div class="attribution">
         "On the Ground" Kevin MacLeod (incompetech.com)<br>
         Licensed under Creative Commons: By Attribution 4.0 License<br>
@@ -289,13 +289,14 @@
 
     <!-- Game Over Screen -->
     <div id="gameOverScreen" class="game-over-screen">
-      <h1 class="game-over-title">GAME OVER</h1>
-      <p class="final-score">Final Score: <span id="finalScore">0</span></p>
-      <p class="final-score">Best: <span id="highScore">0</span></p>
-      <button class="play-again-btn" onclick="startGame()">PLAY AGAIN</button>
+      <h1 class="game-over-title" data-i18n="gameOver">GAME OVER</h1>
+      <p class="final-score" data-i18n="finalScore">Final Score: <span id="finalScore">0</span></p>
+      <p class="final-score" data-i18n="best">Best: <span id="highScore">0</span></p>
+      <button class="play-again-btn" onclick="startGame()" data-i18n="playAgain">PLAY AGAIN</button>
     </div>
   </div>
 
+  <script src="../i18n-loader.js"></script>
   <script>
     // Game State
     let lives = 3;
@@ -306,6 +307,11 @@
     let isMuted = false;
     let blockSpeed = 0.8;
     let direction = 1;
+
+    // Use universal i18n loader
+    function t(key) {
+        return gameI18n.t(key);
+    }
 
     // Canvas
     const canvas = document.getElementById('gameCanvas');
@@ -772,6 +778,13 @@
     
     // Initial canvas setup
     resizeCanvas();
+    
+    // Initialize i18n
+    async function init() {
+      await gameI18n.init('quantum-stack');
+    }
+    
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>

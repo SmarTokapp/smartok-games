@@ -293,6 +293,7 @@
             margin-bottom: 10px;
         }
     </style>
+    <script src="../shared/i18n-loader.js"></script>
 </head>
 <body>
     <div class="game-container">
@@ -306,20 +307,20 @@
                     <span class="heart">❤</span>
                     <span class="heart">❤</span>
                 </div>
-                <div class="score">Score: <span id="score">0</span></div>
+                <div class="score" data-i18n="score">Score: <span id="score">0</span></div>
             </div>
             <button class="mute-button" id="muteButton">🔊</button>
         </div>
 
         <div class="game-area">
-            <div class="level-indicator" id="levelIndicator">Level 1</div>
+            <div class="level-indicator" id="levelIndicator" data-i18n="level">Level 1</div>
             <div class="grid" id="grid"></div>
         </div>
 
         <div class="start-screen" id="startScreen">
-            <h1>Pharaoh's Code</h1>
-            <p>Match countries with their capitals in this ancient Egyptian memory challenge!</p>
-            <button class="start-button" id="startButton">Start Game</button>
+            <h1 data-i18n="gameTitle">Pharaoh's Code</h1>
+            <p data-i18n="gameSubtitle">Match countries with their capitals in this ancient Egyptian memory challenge!</p>
+            <button class="start-button" id="startButton" data-i18n="startGame">Start Game</button>
             <div class="attribution">
                 "Cool Vibes" Kevin MacLeod (incompetech.com)<br>
                 Licensed under Creative Commons: By Attribution 4.0 License<br>
@@ -328,17 +329,17 @@
         </div>
 
         <div class="game-over-screen hidden" id="gameOverScreen">
-            <h1>Game Over</h1>
-            <p>Final Score: <span id="finalScore">0</span></p>
-            <button class="restart-button" id="restartButton">Play Again</button>
+            <h1 data-i18n="gameOver">Game Over</h1>
+            <p data-i18n="finalScore">Final Score: <span id="finalScore">0</span></p>
+            <button class="restart-button" id="restartButton" data-i18n="playAgain">Play Again</button>
         </div>
 
-        <div class="toast" id="toast">Match!</div>
+        <div class="toast" id="toast" data-i18n="match">Match!</div>
 
         <div class="level-complete-overlay" id="levelCompleteOverlay">
-            <h2>Level Complete!</h2>
-            <p>+100 Bonus Points</p>
-            <p>Lives Restored</p>
+            <h2 data-i18n="levelComplete">Level Complete!</h2>
+            <p data-i18n="bonusPoints">+100 Bonus Points</p>
+            <p data-i18n="livesRestored">Lives Restored</p>
         </div>
     </div>
 
@@ -576,7 +577,7 @@
                 playSound('match');
                 score += 20;
                 updateScore();
-                showToast('Match!');
+                showToast(gameI18n.t('match'));
                 
                 setTimeout(() => {
                     tile1.classList.add('matched');
@@ -603,10 +604,10 @@
                     playSound('error');
                     lives--;
                     updateHearts();
-                    showToast('Try Again');
+                    showToast(gameI18n.t('tryAgain'));
                 } else {
                     // First time seeing both tiles - no penalty
-                    showToast('First Look!');
+                    showToast(gameI18n.t('firstLook'));
                 }
 
                 setTimeout(() => {
@@ -696,12 +697,13 @@
         }
 
         // Event Listeners
-        startButton.addEventListener('pointerdown', () => {
+        startButton.addEventListener('pointerdown', async () => {
+            await gameI18n.init('pharaohs-code');
             initAudio();
             startGame();
         });
 
-        restartButton.addEventListener('pointerdown', () => {
+        restartButton.addEventListener('pointerdown', async () => {
             initAudio();
             startGame();
         });
