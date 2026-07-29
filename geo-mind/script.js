@@ -395,7 +395,19 @@ function loadQuestion() {
   questionText.textContent = gameState.currentQuestion.question;
   answerOptions.innerHTML = '';
   
-  gameState.currentQuestion.answers.forEach((answer, index) => {
+  // Shuffle answers using Fisher-Yates algorithm
+  const shuffledAnswers = [...gameState.currentQuestion.answers];
+  for (let i = shuffledAnswers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledAnswers[i], shuffledAnswers[j]] = [shuffledAnswers[j], shuffledAnswers[i]];
+  }
+  
+  // Update correct index to match shuffled position
+  const originalCorrect = gameState.currentQuestion.correct;
+  const correctAnswer = gameState.currentQuestion.answers[originalCorrect];
+  gameState.currentQuestion.correct = shuffledAnswers.indexOf(correctAnswer);
+  
+  shuffledAnswers.forEach((answer, index) => {
     const btn = document.createElement('button');
     btn.className = 'answer-btn';
     btn.textContent = answer;
