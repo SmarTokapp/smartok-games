@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Lumina Trivia</title>
+  <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert("JS Error: " + message + " at line " + lineno);
+      return true;
+    };
+    window.addEventListener("unhandledrejection", function(event) {
+      alert("Promise Error: " + event.reason);
+    });
+  </script>
   <style>
     * {
       margin: 0;
@@ -788,7 +797,13 @@
       playError();
       hearts--;
       updateHearts();
-      showToast(gameI18n.t('timesUp'));
+      let timesUpMsg = 'Time\'s Up!';
+      try {
+        timesUpMsg = gameI18n.t('timesUp');
+      } catch (err) {
+        console.warn('[lumina-trivia] i18n error, using fallback:', err);
+      }
+      showToast(timesUpMsg);
 
       // Highlight correct answer
       const choices = choicesGrid.querySelectorAll('.choice-card');
@@ -829,16 +844,8 @@
         }
       }
       
-      // Get a question from pool
+      // Get a question from pool (shuffle bag prevents repeats)
       const question = questionPool.pop();
-      const questionKey = `${level}-${question.question}`;
-      
-      // If we've seen this question recently, try again
-      if (askedQuestions.has(questionKey) && questionPool.length > 0) {
-        return getRandomQuestion();
-      }
-      
-      askedQuestions.add(questionKey);
       return question;
     }
 
