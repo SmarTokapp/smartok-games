@@ -577,7 +577,13 @@
                 playSound('match');
                 score += 20;
                 updateScore();
-                showToast(gameI18n.t('match'));
+                let matchMsg = 'Match!';
+                try {
+                    matchMsg = gameI18n.t('match');
+                } catch (err) {
+                    console.warn('[pharaohs-code] i18n error, using fallback:', err);
+                }
+                showToast(matchMsg);
                 
                 setTimeout(() => {
                     tile1.classList.add('matched');
@@ -604,10 +610,22 @@
                     playSound('error');
                     lives--;
                     updateHearts();
-                    showToast(gameI18n.t('tryAgain'));
+                    let tryAgainMsg = 'Try Again';
+                    try {
+                        tryAgainMsg = gameI18n.t('tryAgain');
+                    } catch (err) {
+                        console.warn('[pharaohs-code] i18n error, using fallback:', err);
+                    }
+                    showToast(tryAgainMsg);
                 } else {
                     // First time seeing both tiles - no penalty
-                    showToast(gameI18n.t('firstLook'));
+                    let firstLookMsg = 'First Look';
+                    try {
+                        firstLookMsg = gameI18n.t('firstLook');
+                    } catch (err) {
+                        console.warn('[pharaohs-code] i18n error, using fallback:', err);
+                    }
+                    showToast(firstLookMsg);
                 }
 
                 setTimeout(() => {
