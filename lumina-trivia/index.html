@@ -530,6 +530,8 @@
     let timerInterval = null;
     let timeLeft = 15;
     let questionStartTime = 0;
+    let questionPool = [];
+    let askedQuestions = new Set();
 
     // Trivia Question Database (50+ questions across 5 levels)
     const triviaQuestions = {
@@ -543,7 +545,22 @@
         { category: "Nature", question: "What is the largest mammal on Earth?", choices: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"], correct: 1 },
         { category: "Nature", question: "How many legs does a spider have?", choices: ["6", "8", "10", "12"], correct: 1 },
         { category: "Geography", question: "Which country has the largest population?", choices: ["USA", "India", "China", "Russia"], correct: 2 },
-        { category: "Nature", question: "What is the fastest land animal?", choices: ["Lion", "Cheetah", "Gazelle", "Horse"], correct: 1 }
+        { category: "Nature", question: "What is the fastest land animal?", choices: ["Lion", "Cheetah", "Gazelle", "Horse"], correct: 1 },
+        { category: "Geography", question: "What is the capital of France?", choices: ["London", "Berlin", "Paris", "Madrid"], correct: 2 },
+        { category: "Nature", question: "What is the largest desert in the world?", choices: ["Gobi", "Sahara", "Arabian", "Antarctic"], correct: 3 },
+        { category: "Geography", question: "Which continent is known as the 'Dark Continent'?", choices: ["Asia", "Africa", "South America", "Australia"], correct: 1 },
+        { category: "Nature", question: "What is the national bird of the United States?", choices: ["Eagle", "Hawk", "Falcon", "Owl"], correct: 0 },
+        { category: "Geography", question: "What is the smallest country in the world?", choices: ["Monaco", "Vatican City", "San Marino", "Liechtenstein"], correct: 1 },
+        { category: "Nature", question: "How many bones are in the adult human body?", choices: ["186", "206", "226", "246"], correct: 1 },
+        { category: "Geography", question: "Which river flows through the Grand Canyon?", choices: ["Mississippi", "Colorado", "Amazon", "Nile"], correct: 1 },
+        { category: "Nature", question: "What is the largest organ in the human body?", choices: ["Heart", "Liver", "Skin", "Brain"], correct: 2 },
+        { category: "Geography", question: "What is the tallest mountain in the world?", choices: ["K2", "Kangchenjunga", "Mount Everest", "Lhotse"], correct: 2 },
+        { category: "Nature", question: "How many teeth does an adult human have?", choices: ["28", "30", "32", "34"], correct: 2 },
+        { category: "Geography", question: "Which country has the most islands?", choices: ["Indonesia", "Philippines", "Sweden", "Japan"], correct: 2 },
+        { category: "Nature", question: "What is the fastest bird in the world?", choices: ["Eagle", "Hawk", "Peregrine Falcon", "Sparrow"], correct: 2 },
+        { category: "Geography", question: "What is the largest lake in the world?", choices: ["Lake Superior", "Lake Victoria", "Caspian Sea", "Lake Baikal"], correct: 2 },
+        { category: "Nature", question: "What is the only mammal that can fly?", choices: ["Bat", "Squirrel", "Lemur", "Flying Fox"], correct: 0 },
+        { category: "Geography", question: "Which city is known as the 'Big Apple'?", choices: ["Los Angeles", "Chicago", "New York", "Houston"], correct: 2 }
       ],
       2: [ // Level 2: Inventions & Technology
         { category: "Technology", question: "Who is considered the father of Computer Science?", choices: ["Bill Gates", "Alan Turing", "Steve Jobs", "Tim Berners-Lee"], correct: 1 },
@@ -791,8 +808,38 @@
 
     function getRandomQuestion() {
       const levelQuestions = triviaQuestions[level] || triviaQuestions[1];
-      const randomIndex = Math.floor(Math.random() * levelQuestions.length);
-      return levelQuestions[randomIndex];
+      
+      // Initialize pool if empty
+      if (questionPool.length === 0) {
+        questionPool = [...levelQuestions];
+        // Shuffle pool
+        for (let i = questionPool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [questionPool[i], questionPool[j]] = [questionPool[j], questionPool[i]];
+        }
+      }
+      
+      // If pool is exhausted, reshuffle asked questions
+      if (questionPool.length === 0) {
+        askedQuestions.clear();
+        questionPool = [...levelQuestions];
+        for (let i = questionPool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [questionPool[i], questionPool[j]] = [questionPool[j], questionPool[i]];
+        }
+      }
+      
+      // Get a question from pool
+      const question = questionPool.pop();
+      const questionKey = `${level}-${question.question}`;
+      
+      // If we've seen this question recently, try again
+      if (askedQuestions.has(questionKey) && questionPool.length > 0) {
+        return getRandomQuestion();
+      }
+      
+      askedQuestions.add(questionKey);
+      return question;
     }
 
     function displayQuestion() {
@@ -899,6 +946,8 @@
       levelOverlay.classList.remove('show');
       level++;
       questionsAnswered = 0;
+      questionPool = [];
+      askedQuestions.clear();
       
       if (level > 5) {
         // Game completed all levels
@@ -922,6 +971,8 @@
       bestStreak = 0;
       questionsAnswered = 0;
       isProcessing = false;
+      questionPool = [];
+      askedQuestions.clear();
       updateHearts();
       updateScore();
       updateStreak();
@@ -930,12 +981,6 @@
       showScreen(gameScreen);
       displayQuestion();
     }
-
-    // Event Listeners
-    startBtn.addEventListener('click', async () => {
-      await gameI18n.init('lumina-trivia');
-      startGame();
-    });
 
     function gameOver() {
       stopTimer();
