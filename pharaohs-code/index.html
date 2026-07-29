@@ -12,6 +12,13 @@
         window.addEventListener("unhandledrejection", function(event) {
             alert("Promise Error: " + event.reason);
         });
+        window.safePostMessage = function(msg) {
+            if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+                window.ReactNativeWebView.postMessage(msg);
+            } else {
+                console.warn('WebView bridge not ready. Message dropped:', msg);
+            }
+        };
     </script>
     <style>
         * {
@@ -742,7 +749,7 @@
             document.getElementById('startScreen')?.classList.remove('hidden');
 
             if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
-                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'GO_BACK' }));
+                window.safePostMessage(JSON.stringify({ type: 'GO_BACK' }));
             }
         }
 
