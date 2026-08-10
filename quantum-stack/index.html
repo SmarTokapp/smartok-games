@@ -217,7 +217,20 @@
     .final-score {
       font-size: 28px;
       color: #2c3e50;
-      margin-bottom: 40px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      justify-content: center;
+    }
+
+    .final-score-label {
+      font-weight: bold;
+    }
+
+    .final-score-value {
+      font-weight: bold;
+      color: #ff6b6b;
     }
 
     .play-again-btn {
@@ -290,8 +303,14 @@
     <!-- Game Over Screen -->
     <div id="gameOverScreen" class="game-over-screen">
       <h1 class="game-over-title" data-i18n="gameOver">GAME OVER</h1>
-      <p class="final-score" data-i18n="finalScore">Final Score: <span id="finalScore">0</span></p>
-      <p class="final-score" data-i18n="best">Best: <span id="highScore">0</span></p>
+      <p class="final-score">
+        <span class="final-score-label" data-i18n="finalScore">Final Score:</span>
+        <span id="finalScore" class="final-score-value">0</span>
+      </p>
+      <p class="final-score">
+        <span class="final-score-label" data-i18n="best">Best:</span>
+        <span id="highScore" class="final-score-value">0</span>
+      </p>
       <button class="play-again-btn" onclick="startGame()" data-i18n="playAgain">PLAY AGAIN</button>
     </div>
   </div>
