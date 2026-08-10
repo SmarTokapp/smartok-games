@@ -81,6 +81,16 @@ class I18nLoader {
                 if (el.tagName === 'INPUT' || el.tagName === 'BUTTON') {
                     el.value = this.translations[key];
                     el.textContent = this.translations[key];
+                } else if (el.children.length > 0) {
+                    // Element has child elements — only update if it has a single text node
+                    // to avoid destroying nested elements (e.g. score value spans)
+                    const hasOnlyTextNode = el.childNodes.length === 1 && el.childNodes[0].nodeType === Node.TEXT_NODE;
+                    if (hasOnlyTextNode) {
+                        el.textContent = this.translations[key];
+                    } else {
+                        // Skip: element has complex children, don't destroy them
+                        console.warn(`[i18n] Skipped translating ${key}: element has child elements`);
+                    }
                 } else {
                     el.textContent = this.translations[key];
                 }
