@@ -13,6 +13,10 @@ const gameState = {
   streak: 0,
   availableQuestions: [],
   currentQuestion: null,
+  // Index (into the freshly-shuffled button order, not the original data)
+  // of whichever option is actually correct for the question on screen —
+  // set once per question in loadQuestion() and read by handleAnswer().
+  currentCorrectIndex: -1,
   timer: null,
   timeLeft: 10,
   totalQuestions: 0,
@@ -555,11 +559,30 @@ function loadQuestion() {
   
   questionText.textContent = gameState.currentQuestion.question;
   answerOptions.innerHTML = '';
-  
-  gameState.currentQuestion.answers.forEach((answer, index) => {
+
+  // Randomize which button slot the correct answer lands in on every
+  // question. The question data's `correct` field is just an index into
+  // the ORIGINAL answers array as authored — and for a large share of the
+  // question bank that's always 0, which is exactly why the correct
+  // button kept showing up in the same spot (or a rigid pattern) instead
+  // of being truly unpredictable. We shuffle {text, isCorrect} pairs with
+  // the existing Fisher-Yates shuffleArray, then record wherever the
+  // correct one landed in gameState.currentCorrectIndex. Everything
+  // downstream reads that, not the original `correct` field — and we
+  // never touch gameState.currentQuestion.correct or the answers array
+  // itself, since that same question object gets reused every time the
+  // deck reshuffles (mutating it here would corrupt future rounds).
+  const optionPairs = gameState.currentQuestion.answers.map((answer, index) => ({
+    text: answer,
+    isCorrect: index === gameState.currentQuestion.correct,
+  }));
+  const shuffledOptions = shuffleArray(optionPairs);
+  gameState.currentCorrectIndex = shuffledOptions.findIndex(option => option.isCorrect);
+
+  shuffledOptions.forEach((option, index) => {
     const btn = document.createElement('button');
     btn.className = 'answer-btn';
-    btn.textContent = answer;
+    btn.textContent = option.text;
     btn.onclick = () => handleAnswer(index);
     answerOptions.appendChild(btn);
   });
@@ -594,12 +617,12 @@ function handleAnswer(index) {
   const buttons = document.querySelectorAll('.answer-btn');
   buttons.forEach(btn => btn.disabled = true);
   
-  if (index === gameState.currentQuestion.correct) {
+  if (index === gameState.currentCorrectIndex) {
     buttons[index].classList.add('correct');
     handleCorrectAnswer();
   } else {
     buttons[index].classList.add('wrong');
-    buttons[gameState.currentQuestion.correct].classList.add('correct');
+    buttons[gameState.currentCorrectIndex].classList.add('correct');
     handleWrongAnswer();
   }
 }
