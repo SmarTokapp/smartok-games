@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sum It Up: Pair Finder</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen active">
+            <button id="audioToggleBtn" class="sound-toggle-btn">🔊</button>
+            <button id="creditsBtn" class="credits-btn">ℹ️</button>
+            <div class="logo">
+                <div class="logo-icon">➕</div>
+                <h1 class="game-title">Sum It Up</h1>
+                <p class="game-subtitle">Pair Finder</p>
+            </div>
+            <div class="start-info">
+                <h2 class="section-title" data-i18n="howToPlay">How to Play</h2>
+                <p class="info-text" data-i18n="instructions">A target number appears at the top. Tap exactly two numbers from the grid that add up to the target. Each level adds more tiles and bigger numbers!</p>
+            </div>
+            <button id="startBtn" class="start-btn" data-i18n="startGame">Start Game</button>
+            <div class="high-score-display">
+                <span class="high-score-label" data-i18n="highScore">High Score:</span>
+                <span id="highScoreValue" class="high-score-value">0</span>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <button id="audioToggleBtnGame" class="sound-toggle-btn">🔊</button>
+            <div class="game-header">
+                <button id="exitGameBtn" class="back-arrow-btn">←</button>
+                <div class="score-display">
+                    <span class="score-label" data-i18n="score">Score:</span>
+                    <span id="scoreValue" class="score-value">0</span>
+                </div>
+                <div class="level-display">
+                    <span class="level-label" data-i18n="level">Level</span>
+                    <span id="levelValue" class="level-value">1</span>
+                </div>
+                <div class="lives-display" id="livesContainer"></div>
+            </div>
+
+            <!-- Target number display -->
+            <div class="target-display">
+                <span class="target-label" data-i18n="findPair">Find a pair that sums to</span>
+                <span id="targetValue" class="target-value">0</span>
+            </div>
+
+            <!-- Number grid -->
+            <div id="numberGrid" class="number-grid"></div>
+
+            <!-- Selected pair display -->
+            <div class="selected-display" id="selectedDisplay">
+                <span class="selected-label" data-i18n="selected">Selected:</span>
+                <span id="selectedValues" class="selected-values">—</span>
+            </div>
+
+            <div class="feedback-overlay" id="feedbackOverlay">
+                <div class="feedback-content">
+                    <span id="feedbackIcon" class="feedback-icon"></span>
+                    <span id="feedbackText" class="feedback-text"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="levelCompleteScreen" class="screen">
+            <div class="game-over-content">
+                <div class="game-over-icon">✨</div>
+                <h2 class="game-over-title" data-i18n="levelComplete">Level Complete!</h2>
+                <div class="star-rating" id="levelStars"></div>
+                <div class="final-score">
+                    <span class="final-score-label" data-i18n="score">Score:</span>
+                    <span id="levelScoreValue" class="final-score-value">0</span>
+                </div>
+                <button id="nextLevelBtn" class="play-again-btn" data-i18n="nextLevel">Next Level</button>
+                <button id="mainMenuBtn" class="home-btn" data-i18n="mainMenu">Main Menu</button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="screen">
+            <div class="game-over-content">
+                <div class="game-over-icon">💥</div>
+                <h2 class="game-over-title" data-i18n="gameOver">Game Over!</h2>
+                <div class="star-rating" id="starRating"></div>
+                <div class="final-score">
+                    <span class="final-score-label" data-i18n="finalScore">Final Score:</span>
+                    <span id="finalScoreValue" class="final-score-value">0</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="levelsCompleted">Levels Completed</span>
+                        <span id="levelsCompletedValue" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="level">Level</span>
+                        <span id="finalLevelValue" class="stat-value">1</span>
+                    </div>
+                </div>
+                <div class="new-high-score" id="newHighScore" style="display: none;">
+                    <span class="trophy-icon">🏆</span>
+                    <span class="new-high-score-text" data-i18n="newHighScore">New High Score!</span>
+                </div>
+                <button id="replayBtn" class="play-again-btn" data-i18n="playAgain">Play Again</button>
+                <button id="mainMenuBtn2" class="home-btn" data-i18n="mainMenu">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credits Modal -->
+    <div id="creditsModal" class="credits-modal">
+        <div class="credits-modal-content">
+            <button id="closeCreditsBtn" class="credits-close-btn">✕</button>
+            <h3 class="credits-title" data-i18n="musicCredits">Music Credits</h3>
+            <div class="credits-info">
+                <p class="credits-song"><span class="credits-label" data-i18n="song">Song:</span> "Valse Gymnopedie"</p>
+                <p class="credits-artist"><span class="credits-label" data-i18n="artist">Artist:</span> Kevin MacLeod (incompetech.com)</p>
+                <p class="credits-license"><span class="credits-label" data-i18n="license">License:</span> <span data-i18n="ccLicense">Creative Commons: By Attribution 4.0 License</span></p>
+                <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" class="credits-link">creativecommons.org/licenses/by/4.0/</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../i18n-loader.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

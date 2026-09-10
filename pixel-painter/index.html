@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pixel Painter: Color Reveal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen active">
+            <button id="audioToggleBtn" class="sound-toggle-btn">🔊</button>
+            <button id="creditsBtn" class="credits-btn">ℹ️</button>
+            <div class="logo">
+                <div class="logo-icon">🎨</div>
+                <h1 class="game-title">Pixel Painter</h1>
+                <p class="game-subtitle">Color Reveal</p>
+            </div>
+            <div class="start-info">
+                <h2 class="section-title" data-i18n="howToPlay">How to Play</h2>
+                <p class="info-text" data-i18n="instructions">Select a color from the palette, then tap the matching numbered cells to paint them. Complete all cells to reveal the hidden pixel art!</p>
+            </div>
+            <button id="startBtn" class="start-btn" data-i18n="startGame">Start Game</button>
+            <div class="high-score-display">
+                <span class="high-score-label" data-i18n="levelsUnlocked">Levels Unlocked:</span>
+                <span id="highScoreValue" class="high-score-value">1</span>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <button id="audioToggleBtnGame" class="sound-toggle-btn">🔊</button>
+            <div class="game-header">
+                <button id="exitGameBtn" class="back-arrow-btn">←</button>
+                <div class="level-name-display">
+                    <span id="levelName" class="level-name">Sword</span>
+                </div>
+                <div class="progress-display" id="progressDisplay">
+                    <span class="progress-label" data-i18n="progress">Progress</span>
+                    <span id="progressValue" class="progress-value">0%</span>
+                </div>
+                <button id="clearCanvasBtn" class="clear-canvas-btn" data-i18n="clearCanvas" style="display: none;">Clear Canvas</button>
+            </div>
+
+            <!-- Pixel grid -->
+            <div id="pixelGrid" class="pixel-grid"></div>
+
+            <!-- Color palette -->
+            <div class="palette-section">
+                <div class="palette-label" data-i18n="palette">Palette</div>
+                <div id="palette" class="palette"></div>
+            </div>
+
+            <div class="feedback-overlay" id="feedbackOverlay">
+                <div class="feedback-content">
+                    <span id="feedbackIcon" class="feedback-icon"></span>
+                    <span id="feedbackText" class="feedback-text"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="levelCompleteScreen" class="screen">
+            <div class="game-over-content">
+                <div class="game-over-icon">🎉</div>
+                <h2 class="game-over-title" data-i18n="artRevealed">Art Revealed!</h2>
+                <div id="completedArtPreview" class="completed-art-preview"></div>
+                <p class="art-name" id="completedArtName">Sword</p>
+                <button id="nextLevelBtn" class="play-again-btn" data-i18n="nextLevel">Next Level</button>
+                <button id="levelMenuBtn" class="home-btn" data-i18n="levelSelect">Level Select</button>
+            </div>
+        </div>
+
+        <!-- Level Select Screen -->
+        <div id="levelSelectScreen" class="screen">
+            <button id="audioToggleBtnSelect" class="sound-toggle-btn">🔊</button>
+            <div class="level-select-content">
+                <h2 class="section-title" data-i18n="chooseLevel">Choose Level</h2>
+                <div id="levelGrid" class="level-grid"></div>
+                <button id="freePaintBtn" class="free-paint-btn" data-i18n="freePaint">Free Paint</button>
+                <button id="mainMenuBtn" class="home-btn" data-i18n="mainMenu">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credits Modal -->
+    <div id="creditsModal" class="credits-modal">
+        <div class="credits-modal-content">
+            <button id="closeCreditsBtn" class="credits-close-btn">✕</button>
+            <h3 class="credits-title" data-i18n="musicCredits">Music Credits</h3>
+            <div class="credits-info">
+                <p class="credits-song"><span class="credits-label" data-i18n="song">Song:</span> "River Flute"</p>
+                <p class="credits-artist"><span class="credits-label" data-i18n="artist">Artist:</span> Kevin MacLeod (incompetech.com)</p>
+                <p class="credits-license"><span class="credits-label" data-i18n="license">License:</span> <span data-i18n="ccLicense">Creative Commons: By Attribution 4.0 License</span></p>
+                <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" class="credits-link">creativecommons.org/licenses/by/4.0/</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../i18n-loader.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
