@@ -152,5 +152,47 @@
     "icon": "https://games.smartok.app/lumina-trivia/icon.png?v=1",
     "url": "https://games.smartok.app/lumina-trivia/",
     "category": "Trivia"
+  },
+  {
+    "id": "word-savior",
+    "title": "Word Savior",
+    "icon": "https://games.smartok.app/word-savior/icon.png",
+    "url": "https://games.smartok.app/word-savior/",
+    "category": "Word"
+  },
+  {
+    "id": "sequence-spheres",
+    "title": "Sequence Spheres",
+    "icon": "https://games.smartok.app/sequence-spheres/icon.png",
+    "url": "https://games.smartok.app/sequence-spheres/",
+    "category": "Logic"
+  },
+  {
+    "id": "sum-it-up",
+    "title": "Sum It Up",
+    "icon": "https://games.smartok.app/sum-it-up/icon.png",
+    "url": "https://games.smartok.app/sum-it-up/",
+    "category": "Education"
+  },
+  {
+    "id": "pixel-painter",
+    "title": "Pixel Painter",
+    "icon": "https://games.smartok.app/pixel-painter/icon.png",
+    "url": "https://games.smartok.app/pixel-painter/",
+    "category": "Art"
+  },
+  {
+    "id": "trivia-ring",
+    "title": "Trivia Ring",
+    "icon": "https://games.smartok.app/trivia-ring/icon.png",
+    "url": "https://games.smartok.app/trivia-ring/",
+    "category": "Education"
+  },
+  {
+    "id": "memory-matrix",
+    "title": "Memory Matrix",
+    "icon": "https://games.smartok.app/memory-matrix/icon.png",
+    "url": "https://games.smartok.app/memory-matrix/",
+    "category": "Logic"
   }
 ]

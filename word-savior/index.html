@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Word Savior: Launch Protocol</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen active">
+            <button id="audioToggleBtn" class="sound-toggle-btn">🔊</button>
+            <button id="creditsBtn" class="credits-btn">ℹ️</button>
+            <div class="logo">
+                <div class="logo-icon">🚀</div>
+                <h1 class="game-title">Word Savior</h1>
+                <p class="game-subtitle">Launch Protocol</p>
+            </div>
+            <div class="category-selection">
+                <h2 class="section-title" data-i18n="chooseCategory">Choose Category</h2>
+                <div class="category-grid">
+                    <button class="category-btn" data-category="animals">
+                        <span class="category-icon">🦁</span>
+                        <span class="category-name" data-i18n="animals">Animals</span>
+                    </button>
+                    <button class="category-btn" data-category="science">
+                        <span class="category-icon">🔬</span>
+                        <span class="category-name" data-i18n="science">Science</span>
+                    </button>
+                    <button class="category-btn" data-category="geography">
+                        <span class="category-icon">🌍</span>
+                        <span class="category-name" data-i18n="geography">Geography</span>
+                    </button>
+                    <button class="category-btn" data-category="technology">
+                        <span class="category-icon">💻</span>
+                        <span class="category-name" data-i18n="technology">Technology</span>
+                    </button>
+                </div>
+            </div>
+            <div class="high-score-display">
+                <span class="high-score-label" data-i18n="highScore">High Score:</span>
+                <span id="highScoreValue" class="high-score-value">0</span>
+            </div>
+            <p class="hint-text" data-i18n="hint">Guess the hidden word letter by letter. Each wrong letter costs a life. Complete the word to launch the spaceship!</p>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <button id="audioToggleBtnGame" class="sound-toggle-btn">🔊</button>
+            <div class="game-header">
+                <button id="exitGameBtn" class="back-arrow-btn">←</button>
+                <div class="score-display">
+                    <span class="score-label" data-i18n="score">Score:</span>
+                    <span id="scoreValue" class="score-value">0</span>
+                </div>
+                <div class="level-display">
+                    <span class="level-label" data-i18n="level">Level</span>
+                    <span id="levelValue" class="level-value">1</span>
+                </div>
+                <div class="lives-display" id="livesContainer"></div>
+            </div>
+
+            <!-- Spaceship build area (positive twist on hangman) -->
+            <div class="ship-area">
+                <div id="shipStage" class="ship-stage">
+                    <!-- Ship parts are revealed as correct letters are guessed.
+                         CSS shapes act as fallback until ship-*.png are added
+                         to this game's root folder. -->
+                    <div class="ship-part ship-base" data-part="0"></div>
+                    <div class="ship-part ship-body" data-part="1"></div>
+                    <div class="ship-part ship-nose" data-part="2"></div>
+                    <div class="ship-part ship-fin-left" data-part="3"></div>
+                    <div class="ship-part ship-fin-right" data-part="4"></div>
+                    <div class="ship-part ship-flame" data-part="5"></div>
+                </div>
+                <div class="ship-progress-label" data-i18n="shipProgress">Spaceship Build</div>
+            </div>
+
+            <div class="category-badge" id="currentCategory">Animals</div>
+
+            <!-- Word display -->
+            <div id="wordDisplay" class="word-display"></div>
+
+            <!-- On-screen keyboard -->
+            <div id="keyboard" class="keyboard"></div>
+
+            <div class="feedback-overlay" id="feedbackOverlay">
+                <div class="feedback-content">
+                    <span id="feedbackIcon" class="feedback-icon"></span>
+                    <span id="feedbackText" class="feedback-text"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="levelCompleteScreen" class="screen">
+            <div class="game-over-content">
+                <div class="game-over-icon">🚀</div>
+                <h2 class="game-over-title" data-i18n="launchSuccess">Spaceship Launched!</h2>
+                <div class="star-rating" id="levelStars"></div>
+                <div class="final-score">
+                    <span class="final-score-label" data-i18n="score">Score:</span>
+                    <span id="levelScoreValue" class="final-score-value">0</span>
+                </div>
+                <button id="nextLevelBtn" class="play-again-btn" data-i18n="nextLevel">Next Level</button>
+                <button id="mainMenuBtn" class="home-btn" data-i18n="mainMenu">Main Menu</button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="screen">
+            <div class="game-over-content">
+                <div class="game-over-icon">💥</div>
+                <h2 class="game-over-title" data-i18n="launchFailed">Launch Failed!</h2>
+                <div class="star-rating" id="starRating"></div>
+                <div class="final-score">
+                    <span class="final-score-label" data-i18n="finalScore">Final Score:</span>
+                    <span id="finalScoreValue" class="final-score-value">0</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="wordsCompleted">Words Completed</span>
+                        <span id="wordsCompletedValue" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" data-i18n="level">Level</span>
+                        <span id="finalLevelValue" class="stat-value">1</span>
+                    </div>
+                </div>
+                <div class="new-high-score" id="newHighScore" style="display: none;">
+                    <span class="trophy-icon">🏆</span>
+                    <span class="new-high-score-text" data-i18n="newHighScore">New High Score!</span>
+                </div>
+                <button id="replayCategoryBtn" class="play-again-btn" data-i18n="replayCategory">Replay Category</button>
+                <button id="mainMenuBtn2" class="home-btn" data-i18n="mainMenu">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credits Modal -->
+    <div id="creditsModal" class="credits-modal">
+        <div class="credits-modal-content">
+            <button id="closeCreditsBtn" class="credits-close-btn">✕</button>
+            <h3 class="credits-title" data-i18n="musicCredits">Music Credits</h3>
+            <div class="credits-info">
+                <p class="credits-song"><span class="credits-label" data-i18n="song">Song:</span> "The Britons"</p>
+                <p class="credits-artist"><span class="credits-label" data-i18n="artist">Artist:</span> Kevin MacLeod (incompetech.com)</p>
+                <p class="credits-license"><span class="credits-label" data-i18n="license">License:</span> <span data-i18n="ccLicense">Creative Commons: By Attribution 4.0 License</span></p>
+                <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" class="credits-link">creativecommons.org/licenses/by/4.0/</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../i18n-loader.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
