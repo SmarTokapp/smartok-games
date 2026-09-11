@@ -32,22 +32,27 @@ let isMuted = localStorage.getItem('sumItUp_muted') === 'true';
 if (isMuted) bgm.muted = true;
 
 let hasInteracted = false;
-function enableAudio() {
-    if (!hasInteracted) {
+function unlockAudioOnFirstInteraction() {
+    if (hasInteracted) return;
+    // Resume AudioContext if it was created and is suspended (WebView unlock)
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().catch(() => {});
+    }
+    // Explicitly play BGM if not muted (based on localStorage preference)
+    if (!isMuted && bgm) {
+        bgm.play().then(() => {
+            hasInteracted = true;
+            document.removeEventListener('click', unlockAudioOnFirstInteraction);
+            document.removeEventListener('touchstart', unlockAudioOnFirstInteraction);
+        }).catch(e => console.log('Audio unlock deferred, will retry on next interaction:', e));
+    } else {
         hasInteracted = true;
-        if (!isMuted) bgm.play().catch(e => console.log('Audio play failed:', e));
+        document.removeEventListener('click', unlockAudioOnFirstInteraction);
+        document.removeEventListener('touchstart', unlockAudioOnFirstInteraction);
     }
 }
-
-const unlockAudio = () => {
-    if (bgm && bgm.paused && !isMuted) bgm.play().catch(e => console.log('Autoplay deferred:', e));
-    document.removeEventListener('touchstart', unlockAudio);
-    document.removeEventListener('click', unlockAudio);
-};
-document.addEventListener('touchstart', unlockAudio, { once: true });
-document.addEventListener('click', unlockAudio, { once: true });
-document.addEventListener('click', enableAudio, { once: true });
-document.addEventListener('touchstart', enableAudio, { once: true });
+document.addEventListener('click', unlockAudioOnFirstInteraction);
+document.addEventListener('touchstart', unlockAudioOnFirstInteraction);
 
 // Audio Context for sound effects
 let audioContext = null;
@@ -208,7 +213,7 @@ function toggleAudio() {
     localStorage.setItem('sumItUp_muted', isMuted);
     updateAudioToggleIcon();
     if (isMuted) bgm.pause();
-    else if (hasInteracted) bgm.play().catch(e => console.log('Audio play failed:', e));
+    else bgm.play().catch(e => console.log('Audio play failed:', e));
 }
 
 function updateAudioToggleIcon() {
