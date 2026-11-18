@@ -4,6 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Vocab Vortex - Word Unscramble</title>
+  <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert("JS Error: " + message + " at line " + lineno);
+      return true;
+    };
+    window.addEventListener("unhandledrejection", function(event) {
+      alert("Promise Error: " + event.reason);
+    });
+    window.safePostMessage = function(msg) {
+      if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+        window.ReactNativeWebView.postMessage(msg);
+      } else {
+        console.warn('WebView bridge not ready. Message dropped:', msg);
+      }
+    };
+  </script>
   <style>
     * {
       margin: 0;

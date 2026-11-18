@@ -1,198 +1,758 @@
 [
-  {
-    "id": "brain-spark",
-    "title": "Brain Spark: Quiz Blitz",
-    "icon": "https://games.smartok.app/brain-spark/icon.png?v=2",
-    "url": "https://games.smartok.app/brain-spark/",
-    "category": "Education"
-  },
-  {
-    "id": "synapse-logic",
-    "title": "Synapse Logic: Speed Blitz",
-    "icon": "https://games.smartok.app/synapse-logic/icon.png?v=2",
-    "url": "https://games.smartok.app/synapse-logic/",
-    "category": "Logic"
-  },
-  {
-    "id": "lexi-mind",
-    "title": "Lexi Mind: Cyber Lexicon",
-    "icon": "https://games.smartok.app/lexi-mind/icon.png?v=2",
-    "url": "https://games.smartok.app/lexi-mind/",
-    "category": "Word"
-  },
-  {
-    "id": "cosmo-mind",
-    "title": "Cosmo Mind: Quantum Quest",
-    "icon": "https://games.smartok.app/cosmo-mind/icon.png?v=1",
-    "url": "https://games.smartok.app/cosmo-mind/",
-    "category": "Science"
-  },
-  {
-    "id": "chrono-mind",
-    "title": "Chrono Mind: Time Odyssey",
-    "icon": "https://games.smartok.app/chrono-mind/icon.png?v=1",
-    "url": "https://games.smartok.app/chrono-mind/",
-    "category": "History"
-  },
-  {
-    "id": "muse-mind",
-    "title": "Muse Mind: Culture & Arts",
-    "icon": "https://games.smartok.app/muse-mind/icon.png?v=1",
-    "url": "https://games.smartok.app/muse-mind/",
-    "category": "Culture"
-  },
-  {
-    "id": "bio-mind",
-    "title": "Bio Mind: Nature & Evolution",
-    "icon": "https://games.smartok.app/bio-mind/icon.png?v=1",
-    "url": "https://games.smartok.app/bio-mind/",
-    "category": "Science"
-  },
-  {
-    "id": "geo-mind",
-    "title": "Geo Mind: World Explorer",
-    "icon": "https://games.smartok.app/geo-mind/icon.png?v=1",
-    "url": "https://games.smartok.app/geo-mind/",
-    "category": "Geography"
-  },
-  {
-    "id": "tech-mind",
-    "title": "Tech Mind: Cyber Nexus",
-    "icon": "https://games.smartok.app/tech-mind/icon.png?v=1",
-    "url": "https://games.smartok.app/tech-mind/",
-    "category": "Technology"
-  },
-  {
-    "id": "mythos-mind",
-    "title": "Mythos Mind: Gods & Legends",
-    "icon": "https://games.smartok.app/mythos-mind/icon.png?v=1",
-    "url": "https://games.smartok.app/mythos-mind/",
-    "category": "History"
-  },
-  {
-    "id": "cine-mind",
-    "title": "Cine Mind: Silver Screen",
-    "icon": "https://games.smartok.app/cine-mind/icon.png?v=1",
-    "url": "https://games.smartok.app/cine-mind/",
-    "category": "Entertainment"
-  },
-  {
-    "id": "nova-mind",
-    "title": "Nova Mind: Fact or Fiction",
-    "icon": "https://games.smartok.app/nova-mind/icon.png?v=1",
-    "url": "https://games.smartok.app/nova-mind/",
-    "category": "Trivia"
-  },
-  {
-    "id": "vocab-vortex",
-    "title": "Vocab Vortex",
-    "icon": "https://games.smartok.app/vocab-vortex/icon.png",
-    "url": "https://games.smartok.app/vocab-vortex/",
-    "category": "Language"
-  },
-  {
-    "id": "echo-nexus",
-    "title": "Echo Nexus",
-    "icon": "https://games.smartok.app/echo-nexus/icon.png?v=2",
-    "url": "https://games.smartok.app/echo-nexus/",
-    "category": "Memory"
-  },
-  {
-    "id": "chroma-shield",
-    "title": "Chroma Shield",
-    "icon": "https://games.smartok.app/chroma-shield/icon.png?v=2",
-    "url": "https://games.smartok.app/chroma-shield/",
-    "category": "Action"
-  },
-  {
-    "id": "quantum-stack",
-    "title": "Quantum Stack",
-    "icon": "https://games.smartok.app/quantum-stack/icon.png?v=5",
-    "url": "https://games.smartok.app/quantum-stack/",
-    "category": "Arcade"
-  },
-  {
-    "id": "aether-math",
-    "title": "Aether Math",
-    "icon": "https://games.smartok.app/aether-math/icon.png?v=1",
-    "url": "https://games.smartok.app/aether-math/",
-    "category": "Education"
-  },
-  {
-    "id": "sylvan-script",
-    "title": "Sylvan Script",
-    "icon": "https://games.smartok.app/sylvan-script/icon.png?v=2",
-    "url": "https://games.smartok.app/sylvan-script/",
-    "category": "Word"
-  },
-  {
-    "id": "pharaohs-code",
-    "title": "Pharaoh's Code",
-    "icon": "https://games.smartok.app/pharaohs-code/icon.png?v=1",
-    "url": "https://games.smartok.app/pharaohs-code/",
-    "category": "Education"
-  },
-  {
-    "id": "chrono-logic",
-    "title": "Chrono Logic",
-    "icon": "https://games.smartok.app/chrono-logic/icon.png?v=1",
-    "url": "https://games.smartok.app/chrono-logic/",
-    "category": "Logic"
-  },
-  {
-    "id": "astro-geometry",
-    "title": "Astro Geometry",
-    "icon": "https://games.smartok.app/astro-geometry/icon.png?v=1",
-    "url": "https://games.smartok.app/astro-geometry/",
-    "category": "Science"
-  },
-  {
-    "id": "lumina-trivia",
-    "title": "Lumina Trivia",
-    "icon": "https://games.smartok.app/lumina-trivia/icon.png?v=1",
-    "url": "https://games.smartok.app/lumina-trivia/",
-    "category": "Trivia"
-  },
-  {
-    "id": "word-savior",
-    "title": "Word Savior",
-    "icon": "https://games.smartok.app/word-savior/icon.png",
-    "url": "https://games.smartok.app/word-savior/",
-    "category": "Word"
-  },
-  {
-    "id": "sequence-spheres",
-    "title": "Sequence Spheres",
-    "icon": "https://games.smartok.app/sequence-spheres/icon.png",
-    "url": "https://games.smartok.app/sequence-spheres/",
-    "category": "Logic"
-  },
-  {
-    "id": "sum-it-up",
-    "title": "Sum It Up",
-    "icon": "https://games.smartok.app/sum-it-up/icon.png",
-    "url": "https://games.smartok.app/sum-it-up/",
-    "category": "Education"
-  },
-  {
-    "id": "pixel-painter",
-    "title": "Pixel Painter",
-    "icon": "https://games.smartok.app/pixel-painter/icon.png",
-    "url": "https://games.smartok.app/pixel-painter/",
-    "category": "Art"
-  },
-  {
-    "id": "trivia-ring",
-    "title": "Trivia Ring",
-    "icon": "https://games.smartok.app/trivia-ring/icon.png",
-    "url": "https://games.smartok.app/trivia-ring/",
-    "category": "Education"
-  },
-  {
-    "id": "memory-matrix",
-    "title": "Memory Matrix",
-    "icon": "https://games.smartok.app/memory-matrix/icon.png",
-    "url": "https://games.smartok.app/memory-matrix/",
-    "category": "Logic"
-  }
+ {
+  "id": "brain-spark",
+  "title": "Brain Spark: Quiz Blitz",
+  "icon": "https://games.smartok.app/brain-spark/icon.png?v=2",
+  "url": "https://games.smartok.app/brain-spark/",
+  "category": "Education"
+ },
+ {
+  "id": "synapse-logic",
+  "title": "Synapse Logic: Speed Blitz",
+  "icon": "https://games.smartok.app/synapse-logic/icon.png?v=2",
+  "url": "https://games.smartok.app/synapse-logic/",
+  "category": "Logic"
+ },
+ {
+  "id": "lexi-mind",
+  "title": "Lexi Mind: Cyber Lexicon",
+  "icon": "https://games.smartok.app/lexi-mind/icon.png?v=2",
+  "url": "https://games.smartok.app/lexi-mind/",
+  "category": "Word"
+ },
+ {
+  "id": "cosmo-mind",
+  "title": "Cosmo Mind: Quantum Quest",
+  "icon": "https://games.smartok.app/cosmo-mind/icon.png?v=1",
+  "url": "https://games.smartok.app/cosmo-mind/",
+  "category": "Science"
+ },
+ {
+  "id": "chrono-mind",
+  "title": "Chrono Mind: Time Odyssey",
+  "icon": "https://games.smartok.app/chrono-mind/icon.png?v=1",
+  "url": "https://games.smartok.app/chrono-mind/",
+  "category": "History"
+ },
+ {
+  "id": "muse-mind",
+  "title": "Muse Mind: Culture & Arts",
+  "icon": "https://games.smartok.app/muse-mind/icon.png?v=1",
+  "url": "https://games.smartok.app/muse-mind/",
+  "category": "Culture"
+ },
+ {
+  "id": "bio-mind",
+  "title": "Bio Mind: Nature & Evolution",
+  "icon": "https://games.smartok.app/bio-mind/icon.png?v=1",
+  "url": "https://games.smartok.app/bio-mind/",
+  "category": "Science"
+ },
+ {
+  "id": "geo-mind",
+  "title": "Geo Mind: World Explorer",
+  "icon": "https://games.smartok.app/geo-mind/icon.png?v=1",
+  "url": "https://games.smartok.app/geo-mind/",
+  "category": "Geography"
+ },
+ {
+  "id": "tech-mind",
+  "title": "Tech Mind: Cyber Nexus",
+  "icon": "https://games.smartok.app/tech-mind/icon.png?v=1",
+  "url": "https://games.smartok.app/tech-mind/",
+  "category": "Technology"
+ },
+ {
+  "id": "mythos-mind",
+  "title": "Mythos Mind: Gods & Legends",
+  "icon": "https://games.smartok.app/mythos-mind/icon.png?v=1",
+  "url": "https://games.smartok.app/mythos-mind/",
+  "category": "History"
+ },
+ {
+  "id": "cine-mind",
+  "title": "Cine Mind: Silver Screen",
+  "icon": "https://games.smartok.app/cine-mind/icon.png?v=1",
+  "url": "https://games.smartok.app/cine-mind/",
+  "category": "Entertainment"
+ },
+ {
+  "id": "nova-mind",
+  "title": "Nova Mind: Fact or Fiction",
+  "icon": "https://games.smartok.app/nova-mind/icon.png?v=1",
+  "url": "https://games.smartok.app/nova-mind/",
+  "category": "Trivia"
+ },
+ {
+  "id": "vocab-vortex",
+  "title": "Vocab Vortex",
+  "icon": "https://games.smartok.app/vocab-vortex/icon.png",
+  "url": "https://games.smartok.app/vocab-vortex/",
+  "category": "Language"
+ },
+ {
+  "id": "echo-nexus",
+  "title": "Echo Nexus",
+  "icon": "https://games.smartok.app/echo-nexus/icon.png?v=2",
+  "url": "https://games.smartok.app/echo-nexus/",
+  "category": "Memory"
+ },
+ {
+  "id": "chroma-shield",
+  "title": "Chroma Shield",
+  "icon": "https://games.smartok.app/chroma-shield/icon.png?v=2",
+  "url": "https://games.smartok.app/chroma-shield/",
+  "category": "Action"
+ },
+ {
+  "id": "quantum-stack",
+  "title": "Quantum Stack",
+  "icon": "https://games.smartok.app/quantum-stack/icon.png?v=5",
+  "url": "https://games.smartok.app/quantum-stack/",
+  "category": "Arcade"
+ },
+ {
+  "id": "aether-math",
+  "title": "Aether Math",
+  "icon": "https://games.smartok.app/aether-math/icon.png?v=1",
+  "url": "https://games.smartok.app/aether-math/",
+  "category": "Education"
+ },
+ {
+  "id": "sylvan-script",
+  "title": "Sylvan Script",
+  "icon": "https://games.smartok.app/sylvan-script/icon.png?v=2",
+  "url": "https://games.smartok.app/sylvan-script/",
+  "category": "Word"
+ },
+ {
+  "id": "pharaohs-code",
+  "title": "Pharaoh's Code",
+  "icon": "https://games.smartok.app/pharaohs-code/icon.png?v=1",
+  "url": "https://games.smartok.app/pharaohs-code/",
+  "category": "Education"
+ },
+ {
+  "id": "chrono-logic",
+  "title": "Chrono Logic",
+  "icon": "https://games.smartok.app/chrono-logic/icon.png?v=1",
+  "url": "https://games.smartok.app/chrono-logic/",
+  "category": "Logic"
+ },
+ {
+  "id": "astro-geometry",
+  "title": "Astro Geometry",
+  "icon": "https://games.smartok.app/astro-geometry/icon.png?v=1",
+  "url": "https://games.smartok.app/astro-geometry/",
+  "category": "Science"
+ },
+ {
+  "id": "lumina-trivia",
+  "title": "Lumina Trivia",
+  "icon": "https://games.smartok.app/lumina-trivia/icon.png?v=1",
+  "url": "https://games.smartok.app/lumina-trivia/",
+  "category": "Trivia"
+ },
+ {
+  "id": "word-savior",
+  "title": "Word Savior",
+  "icon": "https://games.smartok.app/word-savior/icon.png",
+  "url": "https://games.smartok.app/word-savior/",
+  "category": "Word"
+ },
+ {
+  "id": "sequence-spheres",
+  "title": "Sequence Spheres",
+  "icon": "https://games.smartok.app/sequence-spheres/icon.png",
+  "url": "https://games.smartok.app/sequence-spheres/",
+  "category": "Logic"
+ },
+ {
+  "id": "sum-it-up",
+  "title": "Sum It Up",
+  "icon": "https://games.smartok.app/sum-it-up/icon.png",
+  "url": "https://games.smartok.app/sum-it-up/",
+  "category": "Education"
+ },
+ {
+  "id": "pixel-painter",
+  "title": "Pixel Painter",
+  "icon": "https://games.smartok.app/pixel-painter/icon.png",
+  "url": "https://games.smartok.app/pixel-painter/",
+  "category": "Art"
+ },
+ {
+  "id": "trivia-ring",
+  "title": "Trivia Ring",
+  "icon": "https://games.smartok.app/trivia-ring/icon.png",
+  "url": "https://games.smartok.app/trivia-ring/",
+  "category": "Education"
+ },
+ {
+  "id": "memory-matrix",
+  "title": "Memory Matrix",
+  "icon": "https://games.smartok.app/memory-matrix/icon.png",
+  "url": "https://games.smartok.app/memory-matrix/",
+  "category": "Logic"
+ },
+ {
+  "id": "astro-orbit",
+  "title": "Astro Orbit: Solar System Order",
+  "icon": "https://games.smartok.app/astro-orbit/icon.png",
+  "url": "https://games.smartok.app/astro-orbit/",
+  "category": "Astronomy"
+ },
+ {
+  "id": "chem-forge",
+  "title": "Chem Forge: Element Symbol Forge",
+  "icon": "https://games.smartok.app/chem-forge/icon.png",
+  "url": "https://games.smartok.app/chem-forge/",
+  "category": "Chemistry"
+ },
+ {
+  "id": "chrono-vault",
+  "title": "Chrono Vault: Timeline Keeper",
+  "icon": "https://games.smartok.app/chrono-vault/icon.png",
+  "url": "https://games.smartok.app/chrono-vault/",
+  "category": "History"
+ },
+ {
+  "id": "terra-atlas",
+  "title": "Terra Atlas: Capitals Quest",
+  "icon": "https://games.smartok.app/terra-atlas/icon.png",
+  "url": "https://games.smartok.app/terra-atlas/",
+  "category": "Geography"
+ },
+ {
+  "id": "bio-pulse",
+  "title": "Bio Pulse: Body Systems Beat",
+  "icon": "https://games.smartok.app/bio-pulse/icon.png",
+  "url": "https://games.smartok.app/bio-pulse/",
+  "category": "Biology"
+ },
+ {
+  "id": "lexicon-rune",
+  "title": "Lexicon Rune: Word Rune Match",
+  "icon": "https://games.smartok.app/lexicon-rune/icon.png",
+  "url": "https://games.smartok.app/lexicon-rune/",
+  "category": "Vocabulary"
+ },
+ {
+  "id": "logic-circuit",
+  "title": "Logic Circuit: Binary Logic Lab",
+  "icon": "https://games.smartok.app/logic-circuit/icon.png",
+  "url": "https://games.smartok.app/logic-circuit/",
+  "category": "Computer Science"
+ },
+ {
+  "id": "fraction-prism",
+  "title": "Fraction Prism: Fraction Refraction",
+  "icon": "https://games.smartok.app/fraction-prism/icon.png",
+  "url": "https://games.smartok.app/fraction-prism/",
+  "category": "Mathematics"
+ },
+ {
+  "id": "eco-web",
+  "title": "Eco Web: Food Web Chains",
+  "icon": "https://games.smartok.app/eco-web/icon.png",
+  "url": "https://games.smartok.app/eco-web/",
+  "category": "Ecology"
+ },
+ {
+  "id": "harmonic-wave",
+  "title": "Harmonic Wave: Melody Echo",
+  "icon": "https://games.smartok.app/harmonic-wave/icon.png",
+  "url": "https://games.smartok.app/harmonic-wave/",
+  "category": "Music"
+ },
+ {
+  "id": "polyglot-spark",
+  "title": "Polyglot Spark: World Words",
+  "icon": "https://games.smartok.app/polyglot-spark/icon.png",
+  "url": "https://games.smartok.app/polyglot-spark/",
+  "category": "Languages"
+ },
+ {
+  "id": "quantum-angle",
+  "title": "Quantum Angle: Angle & Shape Lab",
+  "icon": "https://games.smartok.app/quantum-angle/icon.png",
+  "url": "https://games.smartok.app/quantum-angle/",
+  "category": "Geometry"
+ },
+ {
+  "id": "mythos-scroll",
+  "title": "Mythos Scroll: Gods & Symbols",
+  "icon": "https://games.smartok.app/mythos-scroll/icon.png",
+  "url": "https://games.smartok.app/mythos-scroll/",
+  "category": "Mythology"
+ },
+ {
+  "id": "cortex-pairs",
+  "title": "Cortex Pairs: Symbol Recall",
+  "icon": "https://games.smartok.app/cortex-pairs/icon.png",
+  "url": "https://games.smartok.app/cortex-pairs/",
+  "category": "Memory"
+ },
+ {
+  "id": "physics-vector",
+  "title": "Physics Vector: Laws of Motion",
+  "icon": "https://games.smartok.app/physics-vector/icon.png",
+  "url": "https://games.smartok.app/physics-vector/",
+  "category": "Physics"
+ },
+ {
+  "id": "flora-lab",
+  "title": "Flora Lab: Botany Bloom",
+  "icon": "https://games.smartok.app/flora-lab/icon.png",
+  "url": "https://games.smartok.app/flora-lab/",
+  "category": "Botany"
+ },
+ {
+  "id": "cipher-key",
+  "title": "Cipher Key: Sequence Decoder",
+  "icon": "https://games.smartok.app/cipher-key/icon.png",
+  "url": "https://games.smartok.app/cipher-key/",
+  "category": "Cryptography"
+ },
+ {
+  "id": "ocean-abyss",
+  "title": "Ocean Abyss: Depth Zones",
+  "icon": "https://games.smartok.app/ocean-abyss/icon.png",
+  "url": "https://games.smartok.app/ocean-abyss/",
+  "category": "Marine Science"
+ },
+ {
+  "id": "grammar-forge",
+  "title": "Grammar Forge: Parts of Speech",
+  "icon": "https://games.smartok.app/grammar-forge/icon.png",
+  "url": "https://games.smartok.app/grammar-forge/",
+  "category": "English"
+ },
+ {
+  "id": "prime-reactor",
+  "title": "Prime Reactor: Prime Number Core",
+  "icon": "https://games.smartok.app/prime-reactor/icon.png",
+  "url": "https://games.smartok.app/prime-reactor/",
+  "category": "Mathematics"
+ },
+ {
+  "id": "solar-flare",
+  "title": "Solar Flare: Cosmic Quiz",
+  "icon": "https://games.smartok.app/solar-flare/icon.png",
+  "url": "https://games.smartok.app/solar-flare/",
+  "category": "Space"
+ },
+ {
+  "id": "atom-builder",
+  "title": "Atom Builder: Particle Core",
+  "icon": "https://games.smartok.app/atom-builder/icon.png",
+  "url": "https://games.smartok.app/atom-builder/",
+  "category": "Particle Physics"
+ },
+ {
+  "id": "rome-dynasty",
+  "title": "Rome Dynasty: Empire Timeline",
+  "icon": "https://games.smartok.app/rome-dynasty/icon.png",
+  "url": "https://games.smartok.app/rome-dynasty/",
+  "category": "Ancient History"
+ },
+ {
+  "id": "landmark-beacon",
+  "title": "Landmark Beacon: World Monuments",
+  "icon": "https://games.smartok.app/landmark-beacon/icon.png",
+  "url": "https://games.smartok.app/landmark-beacon/",
+  "category": "Landmarks"
+ },
+ {
+  "id": "neuro-spark",
+  "title": "Neuro Spark: Brain & Senses",
+  "icon": "https://games.smartok.app/neuro-spark/icon.png",
+  "url": "https://games.smartok.app/neuro-spark/",
+  "category": "Neuroscience"
+ },
+ {
+  "id": "idiom-vault",
+  "title": "Idiom Vault: Hidden Meanings",
+  "icon": "https://games.smartok.app/idiom-vault/icon.png",
+  "url": "https://games.smartok.app/idiom-vault/",
+  "category": "English"
+ },
+ {
+  "id": "code-syntax",
+  "title": "Code Syntax: Programming Logic",
+  "icon": "https://games.smartok.app/code-syntax/icon.png",
+  "url": "https://games.smartok.app/code-syntax/",
+  "category": "Programming"
+ },
+ {
+  "id": "roman-numeral",
+  "title": "Roman Numeral: Classical Numbers",
+  "icon": "https://games.smartok.app/roman-numeral/icon.png",
+  "url": "https://games.smartok.app/roman-numeral/",
+  "category": "Mathematics"
+ },
+ {
+  "id": "weather-front",
+  "title": "Weather Front: Storm Center",
+  "icon": "https://games.smartok.app/weather-front/icon.png",
+  "url": "https://games.smartok.app/weather-front/",
+  "category": "Meteorology"
+ },
+ {
+  "id": "tempo-pulse",
+  "title": "Tempo Pulse: Rhythm Order",
+  "icon": "https://games.smartok.app/tempo-pulse/icon.png",
+  "url": "https://games.smartok.app/tempo-pulse/",
+  "category": "Music"
+ },
+ {
+  "id": "script-scroll",
+  "title": "Script Scroll: Writing Systems",
+  "icon": "https://games.smartok.app/script-scroll/icon.png",
+  "url": "https://games.smartok.app/script-scroll/",
+  "category": "Linguistics"
+ },
+ {
+  "id": "symmetry-grid",
+  "title": "Symmetry Grid: Shape Transforms",
+  "icon": "https://games.smartok.app/symmetry-grid/icon.png",
+  "url": "https://games.smartok.app/symmetry-grid/",
+  "category": "Spatial Reasoning"
+ },
+ {
+  "id": "heritage-quest",
+  "title": "Heritage Quest: World Festivals",
+  "icon": "https://games.smartok.app/heritage-quest/icon.png",
+  "url": "https://games.smartok.app/heritage-quest/",
+  "category": "Culture"
+ },
+ {
+  "id": "color-spectrum",
+  "title": "Color Spectrum: Light Order",
+  "icon": "https://games.smartok.app/color-spectrum/icon.png",
+  "url": "https://games.smartok.app/color-spectrum/",
+  "category": "Optics"
+ },
+ {
+  "id": "gravity-well",
+  "title": "Gravity Well: Orbital Order",
+  "icon": "https://games.smartok.app/gravity-well/icon.png",
+  "url": "https://games.smartok.app/gravity-well/",
+  "category": "Astrophysics"
+ },
+ {
+  "id": "fossil-strata",
+  "title": "Fossil Strata: Deep Time",
+  "icon": "https://games.smartok.app/fossil-strata/icon.png",
+  "url": "https://games.smartok.app/fossil-strata/",
+  "category": "Paleontology"
+ },
+ {
+  "id": "morse-signal",
+  "title": "Morse Signal: Code Decoder",
+  "icon": "https://games.smartok.app/morse-signal/icon.png",
+  "url": "https://games.smartok.app/morse-signal/",
+  "category": "Signals"
+ },
+ {
+  "id": "river-delta",
+  "title": "River Delta: Landforms & Rivers",
+  "icon": "https://games.smartok.app/river-delta/icon.png",
+  "url": "https://games.smartok.app/river-delta/",
+  "category": "Geography"
+ },
+ {
+  "id": "spelling-anvil",
+  "title": "Spelling Anvil: Word Smithing",
+  "icon": "https://games.smartok.app/spelling-anvil/icon.png",
+  "url": "https://games.smartok.app/spelling-anvil/",
+  "category": "English"
+ },
+ {
+  "id": "algebra-scale",
+  "title": "Algebra Scale: Solve for X",
+  "icon": "https://games.smartok.app/algebra-scale/icon.png",
+  "url": "https://games.smartok.app/algebra-scale/",
+  "category": "Mathematics"
+ },
+ {
+  "id": "flag-guild",
+  "title": "Flag Guild: World Flags",
+  "icon": "https://games.smartok.app/flag-guild/icon.png",
+  "url": "https://games.smartok.app/flag-guild/",
+  "category": "Geography"
+ },
+ {
+  "id": "mineral-vault",
+  "title": "Mineral Vault: Hardness Scale",
+  "icon": "https://games.smartok.app/mineral-vault/icon.png",
+  "url": "https://games.smartok.app/mineral-vault/",
+  "category": "Geology"
+ },
+ {
+  "id": "currency-mint",
+  "title": "Currency Mint: World Money",
+  "icon": "https://games.smartok.app/currency-mint/icon.png",
+  "url": "https://games.smartok.app/currency-mint/",
+  "category": "Economics"
+ },
+ {
+  "id": "art-atelier",
+  "title": "Art Atelier: Masters & Movements",
+  "icon": "https://games.smartok.app/art-atelier/icon.png",
+  "url": "https://games.smartok.app/art-atelier/",
+  "category": "Art"
+ },
+ {
+  "id": "compass-star",
+  "title": "Compass Star: Bearings & Maps",
+  "icon": "https://games.smartok.app/compass-star/icon.png",
+  "url": "https://games.smartok.app/compass-star/",
+  "category": "Navigation"
+ },
+ {
+  "id": "cell-mitosis",
+  "title": "Cell Mitosis: Microbiology",
+  "icon": "https://games.smartok.app/cell-mitosis/icon.png",
+  "url": "https://games.smartok.app/cell-mitosis/",
+  "category": "Biology"
+ },
+ {
+  "id": "inventor-spark",
+  "title": "Inventor Spark: Great Inventions",
+  "icon": "https://games.smartok.app/inventor-spark/icon.png",
+  "url": "https://games.smartok.app/inventor-spark/",
+  "category": "History"
+ },
+ {
+  "id": "metric-scale",
+  "title": "Metric Scale: Units & Conversions",
+  "icon": "https://games.smartok.app/metric-scale/icon.png",
+  "url": "https://games.smartok.app/metric-scale/",
+  "category": "Mathematics"
+ },
+ {
+  "id": "sky-ward",
+  "title": "Sky Ward: Flight & Aerospace",
+  "icon": "https://games.smartok.app/sky-ward/icon.png",
+  "url": "https://games.smartok.app/sky-ward/",
+  "category": "Aviation"
+ },
+ {
+  "id": "chess-tactic",
+  "title": "Chess Tactic: Board Logic",
+  "icon": "https://games.smartok.app/chess-tactic/icon.png",
+  "url": "https://games.smartok.app/chess-tactic/",
+  "category": "Logic"
+ },
+ {
+  "id": "volcano-core",
+  "title": "Volcano Core: Tectonics",
+  "icon": "https://games.smartok.app/volcano-core/icon.png",
+  "url": "https://games.smartok.app/volcano-core/",
+  "category": "Geology"
+ },
+ {
+  "id": "sound-acoustic",
+  "title": "Sound Acoustic: Wave Physics",
+  "icon": "https://games.smartok.app/sound-acoustic/icon.png",
+  "url": "https://games.smartok.app/sound-acoustic/",
+  "category": "Physics"
+ },
+ {
+  "id": "lit-classic",
+  "title": "Lit Classic: World Literature",
+  "icon": "https://games.smartok.app/lit-classic/icon.png",
+  "url": "https://games.smartok.app/lit-classic/",
+  "category": "Literature"
+ },
+ {
+  "id": "civic-pillar",
+  "title": "Civic Pillar: Global Institutions",
+  "icon": "https://games.smartok.app/civic-pillar/icon.png",
+  "url": "https://games.smartok.app/civic-pillar/",
+  "category": "Civics"
+ },
+ {
+  "id": "nutri-balance",
+  "title": "Nutri Balance: Food Science",
+  "icon": "https://games.smartok.app/nutri-balance/icon.png",
+  "url": "https://games.smartok.app/nutri-balance/",
+  "category": "Nutrition"
+ },
+ {
+  "id": "arch-blueprint",
+  "title": "Arch Blueprint: World Styles",
+  "icon": "https://games.smartok.app/arch-blueprint/icon.png",
+  "url": "https://games.smartok.app/arch-blueprint/",
+  "category": "Architecture"
+ },
+ {
+  "id": "stat-prob",
+  "title": "Stat Prob: Chance & Data",
+  "icon": "https://games.smartok.app/stat-prob/icon.png",
+  "url": "https://games.smartok.app/stat-prob/",
+  "category": "Mathematics"
+ },
+ {
+  "id": "polar-expedition",
+  "title": "Polar Expedition: Ice Worlds",
+  "icon": "https://games.smartok.app/polar-expedition/icon.png",
+  "url": "https://games.smartok.app/polar-expedition/",
+  "category": "Geography"
+ },
+ {
+  "id": "etymology-tree",
+  "title": "Etymology Tree: Word Roots",
+  "icon": "https://games.smartok.app/etymology-tree/icon.png",
+  "url": "https://games.smartok.app/etymology-tree/",
+  "category": "Linguistics"
+ },
+ {
+  "id": "quantum-spark",
+  "title": "Quantum Spark: Electricity & Energy",
+  "icon": "https://games.smartok.app/quantum-spark/icon.png",
+  "url": "https://games.smartok.app/quantum-spark/",
+  "category": "Physics"
+ },
+ {
+  "id": "dino-epoch",
+  "title": "Dino Epoch: Prehistoric Eras",
+  "icon": "https://games.smartok.app/dino-epoch/icon.png",
+  "url": "https://games.smartok.app/dino-epoch/",
+  "category": "Paleontology"
+ },
+ {
+  "id": "philo-mind",
+  "title": "Philo Mind: Big Ideas",
+  "icon": "https://games.smartok.app/philo-mind/icon.png",
+  "url": "https://games.smartok.app/philo-mind/",
+  "category": "Philosophy"
+ },
+ {
+  "id": "cyber-shield",
+  "title": "Cyber Shield: Digital Safety",
+  "icon": "https://games.smartok.app/cyber-shield/icon.png",
+  "url": "https://games.smartok.app/cyber-shield/",
+  "category": "Cybersecurity"
+ },
+ {
+  "id": "culinary-atlas",
+  "title": "Culinary Atlas: World Flavors",
+  "icon": "https://games.smartok.app/culinary-atlas/icon.png",
+  "url": "https://games.smartok.app/culinary-atlas/",
+  "category": "Gastronomy"
+ },
+ {
+  "id": "cinema-reel",
+  "title": "Cinema Reel: Silver Screen",
+  "icon": "https://games.smartok.app/cinema-reel/icon.png",
+  "url": "https://games.smartok.app/cinema-reel/",
+  "category": "Film"
+ },
+ {
+  "id": "micro-cosmos",
+  "title": "Micro Cosmos: Tiny Worlds",
+  "icon": "https://games.smartok.app/micro-cosmos/icon.png",
+  "url": "https://games.smartok.app/micro-cosmos/",
+  "category": "Entomology"
+ },
+ {
+  "id": "stellar-clock",
+  "title": "Stellar Clock: Time & Calendars",
+  "icon": "https://games.smartok.app/stellar-clock/icon.png",
+  "url": "https://games.smartok.app/stellar-clock/",
+  "category": "Timekeeping"
+ },
+ {
+  "id": "olympic-torch",
+  "title": "Olympic Torch: Global Games",
+  "icon": "https://games.smartok.app/olympic-torch/icon.png",
+  "url": "https://games.smartok.app/olympic-torch/",
+  "category": "Sports"
+ },
+ {
+  "id": "textile-loom",
+  "title": "Textile Loom: Fibers & Crafts",
+  "icon": "https://games.smartok.app/textile-loom/icon.png",
+  "url": "https://games.smartok.app/textile-loom/",
+  "category": "Crafts"
+ },
+ {
+  "id": "desert-mirage",
+  "title": "Desert Mirage: Arid Lands",
+  "icon": "https://games.smartok.app/desert-mirage/icon.png",
+  "url": "https://games.smartok.app/desert-mirage/",
+  "category": "Ecology"
+ },
+ {
+  "id": "forest-canopy",
+  "title": "Forest Canopy: Jungle Layers",
+  "icon": "https://games.smartok.app/forest-canopy/icon.png",
+  "url": "https://games.smartok.app/forest-canopy/",
+  "category": "Ecology"
+ },
+ {
+  "id": "bridge-span",
+  "title": "Bridge Span: Great Structures",
+  "icon": "https://games.smartok.app/bridge-span/icon.png",
+  "url": "https://games.smartok.app/bridge-span/",
+  "category": "Engineering"
+ },
+ {
+  "id": "rocket-stage",
+  "title": "Rocket Stage: Mission Log",
+  "icon": "https://games.smartok.app/rocket-stage/icon.png",
+  "url": "https://games.smartok.app/rocket-stage/",
+  "category": "Space"
+ },
+ {
+  "id": "alloy-smith",
+  "title": "Alloy Smith: Metals & Alloys",
+  "icon": "https://games.smartok.app/alloy-smith/icon.png",
+  "url": "https://games.smartok.app/alloy-smith/",
+  "category": "Metallurgy"
+ },
+ {
+  "id": "poetry-meter",
+  "title": "Poetry Meter: Poetic Forms",
+  "icon": "https://games.smartok.app/poetry-meter/icon.png",
+  "url": "https://games.smartok.app/poetry-meter/",
+  "category": "Literature"
+ },
+ {
+  "id": "island-archipelago",
+  "title": "Island Archipelago: Islands & Straits",
+  "icon": "https://games.smartok.app/island-archipelago/icon.png",
+  "url": "https://games.smartok.app/island-archipelago/",
+  "category": "Geography"
+ },
+ {
+  "id": "vital-organ",
+  "title": "Vital Organ: Body Basics",
+  "icon": "https://games.smartok.app/vital-organ/icon.png",
+  "url": "https://games.smartok.app/vital-organ/",
+  "category": "Health"
+ },
+ {
+  "id": "market-ledger",
+  "title": "Market Ledger: Money Smarts",
+  "icon": "https://games.smartok.app/market-ledger/icon.png",
+  "url": "https://games.smartok.app/market-ledger/",
+  "category": "Economics"
+ },
+ {
+  "id": "glacier-fjord",
+  "title": "Glacier Fjord: Ice & Stone",
+  "icon": "https://games.smartok.app/glacier-fjord/icon.png",
+  "url": "https://games.smartok.app/glacier-fjord/",
+  "category": "Geology"
+ },
+ {
+  "id": "pixel-grid",
+  "title": "Pixel Grid: Color Code",
+  "icon": "https://games.smartok.app/pixel-grid/icon.png",
+  "url": "https://games.smartok.app/pixel-grid/",
+  "category": "Digital Art"
+ }
 ]
