@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dino Epoch</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="game-container">
+  <div id="startScreen" class="screen active">
+    <button class="audio-btn corner-audio">🔊</button>
+    <div class="logo-icon">🦖</div>
+    <h1 class="game-title">Dino Epoch</h1>
+    <p class="game-subtitle">Prehistoric Eras</p>
+    <div class="card">
+      <h2 data-i18n="howToPlay">How to Play</h2>
+      <p data-i18n="instructions">Tap eras, creatures and events from oldest to newest!</p>
+    </div>
+    <button id="startBtn" class="btn primary" data-i18n="startGame">Start Game</button>
+    <div class="hi-row"><span data-i18n="highScore">High Score:</span> <span id="hiStart">0</span></div>
+  </div>
+
+  <div id="gameScreen" class="screen">
+    <div class="top-bar">
+      <button id="backBtn" class="icon-btn">←</button>
+      <div id="livesVal" class="hearts">♥♥♥</div>
+      <div class="score-box"><span data-i18n="score">Score:</span> <span id="scoreVal">0</span></div>
+      <button class="audio-btn">🔊</button>
+    </div>
+    <div id="hint" class="hint" data-i18n="tapInOrder">Tap in order!</div>
+    <div id="prog" class="prog"></div>
+    <div id="board" class="board order"></div>
+  </div>
+
+  <div id="overScreen" class="screen">
+    <h1 class="over-title" data-i18n="gameOver">Game Over</h1>
+    <p class="score-line"><span data-i18n="finalScore">Final Score:</span> <span id="finalScore">0</span></p>
+    <p class="score-line"><span data-i18n="bestScore">Best:</span> <span id="bestScore">0</span></p>
+    <p id="newBest" class="new-best" data-i18n="newHighScore" style="display:none">New High Score!</p>
+    <button id="againBtn" class="btn primary" data-i18n="playAgain">Play Again</button>
+    <button id="menuBtn" class="btn" data-i18n="mainMenu">Main Menu</button>
+  </div>
+</div>
+<script src="../i18n-loader.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
