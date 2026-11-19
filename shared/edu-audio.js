@@ -9,8 +9,8 @@
  *     playWrong,playWin,setMuted,isMuted}
  *   • Smart auto-hooks: soft click on button taps + MutationObserver
  *     feedback sounds on standard .correct/.wrong/.win class changes
- *   • Floating mute toggle persisted in localStorage
- *     ('smartok-edugames-muted')
+ *   • Mute state synced with each game's native .audio-btn toggle
+ *     (<slug>_muted + shared 'smartok-edugames-muted' key)
  * ═══════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -366,36 +366,14 @@
     });
   }
 
-  /* ── Floating mute toggle ─────────────────────────────────────── */
-  function injectMuteButton() {
-    if (document.getElementById('edu-audio-mute')) return;
-    var b = document.createElement('button');
-    b.id = 'edu-audio-mute';
-    b.type = 'button';
-    b.setAttribute('aria-label', 'Toggle sound');
-    b.textContent = sharedMuted ? '\u{1F507}' : '\u{1F50A}';
-    b.style.cssText =
-      'position:fixed;bottom:14px;right:14px;z-index:9999;' +
-      'width:40px;height:40px;border-radius:50%;' +
-      'background:rgba(10,12,16,0.85);border:1px solid rgba(0,243,255,0.4);' +
-      'color:#fff;font-size:18px;line-height:1;cursor:pointer;' +
-      'display:flex;align-items:center;justify-content:center;' +
-      'box-shadow:0 2px 10px rgba(0,0,0,0.5);padding:0;' +
-      '-webkit-tap-highlight-color:transparent;';
-    b.addEventListener('click', function (e) {
-      e.stopPropagation();
-      setMuted(!sharedMuted);
-    });
-    document.body.appendChild(b);
-  }
-  function refreshMuteIcon() {
-    var b = document.getElementById('edu-audio-mute');
-    if (b) b.textContent = sharedMuted ? '\u{1F507}' : '\u{1F50A}';
-  }
+  /* ── Mute state ───────────────────────────────────────────────────
+   * No floating button is injected — each game's native top-bar
+   * .audio-btn is the single mute control. It writes <slug>_muted,
+   * which audible()/gameMuted() pick up on every sound + master gain.
+   */
   function setMuted(m) {
     sharedMuted = !!m;
     lsSet(MUTED_KEY, sharedMuted ? '1' : '0');
-    refreshMuteIcon();
     refreshMaster();
   }
   function isMuted() { return sharedMuted; }
@@ -418,7 +396,6 @@
 
   /* ── Boot ─────────────────────────────────────────────────────── */
   function boot() {
-    injectMuteButton();
     hookFeedbackObserver();
   }
   if (document.readyState === 'loading') {
