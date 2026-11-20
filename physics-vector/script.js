@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     b.addEventListener('pointerdown', e => { e.preventDefault(); toggleMute(); });
   });
   $('startBtn').addEventListener('pointerdown', e => { e.preventDefault(); startGame(); });
+  $('btnT').addEventListener('pointerdown', e => { e.preventDefault(); answer(true); });
+  $('btnF').addEventListener('pointerdown', e => { e.preventDefault(); answer(false); });
   $('againBtn').addEventListener('pointerdown', e => { e.preventDefault(); startGame(); });
   $('menuBtn').addEventListener('pointerdown', e => { e.preventDefault(); goMenu(); });
   $('backBtn').addEventListener('pointerdown', e => { e.preventDefault(); goMenu(); });
