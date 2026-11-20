@@ -44,6 +44,7 @@ const QTIME = 5000;
 const DATA = {"facts":[{"s":"Force = mass × acceleration","v":true},{"s":"Gravity pulls objects upward","v":false},{"s":"Light travels faster than sound","v":true},{"s":"Newton's 1st law is inertia","v":true},{"s":"The unit of force is the Watt","v":false},{"s":"Velocity is a vector","v":true},{"s":"Objects fall at different speeds in a vacuum","v":false},{"s":"Friction opposes motion","v":true},{"s":"Energy can be destroyed","v":false},{"s":"m/s² is a unit of acceleration","v":true},{"s":"Mass and weight are the same thing","v":false},{"s":"Sound needs a medium to travel","v":true},{"s":"The unit of energy is the Joule","v":true},{"s":"Momentum = mass × velocity","v":true},{"s":"Magnets attract all metals","v":false},{"s":"Action and reaction are equal and opposite","v":true}]};
 
 function nextRound(){
+  answering = false; clearAnswerFx();
   cur = DATA.facts[Math.floor(Math.random()*DATA.facts.length)];
   $('qText').textContent = cur.s;
   const bar = $('tbar');
@@ -52,10 +53,19 @@ function nextRound(){
   clearTimeout(timer);
   timer = setTimeout(() => { if(playing){ loseLife(); if(lives > 0) nextRound(); } }, QTIME);
 }
+let answering = false;
+function clearAnswerFx(){
+  ['btnT','btnF'].forEach(id => { const b = $(id); b.classList.remove('btn-correct','btn-wrong'); b.disabled = false; });
+}
 function answer(v){
-  if(!playing || !cur) return; clearTimeout(timer);
-  if(v === cur.v){ sfxOk(); addScore(10 + level*2); level++; }
+  if(!playing || !cur || answering) return;
+  answering = true; clearTimeout(timer);
+  const pressedBtn = v ? $('btnT') : $('btnF');
+  $('btnT').disabled = $('btnF').disabled = true;
+  const correct = v === cur.v;
+  pressedBtn.classList.add(correct ? 'btn-correct' : 'btn-wrong');
+  if(correct){ sfxOk(); addScore(10 + level*2); level++; }
   else loseLife();
-  if(playing && lives > 0) nextRound();
+  if(playing && lives > 0) setTimeout(nextRound, 450);
 }
 function startGame(){ score = 0; lives = 3; newRec = false; level = 1; seq = []; playing = true; renderHud(); startBgm(); show('gameScreen'); if(typeof buildPads === 'function') buildPads(); nextRound(); }

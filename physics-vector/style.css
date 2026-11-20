@@ -43,7 +43,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(160d
 .q-card{background:var(--card);border:1px solid var(--acc);border-radius:14px;padding:18px 22px;font-size:20px;font-weight:600;max-width:520px;margin-bottom:16px;line-height:1.4}
 .prog{color:var(--acc2);font-size:13px;letter-spacing:1px;margin-bottom:8px}
 .tf-row{display:flex;gap:20px}
-.tf-btn{font-size:34px;width:90px;height:90px;border-radius:50%;border:3px solid var(--acc);background:var(--card);color:var(--ink);cursor:pointer}
+.tf-btn{font-size:34px;width:90px;height:90px;border-radius:50%;border:3px solid var(--acc);background:var(--card);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.tf-btn:disabled{cursor:default}
+.tf-btn.btn-correct{background:var(--good);border-color:var(--good);color:#061b10;box-shadow:0 0 24px var(--good),0 0 48px rgba(61,220,132,.55)}
+.tf-btn.btn-wrong{background:var(--bad);border-color:var(--bad);color:#fff;box-shadow:0 0 24px var(--bad),0 0 48px rgba(255,77,94,.55)}
 .tbar-wrap{width:100%;max-width:520px;height:8px;background:rgba(255,255,255,.12);border-radius:4px;margin-bottom:16px;overflow:hidden}
 #tbar{height:100%;width:100%;background:linear-gradient(90deg,var(--acc),var(--acc2))}
 .over-title{font-size:34px;text-shadow:0 0 16px var(--bad);margin-bottom:14px}
